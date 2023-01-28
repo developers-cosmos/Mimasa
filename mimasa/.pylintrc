@@ -1,0 +1,72 @@
+[MASTER]
+
+# Optional list of files or directories that should not be checked
+exclude=tests/*,docs/*,venv/*
+
+# A list of plugins (as comma separated string of python modules names) to load, usually to register additional checker.
+load-plugins=pylint_flask,pylint_django,pylint_autopep8
+
+[MESSAGES CONTROL]
+
+# Set the minimum severity level of a message before it is printed
+# Available options:
+#   * CRITICAL
+#   * ERROR
+#   * WARNING
+#   * INFO
+#   * DEBUG
+#   * NOTSET
+#   * SCRATCH_MSG
+
+min-severity=WARNING
+
+# Report only messages of the given type (multiple options can be separated by a comma)
+# Available options:
+#   * message
+#   * error
+#   * warning
+#   * refactor
+#   * convention
+#   * fatal
+#   * debug
+
+only-types=warning,error,fatal
+
+# Report duplicated code
+duplication=yes
+
+[FORMAT]
+
+# The maximum number of characters on a single line.
+max-line-length=120
+autopep8-max-line-length=120
+
+# The number of spaces of indent required inside a hanging or continued line
+indent-after-paren=4
+
+# A regular expression which should only match function or class names that do not require a docstring.
+no-docstring-rgx=(__.*__)|(test.*)
+
+[SIMILARITIES]
+
+# Minimum lines number of a similarity.
+min-similarity-lines=4
+
+[VARIABLES]
+
+# List of additional names supposed to be defined in builtins. Remember that you should avoid to define new builtins when possible.
+additional-builtins=_
+
+# Good variable names which should always be accepted, separated by a comma
+good-names=i,j,k,ex,Run,_
+
+# Bad variable names which should always be refused, separated by a comma
+bad-names=foo,bar,baz,toto,tutu,tata
+
+[TYPECHECK]
+
+# List of classes names for which member attributes should not be checked (useful for classes with attributes dynamically set).
+ignored-classes=SQLObject,Optimizer
+
+# List of modules names for which member attributes should not be checked (useful for modules/projects where namespaces are manipulated during runtime and thus existing member attributes cannot be deduced by static analysis)
+ignored-modules=twisted,gmail

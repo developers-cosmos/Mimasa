@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: Mimasa
+Version: 1.0
+Summary: A Real-time Multilingual Face Translator
+Home-page: https://github.com/developers-cosmos/Mimasa
+Author: Yellenki Ritheesh Baradwaj
+Author-email: ritheeshbaradwaj@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+
+    Mimasa is a real-time multilingual face translator application that takes a video input,
+    detects the facial patterns and speech of the person, translates the speech to another language
+    and changes the facial expression of the person to match the output language. The final output
+    is a video with the translated speech and modified facial expression.

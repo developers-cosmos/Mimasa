@@ -5,38 +5,40 @@ class User {
     +grantPermission()
     +uploadVideo(video: Video)
     +selectLanguage(language: String)
-    +submitRequest(language: Language, video: Video)
+    +submitRequest(language: String, video: Video)
     +receiveNotification(notification: String)
-    +displayTranslation(translation: Video)
+    +displayTranslation(translation: Translation)
     +saveTranslation(translation: Translation)
     +shareTranslation(translation: Translation)
 }
 
+class MediaProcessor {
+    +videoProcessor: VideoProcessor
+    +audiProcessor: AudiProcessor
+    +audioAndVideoSyncer: AudioAndVideoSyncer
+}
+
 class MimasaApp {
-    -mediaAccess: MediaAccess
-    -videoProcessor: VideoTranslator
-    -audioTranslator: AudioTranslator
-    -audioAndVideoSyncer: AudioAndVideoSyncer
+    +mediaAccess: MediaAccess
+    +mediaProcessor: MediaProcessor
     +showTranslation(translation: Translation)
     +notifyUser()
 }
 
-class VideoTranslator {
-    +extractAudio(audio: Audio)
-    -emoteTrans: EmoteTrans
-    -createTranslation(video: Video)
-    +getTranslation: Video
-    +getExtractedAudio: Audio
+class VideoProcessor {
+    +extractAudioFromVideo(): Audio
+    +emoteTrans: EmoteTrans
+    +createTranslation(video: Video)
+    +getTranslation(): Video
 }
 
-class AudioTranslator {
+class AudiProcessor {
     +translate(audio: Audio)
-    -preprocessor: AudioPreprocessor
-    -audioSeparator: AudioSeparator
-    -speechToTextTranslator: SpeechToTextTranslator
-    -textToSpeechTranslator: TextToSpeechTranslator
-    -postprocessor: AudioPostprocessor
-    +getTranslation: Audio
+    +preprocessor: AudioPreprocessor
+    +audioSeparator: AudioSeparator
+    +speechTranslator: SpeechTranslator
+    +postprocessor: AudioPostprocessor
+    +getTranslation(): Audio
 }
 
 class AudioAndVideoSyncer {
@@ -44,14 +46,14 @@ class AudioAndVideoSyncer {
 }
 
 class Translation {
-    -video: Video
-    -audio: Audio
+    +video: Video
+    +audio: Audio
 }
 
 class VideoOutput {
     +display(video: Video)
     +save(video: Video)
-    +share(video: Video, platform: string)
+    +share(video: Video, platform: String)
 }
 
 class MediaAccess {
@@ -59,22 +61,22 @@ class MediaAccess {
 }
 
 class Video {
-    -file: String
-    -language: String
+    +file: String
+    +language: String
 }
 
 class Audio {
-    -file: String
-    -language: String
+    +file: String
+    +language: String
 }
 
 class FacialFeatures {
-    -emotions: Emotions
+    +emotions: List<Emotions>
 }
 
 class ImagePreprocessor {
     +extractFacialFeatures(video: Video)
-    -facialFeatures: FacialFeatures
+    +facialFeatures: FacialFeatures
 }
 
 class LipMovementSynchronizer {
@@ -85,62 +87,83 @@ class FaceMovementSynchronizer {
     +syncFaceMovements(video: Video, audio: Audio)
 }
 
+class MovementSynchronizer {
+    +lipMovementSynchronizer: LipMovementSynchronizer
+    +faceMovementSynchronizer: FaceMovementSynchronizer
+}
+
 class EmoteTrans {
     +preprocessVideo(video: Video)
-    -imagePreprocessor: ImagePreprocessor
+    +imagePreprocessor: ImagePreprocessor
     +identifyEmotions(features: FacialFeatures)
     +waitForTranslation(translation: Translation)
-    -facialFeatures: FacialFeatures
-    -lipMovementSynchronizer: LipMovementSynchronizer
-    -faceMovementSynchronizer: FaceMovementSynchronizer
+    +movementSynchronizer: MovementSynchronizer
 }
 
 class AudioPreprocessor {
-    +process(audio: Audio)
+    +postprocessAudio(audio: Audio)
 }
 
 class AudioSeparator {
     +separateVocalsAndMusic(audio: Audio)
-    +getVocals(vocals: Audio)
-    +getMusic(music: Audio)
-}
-
-class TextToSpeechTranslator {
-    -convertToSpeech(text: String)
-    -returnSpeech(speech: Audio)
+    +getVocals(): Audio
+    +getMusic(): Audio
 }
 
 class SpeechToTextTranslator {
-    +translate(audio: Audio)
-    +getTranslatedText: string
+    -translate(audio: Audio)
+    +getTranslatedText(): string
 }
 
 class TextToSpeechTranslator {
-    +translate(text: string)
-    +getTranslatedAudio: Audio
+    -translate(text: string)
+    +getTranslatedAudio(): Audio
+}
+
+class SpeechTranslator {
+    +speechToTextTranslator: SpeechToTextTranslator
+    +textToSpeechTranslator: TextToSpeechTranslator
 }
 
 class AudioPostprocessor {
     -determineVocalsPosition(audio: Audio)
     -overlayAudioWithMusic(speech: Audio, music: Audio)
-    -postprocessAudio(vocals: Audio, music: Audio)
+    +postprocessAudio(vocals: Audio, music: Audio)
 }
 
 User -down-> MimasaApp
+
 MimasaApp -down-> MediaAccess
-MimasaApp -down-> VideoTranslator
-MimasaApp -down-> AudioTranslator
-VideoTranslator -down-> EmoteTrans
+MimasaApp -down-> MediaProcessor
+
+MediaProcessor -down-> VideoProcessor
+MediaProcessor -down-> AudiProcessor
+MediaProcessor -down-> AudioAndVideoSyncer
+
+'video processing components'
+VideoProcessor -down-> EmoteTrans
+VideoProcessor -down-> Video
+
 EmoteTrans -down-> ImagePreprocessor
 EmoteTrans -down-> FacialFeatures
-EmoteTrans -down-> LipMovementSynchronizer
-EmoteTrans -down-> FaceMovementSynchronizer
-AudioTranslator -down-> AudioPreprocessor
-AudioTranslator -down-> AudioSeparator
-AudioTranslator -down-> SpeechToTextTranslator
-AudioTranslator -down-> TextToSpeechTranslator
-AudioTranslator -down-> AudioPostprocessor
-MimasaApp -down-> AudioAndVideoSyncer
+EmoteTrans -down-> MovementSynchronizer
+
+MovementSynchronizer -down-> LipMovementSynchronizer
+MovementSynchronizer -down-> FaceMovementSynchronizer
+
+'audio processing components'
+AudiProcessor -down-> AudioPreprocessor
+AudiProcessor -down-> AudioSeparator
+AudiProcessor -down-> SpeechTranslator
+AudiProcessor -down-> AudioPostprocessor
+AudioProcessor -down-> Audio
+
+SpeechTranslator -down-> SpeechToTextTranslator
+SpeechTranslator -down-> TextToSpeechTranslator
+
+Translation -down-> Audio
+Translation -down-> Video
+
 MimasaApp -down-> VideoOutput
 
 @enduml

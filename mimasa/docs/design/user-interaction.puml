@@ -2,6 +2,8 @@
 
 title User Uploading Video & Requesting Translation
 
+actor User
+
 User -> App : opens the app
 App -> User : requests access to media
 User -> App : grants necessary permissions
@@ -14,6 +16,8 @@ User -> App : submits request
 @startuml User Saving & Sharing Translation
 
 title User Saving & Sharing Translation
+
+actor User
 
 User -> App : saves translation for later reference
 User -> App : shares translation with others through various platforms (email, social media, etc.)

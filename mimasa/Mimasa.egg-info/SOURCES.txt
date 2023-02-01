@@ -1,8 +1,0 @@
-setup.py
-Mimasa.egg-info/PKG-INFO
-Mimasa.egg-info/SOURCES.txt
-Mimasa.egg-info/dependency_links.txt
-Mimasa.egg-info/entry_points.txt
-Mimasa.egg-info/requires.txt
-Mimasa.egg-info/top_level.txt
-src/main.py

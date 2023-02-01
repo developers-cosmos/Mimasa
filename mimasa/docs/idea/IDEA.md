@@ -1,7 +1,5 @@
 # Mimasa - EmoteTrans [A Real-time Multilingual Face Translator]
 
-## Idea
-
 The idea of the project is to create an application that can take a video input, detect the facial patterns
 and speech of the person, translate the speech to another language and change the facial expression of the
 person to match the output language. The final output is a video with the translated speech and modified

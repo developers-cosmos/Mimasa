@@ -3,8 +3,13 @@ opencv-python
 mtcnn
 tensorflow
 keras
+gttS
+moviepy
+dlib
 
 # for linting
 pylint
 pylint-plugin-utils
 autopep8
+
+# TODO: Should Update requirements correctly

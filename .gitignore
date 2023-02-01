@@ -348,3 +348,13 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+
+# Project Specific
+mimasa/data/datasets/**
+mimasa/data/models/**
+mimasa/data/audios/**
+mimasa/data/videos/**
+mimasa/data/dlib/**
+
+mimasa/Mimasa.egg-info/**

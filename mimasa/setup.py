@@ -15,6 +15,9 @@ class LintCommand(install):
         subprocess.call(['pylint', 'your_module'])
         install.run(self)
 
+with open('README.md') as f:
+    long_description = f.read()
+
 with open("requirements.txt", encoding="utf-8") as f:
     requirements = f.read().splitlines()
 
@@ -28,12 +31,7 @@ setup(
     author_email="ritheeshbaradwaj@gmail.com",
 
     description="A Real-time Multilingual Face Translator",
-    long_description="""
-    Mimasa is a real-time multilingual face translator application that takes a video input,
-    detects the facial patterns and speech of the person, translates the speech to another language
-    and changes the facial expression of the person to match the output language. The final output
-    is a video with the translated speech and modified facial expression.""",
-    long_description_content_type="text/markdown",
+    long_description=long_description,
     url="https://github.com/developers-cosmos/Mimasa",
 
     packages=find_packages(),

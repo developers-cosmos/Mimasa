@@ -22,7 +22,7 @@ The idea behind Mimasa is to provide a seamless translation experience for peopl
 
 [![Project Status: Concept – Minimal or no implementation has been done yet.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Under Development
 

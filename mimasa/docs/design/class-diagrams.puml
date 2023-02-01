@@ -1,0 +1,146 @@
+@startuml Mimasa - Components Class Diagrams
+
+class User {
+    +openApp()
+    +grantPermission()
+    +uploadVideo(video: Video)
+    +selectLanguage(language: String)
+    +submitRequest(language: Language, video: Video)
+    +receiveNotification(notification: String)
+    +displayTranslation(translation: Video)
+    +saveTranslation(translation: Translation)
+    +shareTranslation(translation: Translation)
+}
+
+class MimasaApp {
+    -mediaAccess: MediaAccess
+    -videoProcessor: VideoTranslator
+    -audioTranslator: AudioTranslator
+    -audioAndVideoSyncer: AudioAndVideoSyncer
+    +showTranslation(translation: Translation)
+    +notifyUser()
+}
+
+class VideoTranslator {
+    +extractAudio(audio: Audio)
+    -emoteTrans: EmoteTrans
+    -createTranslation(video: Video)
+    +getTranslation: Video
+    +getExtractedAudio: Audio
+}
+
+class AudioTranslator {
+    +translate(audio: Audio)
+    -preprocessor: AudioPreprocessor
+    -audioSeparator: AudioSeparator
+    -speechToTextTranslator: SpeechToTextTranslator
+    -textToSpeechTranslator: TextToSpeechTranslator
+    -postprocessor: AudioPostprocessor
+    +getTranslation: Audio
+}
+
+class AudioAndVideoSyncer {
+    +sync(video: Video, audio: Audio): Video
+}
+
+class Translation {
+    -video: Video
+    -audio: Audio
+}
+
+class VideoOutput {
+    +display(video: Video)
+    +save(video: Video)
+    +share(video: Video, platform: string)
+}
+
+class MediaAccess {
+    +requestAccess()
+}
+
+class Video {
+    -file: String
+    -language: String
+}
+
+class Audio {
+    -file: String
+    -language: String
+}
+
+class FacialFeatures {
+    -emotions: Emotions
+}
+
+class ImagePreprocessor {
+    +extractFacialFeatures(video: Video)
+    -facialFeatures: FacialFeatures
+}
+
+class LipMovementSynchronizer {
+    +syncLipMovements(video: Video, audio: Audio)
+}
+
+class FaceMovementSynchronizer {
+    +syncFaceMovements(video: Video, audio: Audio)
+}
+
+class EmoteTrans {
+    +preprocessVideo(video: Video)
+    -imagePreprocessor: ImagePreprocessor
+    +identifyEmotions(features: FacialFeatures)
+    +waitForTranslation(translation: Translation)
+    -facialFeatures: FacialFeatures
+    -lipMovementSynchronizer: LipMovementSynchronizer
+    -faceMovementSynchronizer: FaceMovementSynchronizer
+}
+
+class AudioPreprocessor {
+    +process(audio: Audio)
+}
+
+class AudioSeparator {
+    +separateVocalsAndMusic(audio: Audio)
+    +getVocals(vocals: Audio)
+    +getMusic(music: Audio)
+}
+
+class TextToSpeechTranslator {
+    -convertToSpeech(text: String)
+    -returnSpeech(speech: Audio)
+}
+
+class SpeechToTextTranslator {
+    +translate(audio: Audio)
+    +getTranslatedText: string
+}
+
+class TextToSpeechTranslator {
+    +translate(text: string)
+    +getTranslatedAudio: Audio
+}
+
+class AudioPostprocessor {
+    -determineVocalsPosition(audio: Audio)
+    -overlayAudioWithMusic(speech: Audio, music: Audio)
+    -postprocessAudio(vocals: Audio, music: Audio)
+}
+
+User -down-> MimasaApp
+MimasaApp -down-> MediaAccess
+MimasaApp -down-> VideoTranslator
+MimasaApp -down-> AudioTranslator
+VideoTranslator -down-> EmoteTrans
+EmoteTrans -down-> ImagePreprocessor
+EmoteTrans -down-> FacialFeatures
+EmoteTrans -down-> LipMovementSynchronizer
+EmoteTrans -down-> FaceMovementSynchronizer
+AudioTranslator -down-> AudioPreprocessor
+AudioTranslator -down-> AudioSeparator
+AudioTranslator -down-> SpeechToTextTranslator
+AudioTranslator -down-> TextToSpeechTranslator
+AudioTranslator -down-> AudioPostprocessor
+MimasaApp -down-> AudioAndVideoSyncer
+MimasaApp -down-> VideoOutput
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml Mimasa - EmoteTrans Sequence Diagram
+
+title Mimasa - EmoteTrans Sequence Diagram
+
+User -> UI: Select input and output languages
+UI -> FaceDetector: Initialize
+FaceDetector -> OpenCV: Capture video input
+OpenCV -> FaceDetector: Provide video frames
+FaceDetector -> OpenCV: Detect faces in frames
+OpenCV -> FaceDetector: Provide facial features
+FaceDetector -> LipMovementDetector: Detect lip movements
+LipMovementDetector -> AudioSeparator: Separate speech from audio
+AudioSeparator -> SpeechRecognizer: Transcribe speech to text
+SpeechRecognizer -> NLP: Translate text to another language
+NLP -> AudioSynthesizer: Synthesize speech from translated text
+AudioSynthesizer -> LipMovementSynchronizer: Sync audio with lip movements
+LipMovementSynchronizer -> UI: Display translated speech with synced lip movements
+
+@enduml

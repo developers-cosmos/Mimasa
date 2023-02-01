@@ -1,0 +1,44 @@
+@startuml Mimasa Core Component
+
+Title: Video Processing
+
+User -> MimasaApp: Open the Mimasa app
+MimasaApp -> User: Request access to media
+User -> MimasaApp: Grant necessary permissions
+User -> MimasaApp: Upload video
+User -> MimasaApp: Submit a request (language and video input)
+MimasaApp -> VideoProcessor: Send video for processing
+
+VideoProcessor -> AudioExtractor: Extract audio from video
+VideoProcessor -> VideoPreprocessor: Send video for pre-processing
+
+VideoPreprocessor -> FeatureExtractor: Extract facial features
+FeatureExtractor -> EmotionIdentifier: Identify the user's emotions based on facial expressions and lip/face movements
+
+Note over VideoProcessor: Wait for audio processing to be completed
+
+Title: Audio Translation
+
+AudioExtractor -> AudioPreprocessor: Send pre-processed audio
+AudioPreprocessor -> AudioSeparator: Separate vocals and background music from audio
+AudioSeparator -> PostProcessor: Send separated audio for post-processing
+PostProcessor -> VocalDeterminer: Determine the portion of vocals in the audio
+
+VocalDeterminer -> SpeechToTextTranslator: Translate audio to text in the desired language
+SpeechToTextTranslator -> TextToSpeechTranslator: Convert text to audio
+
+Note over VideoProcessor: Resume processing
+
+Title: Video Translation
+
+VideoProcessor -> LipMovementSynchronizer: Synchronize lip/face movements with translated audio
+LipMovementSynchronizer -> VideoTranslator: Create a final video with translated audio
+VideoTranslator -> MimasaApp: Send output video to user
+
+MimasaApp -> User: Notify the user of the completion
+MimasaApp -> User: Display translated video on screen
+User -> MimasaApp: Option to select a different language for translation
+User -> MimasaApp: Option to save a translation for later reference
+User -> MimasaApp: Option to share the translation with others
+
+@enduml

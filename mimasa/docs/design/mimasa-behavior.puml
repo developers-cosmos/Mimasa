@@ -1,0 +1,30 @@
+@startuml Mimasa Workflow
+
+[*] --> AppOpened
+AppOpened --> RequestMediaAccess : requests access to media
+RequestMediaAccess --> MediaAccessGranted : user grants access
+MediaAccessGranted --> UploadVideo : user uploads video
+UploadVideo --> RequestTranslation : user submits request for translation
+RequestTranslation --> VideoProcessingStarted : EmoteTrans component starts processing video
+
+VideoProcessingStarted --> AudioExtracted : audio is extracted from video
+AudioExtracted --> AudioTranslationStarted : audio translation process starts
+AudioTranslationStarted --> AudioTranslated : audio is translated to text
+AudioTranslated --> TextToSpeech : translated text is converted to audio
+TextToSpeech --> AudioWithTranslation : translated audio is overlayed with background music
+AudioWithTranslation --> SynchronizeAudioWithVideo : audio and video are synced with lip/face movements
+
+VideoProcessingStarted --> ImagePreprocessing : video is sent to EmoteTrans component for image pre-processing
+ImagePreprocessing --> FacialFeaturesExtracted : facial features are extracted from video
+FacialFeaturesExtracted --> EmotionIdentified : user's emotions are identified based on facial expressions and lip/face movements
+EmotionIdentified --> VideoTranslationWaitingForAudio : video translation process waits for audio translation to be completed
+
+VideoTranslationWaitingForAudio  --> AudioWithTranslation : AudioTranslation is available hence resuming...
+
+SynchronizeAudioWithVideo --> VideoTranslationComplete : final video with translated audio is created
+VideoTranslationComplete --> AppNotified : user is notified and the app displays the translated video
+AppNotified --> SaveTranslation : user can save the translation for later reference
+SaveTranslation --> ShareTranslation : user can share the translation with others
+ShareTranslation --> RequestTranslation : user can submit a new request for translation with a different language
+
+@enduml

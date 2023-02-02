@@ -7,25 +7,23 @@ initializing all necessary components and executing the main logic of the progra
 """
 
 from src.utils import utils
+from src.common.config import Config
+from src.common.audio import Audio
+from src.common.video import Video
 
 def main():
     """
     Main function
     """
-    # Get the detector type from the user
-    detector_type = input(
-        "Enter the detector type (ViolaJones, MTCNN, SSD, YOLO, RetinaFace) (leave blank to select MTCNN): ") or "MTCNN"
+    # Face Detection
+    video = Video(Config.VIDEO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
+    video_detector = utils.get_detector(detector_type=Config.VIDEO_DETECTOR)
+    #utils.detect_faces_in_realtime(detector=video_detector, video=video)
 
-    # Get an instance of the selected detector
-    detector = utils.get_detector(detector_type)
-
-    # Get the video filename from the user (if applicable)
-    video_filename = input(
-        "Enter the video filename (leave blank for webcam): ")
-
-    # Start the face detection
-    utils.detect_faces_in_realtime(detector, video_filename)
-
+    # Audio Separation
+    audio = Audio(Config.AUDIO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
+    separator = utils.get_audio_separator(Config.AUDIO_SEPARATOR)
+    separator.separate_vocals_and_music(audio=audio)
 
 if __name__ == "__main__":
     main()

@@ -7,6 +7,13 @@ import subprocess
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 
+DESCRIPTION = """
+Mimasa is a real-time multilingual face translator application that takes a video input,
+detects the facial patterns and speech of the person, translates the speech to another language
+and changes the facial expression of the person to match the output language. The final output
+is a video with the translated speech and modified facial expression.
+"""
+
 class LintCommand(install):
     """Custom command to run linting on package installation."""
 
@@ -15,8 +22,6 @@ class LintCommand(install):
         subprocess.call(['pylint', 'your_module'])
         install.run(self)
 
-with open('README.md') as f:
-    long_description = f.read()
 
 with open("requirements.txt", encoding="utf-8") as f:
     requirements = f.read().splitlines()
@@ -26,12 +31,12 @@ author_list = ["Yellenki Ritheesh Baradwaj"]
 
 setup(
     name="Mimasa",
-    version="1.0",
+    version="1.0.1",
     author=", ".join(author_list),
     author_email="ritheeshbaradwaj@gmail.com",
 
     description="A Real-time Multilingual Face Translator",
-    long_description=long_description,
+    long_description=DESCRIPTION,
     url="https://github.com/developers-cosmos/Mimasa",
 
     packages=find_packages(),

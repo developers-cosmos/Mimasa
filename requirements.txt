@@ -1,4 +1,4 @@
-numpy==1.23.*
+numpy==1.24.*
 opencv_python==4.7.*
 mtcnn==0.1.1
 pydub==0.25.1

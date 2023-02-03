@@ -28,6 +28,7 @@ labels:
       title: "^docs:.*"
       branch: "^docs/.*"
       commits: "^docs:.*"
+      files: "^docs/.*"
 
   - label: "test:labeler"
     sync: true
@@ -42,7 +43,7 @@ labels:
   - label: "test:tests"
     sync: true
     matcher:
-      files: [ "__tests__/matcher/**", "__tests__/*.ts" ]
+      files: [ "__tests__/matcher/**", "__tests__/*.ts", "tests/**" ]
 
   - label: "test:body"
     matcher:
@@ -115,3 +116,12 @@ checks:
     labels:
       none:
         - "DO NOT MERGE"
+
+  - context: "Label verification"
+    description: "Ensuring appropriate label is assigned to pull requests and issues"
+    labels:
+      any:
+        - feat
+        - fix
+        - chore
+        - docs

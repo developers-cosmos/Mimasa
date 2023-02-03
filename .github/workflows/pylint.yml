@@ -1,28 +1,23 @@
-name: Lint and fix Python code
+name: Pylint
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
-  lint-and-fix:
+  build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        python-version: ["3.10"]
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
       with:
-        python-version: 3.8
-
+        python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        python -m pip install --upgrade pip
         pip install pylint
-
-    - name: Run pylint-actions
-      uses: pylint-actions/pylint-actions@v1
-      with:
-        args: --rcfile=.pylintrc --reports=no
+    - name: Analysing the code with pylint
+      run: |
+        pylint --rcfile=.pylintrc --exit-zero --persistent=n $(git ls-files '*.py') --reports=n --auto-correct

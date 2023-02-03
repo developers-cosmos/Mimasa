@@ -1,4 +1,4 @@
-# Mimasa - EmoteTrans [A Real-time Multilingual Face Translator]
+# Mimasa - EmoteTrans [A Real-time Multilingual Face Translator] [![Build Github Pages](https://github.com/developers-cosmos/Mimasa/actions/workflows/pages.yml/badge.svg)](https://github.com/developers-cosmos/Mimasa/actions/workflows/pages.yml)
 
 ## Overview
 
@@ -23,8 +23,6 @@ The idea behind Mimasa is to provide a seamless translation experience for peopl
 [![Project Status: Concept – Minimal or no implementation has been done yet.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-[![Build Github Pages](https://github.com/developers-cosmos/Mimasa/actions/workflows/pages.yml/badge.svg)](https://github.com/developers-cosmos/Mimasa/actions/workflows/pages.yml)
 
 ## Installation Guide
 

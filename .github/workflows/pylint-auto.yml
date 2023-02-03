@@ -1,6 +1,9 @@
 name: Fix Pylint Errors with Black
 
-on: [push]
+on:
+  push:
+    branches:
+      - '!main'
 
 jobs:
   fix_pylint_errors:

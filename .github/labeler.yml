@@ -1,7 +1,7 @@
 ci/cd: .github/workflows/*
 release:
   - branch: ['release/**', 'hotfix/**']
-docs:
+documentation:
   - README.md
   - ./*.md
   - docs/**

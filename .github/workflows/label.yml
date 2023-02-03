@@ -12,11 +12,12 @@ jobs:
     - name: Label PR
       uses: actions/labeler@v4
       with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
         labels: |
           ci/cd: .github/workflows/*
           release:
             - branch: ['release/**', 'hotfix/**']
-          docs:
+          documentation:
             - README.md
             - ./*.md
             - docs/**

@@ -351,10 +351,12 @@ MigrationBackup/
 
 
 # Project Specific
-mimasa/data/datasets/**
-mimasa/data/models/**
-mimasa/data/audios/**
-mimasa/data/videos/**
-mimasa/data/dlib/**
+data/datasets/**
+data/models/**
+data/audios/**
+data/videos/**
+data/dlib/**
 
-mimasa/Mimasa.egg-info/**
+Mimasa.egg-info/**
+build/**
+dist/**

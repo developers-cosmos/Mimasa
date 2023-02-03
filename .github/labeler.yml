@@ -8,7 +8,7 @@ docs:
   - README.md
   - ./*.md
   - docs/**
-  - branch: 'docs/*''
+  - branch: 'docs/*'
   - pr:
       title:
         - 'docs:*'

@@ -1,7 +1,7 @@
 [MASTER]
 
 # Optional list of files or directories that should not be checked
-exclude=tests/*,docs/*,venv/*
+ignore=tests/*,docs/*,venv/*
 
 # A list of plugins (as comma separated string of python modules names) to load, usually to register additional checker.
 load-plugins=pylint_flask,pylint_django,pylint_autopep8

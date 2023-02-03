@@ -20,12 +20,12 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install markdown2html
+        pip install markdown2
 
     - name: Build site
       run: |
         mkdir public
-        python -m markdown2html --extras=code-friendly --input-file=README.md --output-file=public/index.html
+        python -c "import markdown2; print(markdown2.markdown_path('README.md'))" > public/index.html
 
     - name: Deploy to Github Pages
       uses: peaceiris/actions-gh-pages@v3

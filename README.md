@@ -24,6 +24,8 @@ The idea behind Mimasa is to provide a seamless translation experience for peopl
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+[![Build Github Pages](https://github.com/developers-cosmos/Mimasa/actions/workflows/pages.yml/badge.svg)](https://github.com/developers-cosmos/Mimasa/actions/workflows/pages.yml)
+
 ## Installation Guide
 
 ### Prerequisites

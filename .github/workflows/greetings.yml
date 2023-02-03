@@ -1,0 +1,26 @@
+name: Greetings
+
+on: [pull_request_target, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: |
+          Welcome to the repository! We're glad you're here. If you're reporting an issue, please make sure to provide as much information as possible so we can best assist you. This includes:
+          - A clear description of the problem you're experiencing
+          - Steps to reproduce the issue
+          - Any relevant error messages or screenshots
+          Thank you for taking the time to raise this issue and help us improve!
+        pr-message: |
+          Wow! We're so glad you're interested in contributing to this repository. Your pull request will be reviewed as soon as possible, and we appreciate your patience. Here are some tips for making your pull request as effective as possible:
+          - Make sure your changes are well-documented and in line with the repository's existing code style
+          - Test your changes thoroughly to ensure they don't break anything
+          - Provide a clear explanation of the problem you're trying to solve and how your changes solve it
+          Thank you for taking the time to contribute!

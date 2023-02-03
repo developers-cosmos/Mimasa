@@ -20,11 +20,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        pip install -r mimasa/requirements.txt
 
     - name: Build package
       run: |
-        python setup.py sdist bdist_wheel
+        python mimasa/setup.py sdist bdist_wheel
 
     - name: Upload to Github Releases
       uses: actions/upload-artifact@v2

@@ -7,11 +7,13 @@ FaceDetector class.
 from src.facedetector.face_detector import FaceDetector
 from src.common.libraries import *
 
+
 class RetinaFace(FaceDetector):
     """
     This class is responsible for detecting faces in an image or video frame using
     RetinaFace Algorithm.
     """
+
     def __init__(self, model_path):
         """
         Initialize the class and set the model path

@@ -3,6 +3,7 @@
 Audio Class
 """
 
+
 class Audio:
     """
     Class representing an audio.

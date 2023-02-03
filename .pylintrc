@@ -1,72 +1,89 @@
 [MASTER]
 
 # Optional list of files or directories that should not be checked
-exclude=tests/*,docs/*,venv/*
+ignore=tests/*,docs/*,venv/*
 
 # A list of plugins (as comma separated string of python modules names) to load, usually to register additional checker.
 load-plugins=pylint_flask,pylint_django,pylint_autopep8
 
 [MESSAGES CONTROL]
+# Enable the following messages for better code quality
+# convention: for coding standard violations (C)
+# refactor: for refactoring suggestions (R)
+# warning: for code that may cause problems in the future (W)
+# error: for code that is definitely incorrect (E)
+# fatal: for code that cannot be executed (F)
+enable=C,R,W,E,F
 
-# Set the minimum severity level of a message before it is printed
-# Available options:
-#   * CRITICAL
-#   * ERROR
-#   * WARNING
-#   * INFO
-#   * DEBUG
-#   * NOTSET
-#   * SCRATCH_MSG
-
-min-severity=WARNING
-
-# Report only messages of the given type (multiple options can be separated by a comma)
-# Available options:
-#   * message
-#   * error
-#   * warning
-#   * refactor
-#   * convention
-#   * fatal
-#   * debug
-
-only-types=warning,error,fatal
-
-# Report duplicated code
-duplication=yes
+[BASIC]
+# Specify the indent string to use
+indent-string='    '
 
 [FORMAT]
-
-# The maximum number of characters on a single line.
-max-line-length=120
-autopep8-max-line-length=120
-
-# The number of spaces of indent required inside a hanging or continued line
-indent-after-paren=4
-
-# A regular expression which should only match function or class names that do not require a docstring.
-no-docstring-rgx=(__.*__)|(test.*)
-
-[SIMILARITIES]
-
-# Minimum lines number of a similarity.
-min-similarity-lines=4
-
-[VARIABLES]
-
-# List of additional names supposed to be defined in builtins. Remember that you should avoid to define new builtins when possible.
-additional-builtins=_
-
-# Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,ex,Run,_
-
-# Bad variable names which should always be refused, separated by a comma
-bad-names=foo,bar,baz,toto,tutu,tata
+# Maximum number of characters allowed in a single line
+max-line-length=100
 
 [TYPECHECK]
+# List of class names for which member attributes and methods should not be checked
+ignored-classes=_ABCMeta
 
-# List of classes names for which member attributes should not be checked (useful for classes with attributes dynamically set).
-ignored-classes=SQLObject,Optimizer
+[VARIABLES]
+# Check for unused import
+init-import=yes
 
-# List of modules names for which member attributes should not be checked (useful for modules/projects where namespaces are manipulated during runtime and thus existing member attributes cannot be deduced by static analysis)
-ignored-modules=twisted,gmail
+[SIMILARITIES]
+# Minimum number of similar lines to trigger a message
+min-similarity-lines=4
+ignore-comments=yes
+
+[TYPING]
+# Ignore mixin methods in type checks
+ignore-mixin-members=yes
+
+[LOGGING]
+# Logging modules to check for best practices
+logging-modules=logging
+
+[LOGGING.HANDLER]
+# Disable existing loggers
+disable-existing-loggers=yes
+
+[DESIGN]
+# Maximum number of arguments allowed in a function or method
+max-args=10
+
+[EXCEPTIONS]
+# Specify the exceptions to catch in try/except blocks
+exception-msg-template='{module}.{function}: {message}'
+
+[CLASSES]
+# Maximum number of methods allowed in a class
+max-methods=20
+
+[REPORTS]
+
+# Set the output format. Available formats are text, parseable, colorized, msvs
+# (visual studio) and html
+output-format=text
+
+# Include message's id in output
+include-ids=yes
+
+# Put messages in a separate file for each module / package specified on the
+# command line instead of printing them on stdout. Reports (if any) will be
+# written in a file name "pylint_global.[txt|html]".
+files-output=no
+
+# Tells wether to display a full report or only the messages
+reports=yes
+
+# Python expression which should return a note less than 10 (10 is the highest
+# note). You have access to the variables errors warning, statement which
+# respectivly contain the number of errors / warnings messages and the total
+# number of statements analyzed. This is used by the global evaluation report
+# (R0004).
+evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
+
+# Add a comment according to your evaluation note. This is used by the global
+# evaluation report (R0004).
+comment=no

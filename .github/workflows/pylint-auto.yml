@@ -1,0 +1,77 @@
+name: Fix Pylint Errors with Black
+
+on: [push]
+
+jobs:
+  fix_pylint_errors:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.ref }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        pip install black pylint
+
+    - name: Run Black
+      run: |
+        black .
+
+    - name: Check for Pylint errors
+      run: |
+        pylint --rcfile=.pylintrc --exit-zero --persistent=n $(git ls-files '*.py')
+
+    - name: Check if changes are present
+      run: |
+        if [ -z "$(git status --porcelain)" ]; then
+          echo "No changes to commit."
+          exit 0
+        fi
+
+    - name: Commit changes
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git add .
+        if [ -z "$(git diff-index --cached --quiet HEAD --)" ]; then
+          echo "No changes to commit."
+          exit 0
+        fi
+        git commit -m "Fix Pylint errors with Black"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+
+    - name: Comment on Pull Request
+      if: success()
+      uses: actions/github-script@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        script: |
+          const result = await github.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: context.sha,
+          });
+
+          if (result.data.length) {
+            const pullRequest = result.data[0];
+            await github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pullRequest.number,
+              body: 'Linting errors observed and fixed 🎉. Please pull the latest changes!!!',
+            });
+          }

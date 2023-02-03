@@ -11,6 +11,7 @@ from src.common.config import Config
 from src.common.audio import Audio
 from src.common.video import Video
 
+
 def main():
     """
     Main function
@@ -25,6 +26,7 @@ def main():
     audio = Audio(Config.AUDIO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
     separator = utils.get_audio_separator(Config.AUDIO_SEPARATOR)
     separator.separate_vocals_and_music(audio=audio)
+
 
 if __name__ == "__main__":
     main()

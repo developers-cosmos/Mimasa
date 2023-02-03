@@ -7,6 +7,7 @@ of the FaceDetector class.
 from src.facedetector.face_detector import FaceDetector
 from src.common.libraries import *
 
+
 class ViolaJones(FaceDetector):
     """
     ViolaJones class is a subclass of FaceDetector. It uses Viola-Jones algorithm
@@ -18,7 +19,9 @@ class ViolaJones(FaceDetector):
         Initializes the classifier with the path to the classifier xml file.
         """
         super().__init__()
-        self.classifier = cv2.CascadeClassifier("data/models/classifiers/haarcascade_frontalface_default.xml")
+        self.classifier = cv2.CascadeClassifier(
+            "data/models/classifiers/haarcascade_frontalface_default.xml"
+        )
 
     def detect_faces(self, frame):
         """

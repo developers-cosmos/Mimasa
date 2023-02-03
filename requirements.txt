@@ -11,6 +11,7 @@ tensorflow==2.11.0
 pylint
 pylint-plugin-utils
 autopep8
+black
 
 # below requirements are for audioseparator/tmp files
 # flerken==0.2.4.post4

@@ -14,7 +14,7 @@ import pydub
 from pydub import AudioSegment
 
 
-def change_language(audio:str, dest_lang:str)->str:
+def change_language(audio: str, dest_lang: str) -> str:
     """
     This function converts the audio from a given language to another language.
 
@@ -26,9 +26,10 @@ def change_language(audio:str, dest_lang:str)->str:
     str: The path of the converted audio file.
     """
     tts = gTTS(audio, lang=dest_lang)
-    with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as f:
+    with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
         tts.save(f.name)
     return tts
+
 
 def translate_audio(audio_file, dest_lang):
     # Load the audio file
@@ -47,11 +48,11 @@ def translate_audio(audio_file, dest_lang):
 
     # Do something with the speech and music segments
     for speech_segment in speech_segments:
-        y_speech = y[speech_segment[0]:speech_segment[1]]
+        y_speech = y[speech_segment[0] : speech_segment[1]]
         # do something with y_speech
 
     for music_segment in music_segments:
-        y_music = y[music_segment[0]:music_segment[1]]
+        y_music = y[music_segment[0] : music_segment[1]]
 
     # Load audio file
     sound = AudioSegment.from_file(audio_file)
@@ -61,7 +62,7 @@ def translate_audio(audio_file, dest_lang):
 
     # Use gTTS to translate speech segment
     tts = gTTS(text=speech, lang=dest_lang)
-    speech_translated = ... # code to get translated speech audio
+    speech_translated = ...  # code to get translated speech audio
 
     # Combine translated speech and music segments
     output = librosa.effects.overlay(speech_translated)
@@ -70,6 +71,7 @@ def translate_audio(audio_file, dest_lang):
     output.export("output.mp3", format="mp3")
     librosa.output.write_wav("overlay.wav", output, sr)
 
+
 def get_landmarks(frame):
     """
     Given an image of a face, detects facial landmarks and returns them as a list of points.
@@ -77,7 +79,9 @@ def get_landmarks(frame):
     :return: list of facial landmarks
     """
     detector = dlib.get_frontal_face_detector()
-    model_file = os.path.join(os.getcwd(), "data", "models", "shape_predictor_68_face_landmarks.dat")
+    model_file = os.path.join(
+        os.getcwd(), "data", "models", "shape_predictor_68_face_landmarks.dat"
+    )
     predictor = dlib.shape_predictor(model_file)
 
     # detect faces
@@ -93,7 +97,8 @@ def get_landmarks(frame):
 
     return landmarks
 
-def get_frames(video_file:str)->list:
+
+def get_frames(video_file: str) -> list:
     """
     This function extracts frames from a given video.
 
@@ -120,7 +125,8 @@ def get_frames(video_file:str)->list:
     input_video.release()
     return frames, fps, frame_width, frame_height
 
-def get_audio_from_video(video_file:str)->str:
+
+def get_audio_from_video(video_file: str) -> str:
     """
     This function extracts audio from a given video file.
 
@@ -145,6 +151,7 @@ def get_audio_from_video(video_file:str)->str:
     audio.write_audiofile(dest_path)
     return dest_path
 
+
 def overlay_audio_on_video(audio_file, video_file):
     """
     This function overlays the audio from audio_file onto the video in video_file.
@@ -168,6 +175,7 @@ def overlay_audio_on_video(audio_file, video_file):
     output_video_path = os.path.join(os.getcwd(), "data", "videos", "output2.mp4")
     final_video.write_videofile(output_video_path)
 
+
 # Open the input video file
 input_video_path = os.path.join(os.getcwd(), "data", "videos", "input.mp4")
 
@@ -175,8 +183,8 @@ input_video_path = os.path.join(os.getcwd(), "data", "videos", "input.mp4")
 audio = get_audio_from_video(input_video_path)
 
 # Change the language of the audio
-src_lang = "en" # source language
-dest_lang = "te-IN" # destination language, hi-IN
+src_lang = "en"  # source language
+dest_lang = "te-IN"  # destination language, hi-IN
 changed_audio = change_audio_language(audio, dest_lang)
 
 input_video = cv2.VideoCapture(input_video_path)
@@ -191,7 +199,9 @@ frames, fps, frame_width, frame_height = get_frames(input_video_path)
 
 output_video_path = os.path.join(os.getcwd(), "data", "videos", "output.mp4")
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
-output_video = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
+output_video = cv2.VideoWriter(
+    output_video_path, fourcc, fps, (frame_width, frame_height)
+)
 
 # Map the aligned phoneme representation to the corresponding frames
 # and apply the appropriate facial expressions and mouth movements to each frame

@@ -20,6 +20,8 @@ jobs:
 
     - name: Install dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install sox -y
         pip install -r requirements.txt
 
     - name: Build package

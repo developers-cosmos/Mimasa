@@ -1,16 +1,18 @@
 name: Labeler
-on: [pull_request, issues, issue_comment]
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
 
 jobs:
   label:
-
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      issues: write
-      pull-requests: write
 
     steps:
-    - uses: actions/labeler@v4
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Label PR
+      uses: peter-evans/labeler@v1.6.0
       with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        args: label --config .github/labeler.yml

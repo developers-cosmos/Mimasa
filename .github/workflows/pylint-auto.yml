@@ -29,6 +29,13 @@ jobs:
       run: |
         pylint --rcfile=.pylintrc --exit-zero --persistent=n $(git ls-files '*.py')
 
+    - name: Check if changes are present
+      run: |
+        if [ -z "$(git status --porcelain)" ]; then
+          echo "No changes to commit."
+          exit 0
+        fi
+
     - name: Commit changes
       run: |
         git config --global user.email "action@github.com"
@@ -41,3 +48,26 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref }}
+
+    - name: Comment on Pull Request
+      if: success()
+      uses: actions/github-script@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        script: |
+          const result = await github.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: context.sha,
+          });
+
+          if (result.data.length) {
+            const pullRequest = result.data[0];
+            await github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pullRequest.number,
+              body: 'Linting errors observed and fixed 🎉. Please pull the latest changes!!!',
+            });
+          }

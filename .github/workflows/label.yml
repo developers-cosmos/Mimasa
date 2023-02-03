@@ -2,17 +2,80 @@ name: Labeler
 
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    types: [opened, edited, synchronized]
 
 jobs:
   label:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
     - name: Label PR
-      uses: peter-evans/labeler@v1.6.0
+      uses: actions/labeler@v4
       with:
-        args: label --config .github/labeler.yml
+        labels: |
+          ci/cd: .github/workflows/*
+          release:
+            - branch: ['release/**', 'hotfix/**']
+          docs:
+            - README.md
+            - ./*.md
+            - docs/**
+            - branch: 'docs/'
+            - pr:
+              title:
+                - 'docs:'
+              body:
+                - any: ['document']
+              commits:
+                title:
+                  - 'docs:'
+          test:
+            - tests/**
+            - branch: 'test/'
+            - pr:
+              title:
+                - 'test:'
+              body:
+                - any: ['test']
+              commits:
+                title:
+                  - 'test:'
+          feat:
+            - branch: 'feat/'
+            - pr:
+              title:
+                - 'feat:'
+              body:
+                - any: ['feature']
+              commits:
+                title:
+                  - 'feat:'
+          bug:
+            - branch: ['bug/', 'fix/']
+            - pr:
+              title:
+                - 'bug:'
+              body:
+                - any: ['bug', 'fix']
+              commits:
+                title:
+                  - 'bug:'
+          refactor:
+            - branch: 'chore/'
+            - pr:
+              title:
+                - 'refactor:'
+              body:
+                - any: ['refactor']
+              commits:
+                title:
+                  - 'refactor:'
+          chore:
+            - branch: 'chore/'
+            - pr:
+              title:
+                - 'chore:'
+              body:
+                - any: ['chore']
+              commits:
+                title:
+                  - 'chore:'

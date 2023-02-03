@@ -1,92 +1,67 @@
-ci/cd:
-  - .github/workflows/*
-
+ci/cd: .github/workflows/*
 release:
-  - name: Release
-    branch: ['release/*', 'hotfix/**']
-    labels: [ 'Release' ]
-
+  - branch: ['release/**', 'hotfix/**']
 docs:
-  - name: Documentation
-    files:
-      - README.md
-      - ./*.md
-      - docs/**
-    branch: 'docs/*'
-    pr:
-      title:
-        - 'docs:*'
-      body:
-        - any: [ '*document*' ]
+  - README.md
+  - ./*.md
+  - docs/**
+  - branch: 'docs/'
+  - pr:
+    title:
+      - 'docs:'
+    body:
+      - any: ['document']
     commits:
       title:
-        - 'docs:*'
-    labels: [ 'Documentation' ]
-
+        - 'docs:'
 test:
-  - name: Testing
-    files:
-      - tests/**
-    branch: 'test/*'
-    pr:
-      title:
-        - 'test:*'
-      body:
-        - any: [ '*test*' ]
-          all: [ '*bug*' ]
+  - tests/**
+  - branch: 'test/'
+  - pr:
+    title:
+      - 'test:'
+    body:
+      - any: ['test']
     commits:
       title:
-        - 'test:*'
-    labels: [ 'Testing' ]
-
+        - 'test:'
 feat:
-  - name: Feature
-    branch: 'feat/*'
-    pr:
-      title:
-        - 'feat:*'
-      body:
-        - any: [ 'feature' ]
+  - branch: 'feat/'
+  - pr:
+    title:
+      - 'feat:'
+    body:
+      - any: ['feature']
     commits:
       title:
-        - 'feat:*'
-    labels: [ 'Feature' ]
-
+        - 'feat:'
 bug:
-  - name: Bug Fix
-    branch: ['bug/*', 'fix/*']
-    pr:
-      title:
-        - 'bug:*'
-      body:
-        - any: [ 'bug', 'fix' ]
+  - branch: ['bug/', 'fix/']
+  - pr:
+    title:
+      - 'bug:'
+    body:
+      - any: ['bug', 'fix']
     commits:
       title:
-        - 'bug:*'
-    labels: [ 'Bug Fix' ]
-
+        - 'bug:'
 refactor:
-  - name: Refactor
-    branch: 'chore/'
-    pr:
-      title:
-        - 'refactor:*'
-      body:
-        - any: [ 'refactor' ]
+  - branch: 'chore/'
+  - pr:
+    title:
+      - 'refactor:'
+    body:
+      - any: ['refactor']
     commits:
       title:
-        - 'refactor:*'
-    labels: [ 'Refactor' ]
-
+        - 'refactor:'
 chore:
-  - name: Chore
-    branch: 'chore/*'
-    pr:
-      title:
-        - 'chore:*'
-      body:
-        - any: [ 'chore' ]
+  - branch: 'chore/'
+  - pr:
+    title:
+      - 'chore:'
+    body:
+      - any: ['chore']
     commits:
       title:
-        - 'chore:*'
-    labels: [ 'Chore' ]
+        - 'chore:'

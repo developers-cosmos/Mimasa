@@ -1,0 +1,40 @@
+name: Fix Pylint Errors with Black
+
+on: [push]
+
+jobs:
+  fix_pylint_errors:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        pip install black pylint
+
+    - name: Run Black
+      run: |
+        black .
+
+    - name: Check for Pylint errors
+      run: |
+        pylint .
+
+    - name: Commit changes
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git add .
+        git commit -m "Fix Pylint errors with Black"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}

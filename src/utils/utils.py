@@ -10,7 +10,10 @@ from src.common.config import Config
 from src.common.video import Video
 from src.common.exceptions import FaceDetectionError
 
-logging.basicConfig(level=Config.LOG_LEVEL, format='%(asctime)s [%(levelname)s]: %(message)s')
+logging.basicConfig(
+    level=Config.LOG_LEVEL, format="%(asctime)s [%(levelname)s]: %(message)s"
+)
+
 
 def get_current_time() -> str:
     """Returns the current time"""
@@ -21,6 +24,7 @@ def get_current_time() -> str:
     # format the time as a string
     time_str = current_time.strftime("%Y-%m-%d_%H-%M-%S")
     return time_str
+
 
 def detect_faces_in_realtime(detector, video: Video):
     """
@@ -38,8 +42,15 @@ def detect_faces_in_realtime(detector, video: Video):
     video_input_filename = video.get_filename()
     print(type(video_input_filename))
 
-    out_filename = "FaceDetector".lower() + "_" + Config.VIDEO_DETECTOR.lower() + "_" + get_current_time() \
-         + "." + Config.VIDEO_DEFAULT_FORMAT
+    out_filename = (
+        "FaceDetector".lower()
+        + "_"
+        + Config.VIDEO_DETECTOR.lower()
+        + "_"
+        + get_current_time()
+        + "."
+        + Config.VIDEO_DEFAULT_FORMAT
+    )
     video_output_filename = Config.VIDEO_OUTPUT_PATH / out_filename
 
     logging.info("Filename for input video: %s" % video_input_filename)
@@ -49,7 +60,7 @@ def detect_faces_in_realtime(detector, video: Video):
     write_to_file = os.path.exists(Config.VIDEO_OUTPUT_PATH)
     if write_to_file and os.path.exists(video_input_filename):
         cap = cv2.VideoCapture(str(video_input_filename))
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        fourcc = cv2.VideoWriter_fourcc(*"XVID")
         out = cv2.VideoWriter(str(video_output_filename), fourcc, 20.0, (640, 480))
         logging.debug("Video is taken from input folder")
     else:
@@ -72,18 +83,18 @@ def detect_faces_in_realtime(detector, video: Video):
             if detector.__class__.__name__ == "ViolaJones":
                 x, y, w, h = face
             else:
-                x, y, w, h = face['box']
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+                x, y, w, h = face["box"]
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
         if write_to_file:
             # Write the frame to the output file
             out.write(frame)
         else:
             # Display the frame
-            cv2.imshow('Video', frame)
+            cv2.imshow("Video", frame)
 
             # Exit the loop if the 'q' key is pressed
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
     # Release the video capture and close the window
@@ -91,6 +102,7 @@ def detect_faces_in_realtime(detector, video: Video):
     cv2.destroyAllWindows()
 
     logging.debug("Face Detection is completed successfully")
+
 
 def get_detector(detector_type):
     """
@@ -118,6 +130,7 @@ def get_detector(detector_type):
         # return retina_face.RetinaFace()
     else:
         raise ValueError(f"Invalid detector type: {detector_type}")
+
 
 def get_audio_separator(separator_type: str = None, model_path: str = None):
     """

@@ -34,6 +34,7 @@ init-import=yes
 [SIMILARITIES]
 # Minimum number of similar lines to trigger a message
 min-similarity-lines=4
+ignore-comments=yes
 
 [TYPING]
 # Ignore mixin methods in type checks
@@ -54,10 +55,6 @@ max-args=10
 [EXCEPTIONS]
 # Specify the exceptions to catch in try/except blocks
 exception-msg-template='{module}.{function}: {message}'
-
-[SIMILARITIES]
-# Ignore comments when checking for similarities
-ignore-comments=yes
 
 [CLASSES]
 # Maximum number of methods allowed in a class

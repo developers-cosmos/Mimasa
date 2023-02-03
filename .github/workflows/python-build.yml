@@ -16,15 +16,15 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.10'
+        python-version: ["3.10"]
 
     - name: Install dependencies
       run: |
-        pip install -r mimasa/requirements.txt
+        pip install -r requirements.txt
 
     - name: Build package
       run: |
-        python mimasa/setup.py sdist bdist_wheel
+        python setup.py sdist bdist_wheel
 
     - name: Upload to Github Releases
       uses: actions/upload-artifact@v2

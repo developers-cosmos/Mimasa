@@ -15,10 +15,11 @@ def main():
     """
     Main function
     """
+    # TODO: Face Detection needs to be implemented correctly
     # Face Detection
     video = Video(Config.VIDEO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
     video_detector = utils.get_detector(detector_type=Config.VIDEO_DETECTOR)
-    #utils.detect_faces_in_realtime(detector=video_detector, video=video)
+    utils.detect_faces_in_realtime(detector=video_detector, video=video)
 
     # Audio Separation
     audio = Audio(Config.AUDIO_INPUT_FILENAME, Config.INPUT_LANGUAGE)

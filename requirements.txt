@@ -5,6 +5,8 @@ opencv-python
 mtcnn
 tensorflow
 keras
+librosa
+nussl
 
 # for linting
 pylint

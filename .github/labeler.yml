@@ -1,76 +1,76 @@
 ci/cd:
-  - .github/workflows/*
+- .github/workflows/*
 
 release:
   - branch: ['release/*', 'hotfix/**']
 
 docs:
-  - README.md
-  - ./*.md
-  - docs/**
-  - branch: 'docs/*'
-  - pr:
-      title:
-        - 'docs:*'
-      body:
-        - any: [ '*document*' ]
-  - commits:
-      title:
-        - 'docs:*'
+- README.md
+- ./*.md
+- docs/**
+- branch: 'docs/*'
+- pr:
+    title:
+      - 'docs:*'
+    body:
+      - any: [ '*document*' ]
+- commits:
+    title:
+      - 'docs:*'
 
 test:
-  - tests/**
-  - branch: 'test/*'
-  - pr:
-      title:
-        - 'test:*'
-      body:
-        - any: [ '*test*' ]
-          all: [ '*bug*' ]
-  - commits:
-      title:
-        - 'test:*'
+- tests/**
+- branch: 'test/*'
+- pr:
+    title:
+      - 'test:*'
+    body:
+      - any: [ '*test*' ]
+        all: [ '*bug*' ]
+- commits:
+    title:
+      - 'test:*'
 
 feat:
-  - branch: 'feat/*'
-  - pr:
-      title:
-        - 'feat:*'
-      body:
-        - any: [ 'feature' ]
-  - commits:
-      title:
-        - 'feat:*'
+- branch: 'feat/*'
+- pr:
+    title:
+      - 'feat:*'
+    body:
+      - any: [ 'feature' ]
+- commits:
+    title:
+      - 'feat:*'
 
 bug:
-  - branch: ['bug/*', 'fix/*']
-  - pr:
-      title:
+- branch: ['bug/*', 'fix/*']
+- pr:
+    title:
+    - 'bug:*'
+  body:
+    - any: [ 'bug', 'fix' ]
+- commits:
+    title:
       - 'bug:*'
-    body:
-      - any: [ 'bug', 'fix' ]
-  - commits:
-      title:
-        - 'bug:*'
 
 refactor:
-  - branch: 'chore/'
-  - pr:
-      title:
+- branch: 'chore/'
+- pr:
+    title:
+    - 'refactor:*'
+  body:
+    - any: [ 'refactor' ]
+- commits:
+    title:
       - 'refactor:*'
-    body:
-      - any: [ 'refactor' ]
-  - commits:
-      title:
-        - 'refactor:*'
 
 chore:
-  - branch: 'chore/*'
-  - pr:
-      title:
+- branch: 'chore/*'
+- pr:
+    title:
+    - 'chore:*'
+  body:
+    - any: [ 'chore' ]
+- commits:
+    title:
       - 'chore:*'
-    body:
-      - any: [ 'chore' ]
-  - commits:
-      title:
-        - 'chore:*'

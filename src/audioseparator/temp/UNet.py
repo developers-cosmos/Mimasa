@@ -20,11 +20,14 @@ STFT_WIDTH = int((TARGET_SAMPLING_RATE * DURATION / HOP_LENGTH) + 1)
 K = 2
 BATCH_SIZE = 16
 ENERGY_THRESHOLD = 0
-SOURCES = ['vocals', 'accompaniment']
-SOURCES_SUBSET = ['vocals', 'accompaniment']
+SOURCES = ["vocals", "accompaniment"]
+SOURCES_SUBSET = ["vocals", "accompaniment"]
 AUDIO_BASE_DIR = os.path.join(os.getcwd(), "data", "audios")
 
-weights_path = os.path.join(os.getcwd(), 'data', 'models', 'weights', 'UNet', 'bestcheckpoint_2.pth')
+weights_path = os.path.join(
+    os.getcwd(), "data", "models", "weights", "UNet", "bestcheckpoint_2.pth"
+)
+
 
 def warpgrid(bs, h, w, warp=True):
     # meshgrid
@@ -42,6 +45,7 @@ def warpgrid(bs, h, w, warp=True):
     grid = grid.astype(np.float32)
     return grid
 
+
 class Wrapper(torch.nn.Module):
     def __init__(self, model, main_device="cpu"):
         super(Wrapper, self).__init__()
@@ -49,14 +53,16 @@ class Wrapper(torch.nn.Module):
         self.model = model
         self.main_device = main_device
         self.grid_warp = torch.from_numpy(
-            warpgrid(BATCH_SIZE, 256, STFT_WIDTH, warp=True)).float()
+            warpgrid(BATCH_SIZE, 256, STFT_WIDTH, warp=True)
+        ).float()
 
     def forward(self, x):
         if x.shape[0] == BATCH_SIZE:
             mags = F.grid_sample(x, self.grid_warp)
         else:  # for the last batch, where the number of samples are generally lesser than the batch_size
             custom_grid_warp = torch.from_numpy(
-                warpgrid(x.shape[0], 256, STFT_WIDTH, warp=True)).float()
+                warpgrid(x.shape[0], 256, STFT_WIDTH, warp=True)
+            ).float()
             mags = F.grid_sample(x, custom_grid_warp)
 
         # gt_masks = torch.div(mags[:, :-1], mags[:, -1].unsqueeze(1).expand(x.shape[0], self.L, *mags.shape[2:]))
@@ -71,9 +77,16 @@ class Wrapper(torch.nn.Module):
         pred_mags_sq = pred_masks * mag_mix_sq
         # gt_mags_sq = gt_masks * mag_mix_sq
 
-        network_output = [None, pred_mags_sq, gt_mags, mix_mag, None,
-                          pred_masks]  # BxKx256x256, BxKx256x256, BxKx512x256, Bx1x512x256, BxKx256x256, BxKx256x256
+        network_output = [
+            None,
+            pred_mags_sq,
+            gt_mags,
+            mix_mag,
+            None,
+            pred_masks,
+        ]  # BxKx256x256, BxKx256x256, BxKx512x256, Bx1x512x256, BxKx256x256, BxKx256x256
         return network_output
+
 
 class AudioUNet(torch.nn.Module):
     def __init__(self):
@@ -83,20 +96,22 @@ class AudioUNet(torch.nn.Module):
     def forward(self, x):
         return self.unet(x)
 
+
 def load_model(weights_path):
     """Load the audio separation model"""
     logging.info("Loading the audio separation model")
     model = AudioUNet()
-    state_dict = torch.load(weights_path, map_location=torch.device('cpu'))
-    state_dict = state_dict['state_dict']
+    state_dict = torch.load(weights_path, map_location=torch.device("cpu"))
+    state_dict = state_dict["state_dict"]
     new_state_dict = OrderedDict()
     for k, v in state_dict.items():
-        name = k.replace('model.', 'unet.')
+        name = k.replace("model.", "unet.")
         new_state_dict[name] = v
     model.load_state_dict(new_state_dict, strict=True)
     model = Wrapper(model)
     logging.info("Model Loaded Successfully")
     return model
+
 
 def istft_reconstruction(mag, phase, hop_length=256):
     """
@@ -114,10 +129,17 @@ def istft_reconstruction(mag, phase, hop_length=256):
     spec = mag.astype(complex) * np.exp(1j * phase)
     wav = librosa.istft(spec, hop_length=hop_length)
     logging.info("ISTFT reconstruction completed")
-    return np.clip(wav, -1., 1.)
+    return np.clip(wav, -1.0, 1.0)
 
-def preprocess_audio(audio_file, original_sr=ORIGINAL_SAMPLING_RATE, target_sr=TARGET_SAMPLING_RATE,
-                     duration=DURATION, nfft=NFFT, hop_length=HOP_LENGTH):
+
+def preprocess_audio(
+    audio_file,
+    original_sr=ORIGINAL_SAMPLING_RATE,
+    target_sr=TARGET_SAMPLING_RATE,
+    duration=DURATION,
+    nfft=NFFT,
+    hop_length=HOP_LENGTH,
+):
     """Load, Downsample and extract STFT features from the audio file"""
     logging.info("Preprocessing audio")
     audio, sr = librosa.load(audio_file, sr=original_sr)
@@ -125,39 +147,56 @@ def preprocess_audio(audio_file, original_sr=ORIGINAL_SAMPLING_RATE, target_sr=T
     logging.info("Audio processing is completed")
     return audio
 
+
 def _stft(sources):
     s = torch.from_numpy(sources).float()
     shape = s.size()
     with torch.no_grad():
-        stft_output = torch.stft(s.view(-1, shape[-1]),
-                                 n_fft=NFFT,
-                                 hop_length=HOP_LENGTH,
-                                 window=torch.hann_window(NFFT))
-        stft = stft_output.view(*shape[:-1], *stft_output.size()[1:3], 2).data.cpu().numpy()
+        stft_output = torch.stft(
+            s.view(-1, shape[-1]),
+            n_fft=NFFT,
+            hop_length=HOP_LENGTH,
+            window=torch.hann_window(NFFT),
+        )
+        stft = (
+            stft_output.view(*shape[:-1], *stft_output.size()[1:3], 2)
+            .data.cpu()
+            .numpy()
+        )
     stft = stft[..., 0] + stft[..., 1] * 1j
     return stft
 
+
 def create_folder(path):
     if not os.path.exists(path):
-        os.umask(0)  # To mask the permission restrictions on new files/directories being create
+        os.umask(
+            0
+        )  # To mask the permission restrictions on new files/directories being create
         os.makedirs(path, 0o755)  # setting permissions for the folder
+
 
 def get_signal_energy(signal):
     return sum(abs(signal) ** 2)
 
+
 def save_chunks(chunk_id, subset_type, track_name, sources, energy_profile):
-    save_folder_path = os.path.join(AUDIO_BASE_DIR, subset_type, track_name, str(chunk_id))
+    save_folder_path = os.path.join(
+        AUDIO_BASE_DIR, subset_type, track_name, str(chunk_id)
+    )
     create_folder(save_folder_path)
-    true_label = np.zeros(len(SOURCES) + 1, dtype='int')
-    for source_id, source in enumerate([*SOURCES, 'MIX']):
+    true_label = np.zeros(len(SOURCES) + 1, dtype="int")
+    for source_id, source in enumerate([*SOURCES, "MIX"]):
         signal = sources[source_id, chunk_id]
         signal_energy = get_signal_energy(signal)
         if int(signal_energy) > ENERGY_THRESHOLD:
             true_label[source_id] = 1
-        save_path = os.path.join(save_folder_path, source + '_' + str(int(round(signal_energy))) + '.wav')
+        save_path = os.path.join(
+            save_folder_path, source + "_" + str(int(round(signal_energy))) + ".wav"
+        )
         energy_profile[source_id][os.path.dirname(save_path)] = signal_energy
         librosa.output.write_wav(save_path, signal, TARGET_SAMPLING_RATE)
     return energy_profile, true_label[:-1]
+
 
 def get_stft(audio, NFFT=1022, HOP_LENGTH=256):
     """
@@ -208,6 +247,7 @@ def get_stft(audio, NFFT=1022, HOP_LENGTH=256):
     logging.info("Fourier transform on audio is completed")
     return stft
 
+
 def source_separation(model, stft, HOP_LENGTH=256, TARGET_SAMPLING_RATE=10880):
     """
     Perform source separation and return the speech and music signals
@@ -238,15 +278,21 @@ def source_separation(model, stft, HOP_LENGTH=256, TARGET_SAMPLING_RATE=10880):
 
     print(pred_masks)
     pred_audio = torch.from_numpy(
-                        istft_reconstruction(pred_masks[0], np.zeros_like(pred_masks[0]), HOP_LENGTH))
+        istft_reconstruction(pred_masks[0], np.zeros_like(pred_masks[0]), HOP_LENGTH)
+    )
 
     pred_audio = pred_audio.detach().numpy()
 
-    sf.write(os.path.join(os.getcwd(), "data", "videos", "speech.wav"), pred_audio[0], samplerate=TARGET_SAMPLING_RATE)
+    sf.write(
+        os.path.join(os.getcwd(), "data", "videos", "speech.wav"),
+        pred_audio[0],
+        samplerate=TARGET_SAMPLING_RATE,
+    )
 
     input()
     logging.info("Returning speech signal and music signal")
     return
+
 
 def main():
     """
@@ -262,6 +308,7 @@ def main():
     source_separation(model, stft)
     # sf.write(os.path.join(os.getcwd(), "data", "videos", "speech.wav"), speech_signal.detach().numpy(), samplerate=TARGET_SAMPLING_RATE)
     # sf.write(os.path.join(os.getcwd(), "data", "videos", "music.wav"), music_signal.detach().numpy(), samplerate=TARGET_SAMPLING_RATE)
+
 
 if __name__ == "__main__":
     main()

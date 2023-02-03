@@ -3,6 +3,7 @@
 Video Class
 """
 
+
 class Video:
     """
     Class representing a video.

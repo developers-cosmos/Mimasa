@@ -7,17 +7,20 @@ of the FaceDetector class.
 from src.facedetector.face_detector import FaceDetector
 from src.common.libraries import *
 
+
 class SSD(FaceDetector):
     """
     This class is responsible for detecting faces in an image or video frame using SSD Algorithm.
     """
+
     def init(self):
         """
         Initialize the class by loading the pre-trained model
         """
         super().__init__()
         self.detector = cv2.dnn.readNetFromCaffe(
-            "path/to/model.prototxt", "path/to/weights.caffemodel")
+            "path/to/model.prototxt", "path/to/weights.caffemodel"
+        )
 
     def detect_faces(self, frame):
         """
@@ -26,8 +29,7 @@ class SSD(FaceDetector):
         :return: List of tuples containing the coordinates of the detected faces in the format (x, y, width, height)
         """
         (h, w) = frame.shape[:2]
-        blob = cv2.dnn.blobFromImage(
-            frame, 1.0, (300, 300), (104.0, 177.0, 123.0))
+        blob = cv2.dnn.blobFromImage(frame, 1.0, (300, 300), (104.0, 177.0, 123.0))
         self.detector.setInput(blob)
         detections = self.detector.forward()
         faces = []
@@ -36,4 +38,4 @@ class SSD(FaceDetector):
             if confidence > 0.5:
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 (startX, startY, endX, endY) = box.astype("int")
-                faces.append((startX, startY, endX-startX, endY-startY))
+                faces.append((startX, startY, endX - startX, endY - startY))

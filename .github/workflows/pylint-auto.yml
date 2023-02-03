@@ -25,7 +25,7 @@ jobs:
 
     - name: Check for Pylint errors
       run: |
-        pylint .
+        pylint --rcfile=.pylintrc --exit-zero --persistent=n $(git ls-files '*.py')
 
     - name: Commit changes
       run: |

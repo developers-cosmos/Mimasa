@@ -7,10 +7,12 @@ from mtcnn import MTCNN
 from src.facedetector.face_detector import FaceDetector
 from src.common.libraries import *
 
+
 class MTCNNDetector(FaceDetector):
     """
     This class is responsible for detecting faces in an image or video frame using MTCNN Algorithm.
     """
+
     def __init__(self):
         """
         Initialize the class and call the parent class constructor

@@ -70,7 +70,8 @@
 
 import subprocess
 
-def change_audio_language(audio_file:str, dest_language:str):
+
+def change_audio_language(audio_file: str, dest_language: str):
     """
     This function changes the language of an audio file using eSpeak.
 

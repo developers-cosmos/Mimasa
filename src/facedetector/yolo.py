@@ -12,6 +12,7 @@ It takes in 3 parameters during initialization:
 from src.facedetector.face_detector import FaceDetector
 from src.common.libraries import *
 
+
 class YOLO(FaceDetector):
     """
     Initializes the YOLO object detector and sets the necessary attributes.
@@ -21,6 +22,7 @@ class YOLO(FaceDetector):
     threshold (float): The threshold for non-maxima suppression to suppress weak,
                         overlapping bounding boxes.
     """
+
     def __init__(self, model_path, confidence, threshold):
         super().__init__()
         self.net = cv2.dnn.readNetFromDarknet(model_path, "cfg/yolov3.cfg")
@@ -29,22 +31,22 @@ class YOLO(FaceDetector):
 
     def detect_faces(self, frame):
         """
-    Detects faces in a given frame using the YOLO object detector.
-    Parameters:
-        frame (numpy.ndarray): The input frame.
-    Returns:
-        numpy.ndarray: The input frame with rectangles drawn around the detected faces, and labels and confidence scores added.
-    """
+        Detects faces in a given frame using the YOLO object detector.
+        Parameters:
+            frame (numpy.ndarray): The input frame.
+        Returns:
+            numpy.ndarray: The input frame with rectangles drawn around the detected faces, and labels and confidence scores added.
+        """
         (H, W) = frame.shape[:2]
 
         # construct a blob from the input frame and then perform a forward
         # pass of the YOLO object detector, giving us our bounding boxes and
         # associated probabilities
         blob = cv2.dnn.blobFromImage(
-            frame, 1 / 255.0, (416, 16), swapRB=True, crop=False)
+            frame, 1 / 255.0, (416, 16), swapRB=True, crop=False
+        )
         self.net.setInput(blob)
-        layer_outputs = self.net.forward(
-            self.net.getUnconnectedOutLayersNames())
+        layer_outputs = self.net.forward(self.net.getUnconnectedOutLayersNames())
 
         boxes = []
         confidences = []
@@ -77,8 +79,7 @@ class YOLO(FaceDetector):
 
         # apply non-maxima suppression to suppress weak, overlapping bounding
         # boxes
-        idxs = cv2.dnn.NMSBoxes(
-            boxes, confidences, self.confidence, self.threshold)
+        idxs = cv2.dnn.NMSBoxes(boxes, confidences, self.confidence, self.threshold)
 
         # ensure at least one detection exists
         if len(idxs) > 0:
@@ -94,9 +95,23 @@ class YOLO(FaceDetector):
                 # add labels and confidence score
                 label = f"Face: {classIDs[i]}"
                 confidence_score = f"Confidence: {round(confidences[i], 2) * 100}%"
-                cv2.putText(frame, label, (x, y - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                cv2.putText(frame, confidence_score, (x, y + h + 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                cv2.putText(
+                    frame,
+                    label,
+                    (x, y - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 255, 0),
+                    2,
+                )
+                cv2.putText(
+                    frame,
+                    confidence_score,
+                    (x, y + h + 30),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 255, 0),
+                    2,
+                )
 
         return frame

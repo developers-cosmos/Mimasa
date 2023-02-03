@@ -5,6 +5,7 @@ AudioSeparator Interface
 
 from src.common.audio import Audio
 
+
 class AudioSeparator:
     """
     AudioSeparator interface with following functionalities:
@@ -12,6 +13,7 @@ class AudioSeparator:
         getVocals(): Audio
         getMusic(): Audio
     """
+
     def separate_vocals_and_music(self, audio: Audio):
         """
         Separate vocals and music from the given audio

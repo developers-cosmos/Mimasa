@@ -24,28 +24,25 @@ print("Root mean square energy: {:.4f}".format(audio_signal.rms().mean()))
 #     'mask-inference-wsj2mix-model-v1.pth')
 
 # Define configuration
-stft_params = {
-    'fft_size': 2048,
-    'hop_size': 512,
-    'win_size': 2048
-}
+stft_params = {"fft_size": 2048, "hop_size": 512, "win_size": 2048}
 
 config = {
     "stft_params": stft_params,
     "sample_rate": 44100,
 }
 
-class MyHPSS(nussl.separation.base.MaskSeparationBase):
 
-    def __init__(self, audio_signal, kernel_size=31, mask_type='soft',
-                 mask_threshold=0.5):
+class MyHPSS(nussl.separation.base.MaskSeparationBase):
+    def __init__(
+        self, audio_signal, kernel_size=31, mask_type="soft", mask_threshold=0.5
+    ):
         """Setup code goes here."""
 
         # The super class will save all of these attributes for us.
         super().__init__(
             input_audio_signal=audio_signal,
             mask_type=mask_type,
-            mask_threshold=mask_threshold
+            mask_threshold=mask_threshold,
         )
 
         # Save the kernel size.
@@ -63,7 +60,8 @@ class MyHPSS(nussl.separation.base.MaskSeparationBase):
         for ch in range(self.audio_signal.num_channels):
             # apply mask
             harmonic_mask, percussive_mask = librosa.decompose.hpss(
-                self.stft[:, :, ch], kernel_size=self.kernel_size, mask=True)
+                self.stft[:, :, ch], kernel_size=self.kernel_size, mask=True
+            )
             harmonic_masks.append(harmonic_mask)
             percussive_masks.append(percussive_mask)
 
@@ -76,7 +74,7 @@ class MyHPSS(nussl.separation.base.MaskSeparationBase):
         self.result_masks = []
         for i in range(_masks.shape[-1]):
             mask_data = _masks[..., i]
-            if self.mask_type == self.MASKS['binary']:
+            if self.mask_type == self.MASKS["binary"]:
                 mask_data = _masks[..., i] == np.max(_masks, axis=-1)
             mask = self.mask_type(mask_data)
             self.result_masks.append(mask)

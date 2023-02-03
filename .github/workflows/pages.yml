@@ -18,6 +18,10 @@ jobs:
       with:
         python-version: 3.x
 
+    - name: Install dependencies
+      run: |
+        pip install markdown2html
+
     - name: Build site
       run: |
         mkdir public

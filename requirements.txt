@@ -5,7 +5,7 @@ pydub==0.25.1
 setuptools==65.6.3
 torch==1.13.1
 nussl==1.1.9
-tensorflow==2.11.0
+tensorflow
 
 # for linting
 pylint

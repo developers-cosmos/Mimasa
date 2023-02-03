@@ -20,4 +20,4 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint --rcfile=.pylintrc --exit-zero --persistent=n $(git ls-files '*.py') --reports=n --auto-correct
+        pylint --rcfile=.pylintrc --exit-zero --persistent=n $(git ls-files '*.py')

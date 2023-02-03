@@ -32,5 +32,10 @@ jobs:
     - name: Upload to Github Releases
       uses: actions/upload-artifact@v2
       with:
-        name: dist
+        name: miamsa
         path: dist
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: mimasa

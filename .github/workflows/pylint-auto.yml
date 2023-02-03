@@ -41,7 +41,11 @@ jobs:
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git add .
-        git diff-index --quiet HEAD || git commit -m "Fix Pylint errors with Black"
+        if [ -z "$(git diff-index --cached --quiet HEAD --)" ]; then
+          echo "No changes to commit."
+          exit 0
+        fi
+        git commit -m "Fix Pylint errors with Black"
 
     - name: Push changes
       uses: ad-m/github-push-action@master

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   build:
@@ -30,12 +31,14 @@ jobs:
         python setup.py sdist bdist_wheel
 
     - name: Upload to Github Releases
+      if: ${{ github.ref == 'refs/heads/main' }}
       uses: actions/upload-artifact@v2
       with:
-        name: miamsa
+        name: mimasa
         path: dist
 
     - name: Download artifacts
+      if: ${{ github.ref == 'refs/heads/main' }}
       uses: actions/download-artifact@v2
       with:
         name: mimasa

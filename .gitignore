@@ -360,3 +360,5 @@ data/dlib/**
 Mimasa.egg-info/**
 build/**
 dist/**
+
+release_notes.txt

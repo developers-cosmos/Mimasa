@@ -6,26 +6,63 @@ on:
       - "v*"
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Get Tag
-      id: tag
-      run: echo "::set-output name=tag::$(echo $GITHUB_REF | cut -d '/' -f 3)"
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.x
+
+    - name: Get tag
+      run: |
+        tag=$(echo "v$(echo $GITHUB_REF | cut -d '/' -f 3 | cut -d 'v' -f 2)")
+        echo "TAG=$(echo $tag)" >> $GITHUB_ENV
 
     - name: Get Changelog
-      id: changelog
-      run: echo "::set-output name=changelog::$(cat CHANGELOG.md)"
+      run: |
+        python get_release_notes.py ${{ env.TAG }}
 
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install libsox-dev
+        sudo apt-get install sox -y
+        pip install -r requirements.txt
+
+    - name: Build package
+      run: |
+        python setup.py sdist bdist_wheel
+
+    - name: Archive artifacts
+      run: zip -r mimasa.zip dist
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Create Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.tag.outputs.tag }}
-        release_name: "Release ${{ steps.tag.outputs.tag }}"
-        body: ${{ steps.changelog.outputs.changelog }}
+        tag_name: ${{ steps.build.outputs.TAG }}
+        release_name: "Release ${{ steps.build.outputs.TAG }}"
+        body: |
+          $(cat release_notes.txt)
+        draft: false
+        prerelease: false
+
+    - name: Upload artifacts
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: mimasa.zip
+        asset_name: mimasa.zip
+        asset_content_type: application/zip

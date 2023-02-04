@@ -63,22 +63,22 @@ jobs:
         git add .
         if [ -z "$(git status --porcelain)" ]; then
           echo "No changes to commit."
-          FLAG="true"
-          echo "FLAG=$FLAG" >> GITHUB_ENV
+          NO_COMMIT="true"
+          echo "NO_COMMIT=$NO_COMMIT" >> GITHUB_ENV
           exit 0
         fi
         git commit -m "Fix Pylint errors with Black"
 
     - name: Push changes
-      if: ${{ steps.commit_changes.outputs.FLAG == 'true' }}
+      id: push_changes
+      if: ${{ steps.commit_changes.outputs.NO_COMMIT != 'true' }}
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ env.BRANCH_NAME }}
 
     - name: Comment on Pull Request
-      if: success()
-      when: github.event_name == 'pull_request'
+      if: steps.push_changes.outcome != 'skipped' && [ "${{ github.event_name }}" == "pull_request" ]
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

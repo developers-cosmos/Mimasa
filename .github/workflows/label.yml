@@ -43,11 +43,21 @@ jobs:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         sync-labels: true
 
+    - name: Set branch name
+      run: |
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          branch_name="${{ github.event.pull_request.head.ref }}"
+        else
+          branch_name="${{ github.ref }}"
+        fi
+        echo "BRANCH_NAME=${branch_name}" >> $GITHUB_ENV
+
     - name: Add label based on branch or PR title
       if: github.event.pull_request
       id: add_labels
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_HEAD_REF: ${{ env.BRANCH_NAME }}
         GITHUB_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         GITHUB_PULL_REQUEST_BODY: ${{ github.event.pull_request.body }}
         GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}

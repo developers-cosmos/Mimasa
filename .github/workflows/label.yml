@@ -30,7 +30,7 @@ jobs:
       env:
         LABELS: ${{ steps.add_labels.outputs.labels }}
       run: |
-        echo "BRANCH_NAME=${{ GITHUB_HEAD_REF }}" >> $GITHUB_ENV
+        echo "BRANCH_NAME=${{ env.GITHUB_HEAD_REF }}" >> $GITHUB_ENV
         echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
         python .github/add_labels.py
         labels=$(cat labels.txt)

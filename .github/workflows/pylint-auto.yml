@@ -57,6 +57,7 @@ jobs:
           exit 0
         fi
         git commit -m "Fix Pylint errors with Black"
+        exit 1
 
     - name: Push changes
       if: steps.commit_changes.outputs.exit_code != 0

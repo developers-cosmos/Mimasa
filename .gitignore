@@ -364,4 +364,8 @@ dist/**
 release_notes.txt
 release_notes.md
 
-_pylint_reports
+_pylint_reports/**
+pylint_reports
+mimasa-v*
+Mimasa-*
+mimasa-*

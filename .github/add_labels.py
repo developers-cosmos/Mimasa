@@ -14,9 +14,15 @@ REPO = os.getenv("GITHUB_REPOSITORY") or os.getenv("REPO")
 PULL_REQUEST_NUMBER = os.getenv("GITHUB_PULL_REQUEST_NUMBER") or os.getenv("PR_NUMBER")
 PR_TITLE = PR_TITLE.lower()
 
+
 def check_environment():
-    health_check = PR_HEAD_REF is not None and PR_TITLE is not None and OWNER is not None \
-        and REPO is not None and PULL_REQUEST_NUMBER is not None
+    health_check = (
+        PR_HEAD_REF is not None
+        and PR_TITLE is not None
+        and OWNER is not None
+        and REPO is not None
+        and PULL_REQUEST_NUMBER is not None
+    )
     return health_check
 
 

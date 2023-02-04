@@ -26,7 +26,8 @@ def main():
             matching_labels += label + " "
 
     if len(matching_labels) > 0:
-        os['LABELS'] = matching_labels[:-2]
+        matching_labels = matching_labels[:-2]
+        os["LABELS"] = matching_labels
         sys.exit(0)
 
     sys.exit(1)

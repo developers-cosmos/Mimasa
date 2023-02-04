@@ -27,7 +27,7 @@ jobs:
 
     - name: Run Black
       run: |
-        black . --config .pylintrc
+        black .
 
     - name: Check for Pylint errors
       run: |

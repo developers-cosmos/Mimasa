@@ -1,6 +1,10 @@
 name: Labeler
 
-on: [pull_request]
+on:
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, edited, synchronize]
 
 jobs:
   add-label:
@@ -19,28 +23,52 @@ jobs:
       with:
         python-version: 3.10.x
 
+    - name: Install dependencies
+      run: |
+        pip install requests
+
     - name: Add label based on modified paths
       uses: actions/labeler@v4
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         sync-labels: true
 
-    - name: Add label based on branch or PR title
+    - name: Find suitable labels for PR
+      if: github.event.pull_request
       id: add_labels
       run: |
         echo "BRANCH_NAME=$(echo "${{ github.ref  }}" | sed "s/refs\/heads\///")" >> $GITHUB_ENV
         echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
         python .github/add_labels.py
+        echo "LABELS=$(cat labels.txt | awk '{printf "%s\\n", $0}')" >> $GITHUB_ENV
         exit_code=$?
 
-    - name: Add label to PR
-      if: steps.add_labels.outputs.exit_code == 0
-      uses: actions/github-script@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Add label based on branch or PR title
+      if: steps.add_labels.outputs.exit_code == 0 && github.event.pull_request
+      uses: actions-ecosystem/action-add-labels@v1
       with:
-        script: |
-          var fs = require('fs');
-          const fileContents = fs.readFileSync('labels.txt', 'utf-8');
-          const labels = fileContents.split('\n');
-          github.issues.addLabels({ issue_number: context.issue.number, labels: labels })
+        labels: ${{ env.LABELS }}
+
+    - name: Add labels for issues
+      if: steps.add_labels.outputs.exit_code == 0 && github.event.issue
+      uses: actions-ecosystem/action-add-labels@v1
+      with:
+        labels: |
+          ${{
+            if contains(toJson(github.event.issue.title), 'bug') ||
+               contains(toJson(github.event.issue.body), 'bug')
+            then 'bug,'
+            else ''
+          }}
+          ${{
+            if contains(toJson(github.event.issue.title), 'enhancement') ||
+               contains(toJson(github.event.issue.body), 'enhancement')
+            then 'enhancement,'
+            else ''
+          }}
+          ${{
+            if contains(toJson(github.event.issue.title), 'question') ||
+               contains(toJson(github.event.issue.body), 'question')
+            then 'question'
+            else ''
+          }}

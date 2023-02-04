@@ -23,12 +23,12 @@ def main():
         branch_format = branch_formats[i] + "/"
 
         if pr_head_ref.startswith(branch_format) or label in pr_title:
-            matching_labels += label + " "
+            matching_labels.append(label)
 
     if len(matching_labels) > 0:
-        matching_labels = matching_labels[:-2]
+        result = '\n'.join(matching_labels)
         with open("labels.txt", "w") as f:
-            f.write(matching_labels)
+            f.write(result)
         sys.exit(0)
 
     sys.exit(1)

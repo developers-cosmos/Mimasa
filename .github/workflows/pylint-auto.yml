@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        ref: ${{ github.ref }}
+        ref: ${{ github.head.ref }}
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -63,7 +63,7 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+        branch: ${{ github.head.ref }}
 
     - name: Comment on Pull Request
       if: success() && steps.commit_changes.outputs.stdout != 'No changes to commit.' && [ "${{ github.event_name }}" == "pull_request" ]

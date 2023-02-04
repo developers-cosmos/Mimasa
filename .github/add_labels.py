@@ -30,11 +30,14 @@ def add_labels(access_token, labels_to_add):
     headers = {
         "Authorization": f"Token {access_token}",
         "Accept": "application/vnd.github+json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/vnd.github+json"
     }
 
     # Make the API request to add labels to the pull request
-    response = requests.post(url, headers=headers, json=labels_to_add)
+    labels_data = {
+        "labels": labels_to_add
+    }
+    response = requests.post(url, headers=headers, json=labels_data)
 
     # Check if the request was successful
     if response.status_code == 200:

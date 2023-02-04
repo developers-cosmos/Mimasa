@@ -26,7 +26,7 @@ jobs:
         sync-labels: true
 
     - name: Add label based on branch or PR title
-      id: add_label
+      id: add_labels
       run: |
         echo "BRANCH_NAME=${{ env.GITHUB_HEAD_REF }}" >> $GITHUB_ENV
         echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
@@ -34,11 +34,11 @@ jobs:
         exit_code=$?
 
     - name: Add label to PR
-      if: steps.add_label.outputs.exit_code == 0
+      if: steps.add_labels.outputs.exit_code == 0
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        LABELS: ${{ env.LABELS }}
+        LABELS: ${{ steps.add_labels.outputs.labels }}
       with:
         script: |
           const labelsString = ${{ env.LABELS }}

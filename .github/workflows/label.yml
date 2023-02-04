@@ -23,8 +23,8 @@ jobs:
     - name: Get config data
       id: config
       run: |
-        echo "::set-env name=LABELS::$(cat .github/labels_config.txt | awk '{print $1}')"
-        echo "::set-env name=BRANCH_FORMATS::$(cat .github/labels_config.txt | awk '{print $2}')"
+        echo "LABELS=$(cat .github/labels_config.txt | awk '{print $1}')" >> $GITHUB_ENV
+        echo "BRANCH_FORMATS=$(cat .github/labels_config.txt | awk '{print $2}')" >> $GITHUB_ENV
 
     - name: Add label based on branch or PR title
       id: add_label

@@ -27,19 +27,18 @@ jobs:
         echo "::set-env name=BRANCH_FORMATS::$(cat .github/labels_config.txt | awk '{print $2}')"
 
     - name: Add label based on branch or PR title
-      uses: actions/bin/filter@v1
       id: add_label
-      with:
-        args: |
-          LABELS=(${{ env.LABELS }})
-          BRANCH_FORMATS=(${{ env.BRANCH_FORMATS }})
-          for i in "${!LABELS[@]}"; do
-            if [[ "${{ github.event.pull_request.head.ref }}" == "${BRANCH_FORMATS[$i]}*" ]] ||
-               [[ "$(echo "${{ github.event.pull_request.title }}" | tr '[:upper:]' '[:lower:]')" == *"$(echo "${LABELS[$i]}" | tr '[:upper:]' '[:lower:]')"* ]]; then
-              echo "${LABELS[$i]}"
-              break
-            fi
-          done
+      run: |
+        LABELS=(${{ env.LABELS }})
+        BRANCH_FORMATS=(${{ env.BRANCH_FORMATS }})
+        for i in "${!LABELS[@]}"; do
+          if [[ "${{ github.event.pull_request.head.ref }}" == "${BRANCH_FORMATS[$i]}*" ]] ||
+              [[ "$(echo "${{ github.event.pull_request.title }}" | tr '[:upper:]' '[:lower:]')" == *"$(echo "${LABELS[$i]}" | tr '[:upper:]' '[:lower:]')"* ]]; then
+            echo "${LABELS[$i]}"
+            exit 0
+          fi
+        done
+        exit 1
 
     - name: Add label to PR
       if: steps.add_label.outputs.exit_code == 0

@@ -23,14 +23,14 @@ jobs:
     - name: Get config data
       id: config
       run: |
-        echo "LABELS=$(cat .github/labels_config.txt | awk '{print $1}')" >> $GITHUB_ENV
-        echo "BRANCH_FORMATS=$(cat .github/labels_config.txt | awk '{print $2}')" >> $GITHUB_ENV
+        echo "LABELS=($(cat .github/labels_config.txt | awk '{print $1}'))" >> $GITHUB_ENV
+        echo "BRANCH_FORMATS=($(cat .github/labels_config.txt | awk '{print $2}'))" >> $GITHUB_ENV
 
     - name: Add label based on branch or PR title
       id: add_label
       run: |
-        LABELS=(${{ env.LABELS }})
-        BRANCH_FORMATS=(${{ env.BRANCH_FORMATS }})
+        LABELS=${{ env.LABELS }}
+        BRANCH_FORMATS=${{ env.BRANCH_FORMATS }}
         for i in "${!LABELS[@]}"; do
           if [[ "${{ github.event.pull_request.head.ref }}" == "${BRANCH_FORMATS[$i]}*" ]] ||
               [[ "$(echo "${{ github.event.pull_request.title }}" | tr '[:upper:]' '[:lower:]')" == *"$(echo "${LABELS[$i]}" | tr '[:upper:]' '[:lower:]')"* ]]; then

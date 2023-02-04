@@ -55,8 +55,7 @@ jobs:
         echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
         echo "REPO=${{ github.repository }}" >> $GITHUB_ENV
         echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-        env
-        python .github/add_labels.py "${{ secrets.GITHUB_TOKEN }}"
+        python .github/add_labels.py test
 
     # - name: Add label based on branch or PR title
     #   if: steps.add_labels.outputs.exit_code == 0 && github.event.pull_request

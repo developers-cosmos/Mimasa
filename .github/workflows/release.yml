@@ -23,10 +23,6 @@ jobs:
         tag=$(echo "v$(echo $GITHUB_REF | cut -d '/' -f 3 | cut -d 'v' -f 2)")
         echo "TAG=$(echo $tag)" >> $GITHUB_ENV
 
-    - name: Get Changelog
-      run: |
-        python get_release_notes.py ${{ env.TAG }}
-
     - name: Install dependencies
       run: |
         sudo apt-get update
@@ -38,31 +34,73 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
 
-    - name: Archive artifacts
-      run: zip -r mimasa.zip dist
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: mimasa-${{ env.TAG }}
+        path: dist
 
   release:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.x
+
+    - name: Get tag
+      run: |
+        tag=$(echo "v$(echo $GITHUB_REF | cut -d '/' -f 3 | cut -d 'v' -f 2)")
+        version="${tag#v}"
+        echo "TAG=$(echo $tag)" >> $GITHUB_ENV
+        echo "VERSION=$(echo $version)" >> $GITHUB_ENV
+
+    - name: Get Changelog
+      run: |
+        version=$(echo "$(echo $GITHUB_REF | cut -d '/' -f 3 | cut -d 'v' -f 2)")
+        python get_release_notes.py $version
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.build.outputs.TAG }}
-        release_name: "Release ${{ steps.build.outputs.TAG }}"
-        body: |
-          $(cat release_notes.txt)
+        tag_name: ${{ env.TAG }}
+        release_name: "Release ${{ env.TAG }}"
+        body_path: release_notes.md
         draft: false
         prerelease: false
 
+    - name: Set artifact name
+      run: |
+        artifact=$(echo "mimasa-${{ env.TAG }}")
+        echo "ARTIFACT_NAME=$(echo $artifact)" >> $GITHUB_ENV
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+
+    - name: Archive artifacts
+      run: zip -r  ${{ env.ARTIFACT_NAME }}.zip Mimasa-${{ env.VERSION }}*
+
     - name: Upload artifacts
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: mimasa.zip
-        asset_name: mimasa.zip
+        asset_path:  ${{ env.ARTIFACT_NAME }}.zip
+        asset_name:  ${{ env.ARTIFACT_NAME }}.zip
         asset_content_type: application/zip
+
+    - name: Cleanup artifacts
+      uses: geekyeggo/delete-artifact@v2
+      with:
+        name: ${{ env.ARTIFACT_NAME }}

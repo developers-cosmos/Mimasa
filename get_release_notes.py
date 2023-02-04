@@ -3,7 +3,7 @@ import sys
 
 def main(target_release):
     # Open the input file and the output file
-    with open("CHANGELOG.md", "r") as input_file, open("release_notes.txt", "w") as output_file:
+    with open("CHANGELOG.md", "r") as input_file, open("release_notes.md", "w", encoding="utf-8") as output_file:
         in_target_release = False
 
         # Read each line of the input file

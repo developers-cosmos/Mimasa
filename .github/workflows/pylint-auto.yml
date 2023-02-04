@@ -60,7 +60,7 @@ jobs:
         branch: ${{ github.ref }}
 
     - name: Comment on Pull Request
-      if: success() and steps.commit_changes.outputs.exit_code != 0
+      if: success() && steps.commit_changes.outputs.exit_code != 0
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

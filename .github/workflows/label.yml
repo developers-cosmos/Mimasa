@@ -28,6 +28,7 @@ jobs:
     - name: Add label based on branch or PR title
       id: add_label
       run: |
+        echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
         python .github/add_labels.py
         exit_code=$?
 

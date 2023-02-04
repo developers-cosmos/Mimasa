@@ -3,9 +3,6 @@ import os
 import requests
 
 BRANCH_FORMATS = ['feat', 'bug', 'chore', 'release', 'documentation']
-PR_TITLE_FORMAT = ['bug', 'feature', 'question']
-PR_BODY_FORMAT = ['bug', 'feature', 'question']
-
 # pull request details
 PR_HEAD_REF = os.getenv("GITHUB_HEAD_REF") or os.getenv("BRANCH_NAME") or ""
 PR_TITLE = os.getenv("GITHUB_PULL_REQUEST_TITLE") or os.getenv("PR_TITLE") or ""
@@ -23,15 +20,6 @@ def get_labels_to_add():
         branch_format = label + "/"
         if PR_HEAD_REF.startswith(branch_format) or " {label} " in PR_TITLE:
             labels_to_add.append(label)
-
-    for label in PR_TITLE_FORMAT:
-        if " {label} " in PR_TITLE:
-            labels_to_add.append(label)
-
-    for label in PR_BODY_FORMAT:
-        if " {label} " in PR_BODY:
-            labels_to_add.append(label)
-    return list(set(labels_to_add))
 
 def add_labels(labels_to_add):
     """Make API request to add labels to pull request"""

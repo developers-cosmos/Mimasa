@@ -42,7 +42,7 @@ def add_labels(access_token, labels_to_add):
     else:
         print(f"Failed to add labels: {response.text}")
 
-def main():
+def main(access_token):
     final_labels = get_labels_to_add()
     add_labels(access_token, final_labels)
 

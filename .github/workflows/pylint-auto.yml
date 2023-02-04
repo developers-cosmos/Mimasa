@@ -57,17 +57,16 @@ jobs:
           exit 0
         fi
         git commit -m "Fix Pylint errors with Black"
-        exit 1
 
     - name: Push changes
-      if: steps.commit_changes.outputs.exit_code != 0
+      if: steps.commit_changes.outputs.stdout != 'No changes to commit.'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref }}
 
     - name: Comment on Pull Request
-      if: success() && steps.commit_changes.outputs.exit_code != 0 && [ "${{ github.event_name }}" == "pull_request" ]
+      if: success() && steps.commit_changes.outputs.stdout != 'No changes to commit.' && [ "${{ github.event_name }}" == "pull_request" ]
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

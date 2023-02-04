@@ -27,8 +27,8 @@ def main():
 
     if len(matching_labels) > 0:
         matching_labels = matching_labels[:-2]
-        os.environ["LABELS"] = matching_labels
-        print(f"""echo "LABELS={matching_labels}" >> $GITHUB_ENV""")
+        with open("labels.txt", "w") as f:
+            f.write(matching_labels)
         sys.exit(0)
 
     sys.exit(1)

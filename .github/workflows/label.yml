@@ -40,6 +40,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         script: |
-          const labelsString = ${{ env.LABELS }}
-          const labels = labelsString.split(' ')
+          const fileContents = fs.readFileSync('labels.txt', 'utf-8');
+          const labels = fileContents.split('\n');
           github.issues.addLabels({ issue_number: context.issue.number, labels: labels })

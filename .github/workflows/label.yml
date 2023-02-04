@@ -28,6 +28,7 @@ jobs:
     - name: Add label based on branch or PR title
       id: add_label
       run: |
+        echo "BRANCH_NAME=${{ env.GITHUB_HEAD_REF }}" >> $GITHUB_ENV
         echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
         python .github/add_labels.py
         exit_code=$?
@@ -37,8 +38,9 @@ jobs:
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        LABELS: ${{ env.LABELS }}
       with:
         script: |
-          const labelsString = ${{ env.LABELS}}
+          const labelsString = ${{ env.LABELS }}
           const labels = labelsString.split(' ')
           github.issues.addLabels({ issue_number: context.issue.number, labels: labels })

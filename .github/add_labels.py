@@ -13,7 +13,7 @@ def main():
             branch_formats.append(branch_format)
 
     # Get pull request details
-    pr_head_ref = os.getenv("GITHUB_HEAD_REF") or ""
+    pr_head_ref = os.getenv("GITHUB_HEAD_REF") or os.getenv("BRANCH_NAME") or ""
     pr_title = os.getenv("GITHUB_PULL_REQUEST_TITLE") or os.getenv("PR_TITLE") or ""
     pr_title = pr_title.lower()
 

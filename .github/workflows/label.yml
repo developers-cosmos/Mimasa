@@ -42,7 +42,9 @@ jobs:
 
     - name: Add label to PR
       if: steps.add_label.outputs.exit_code == 0
-      uses: actions/github-script@0.9.1
+      uses: actions/github-script@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         script: |
           const label = steps.add_label.outputs.stdout.trim()

@@ -363,3 +363,5 @@ dist/**
 
 release_notes.txt
 release_notes.md
+
+_pylint_reports

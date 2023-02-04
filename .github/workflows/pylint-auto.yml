@@ -23,7 +23,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install black pylint
+        pip install black pylint pylint-json2html
 
     - name: Run Black
       run: |
@@ -31,18 +31,20 @@ jobs:
 
     - name: Check for Pylint errors
       run: |
-        pylint --rcfile=.pylintrc --exit-zero --persistent=n --output-format=html --reports=yes --files-output=yes --reports-dir=pylint_reports $(git ls-files '*.py')
+        mkdir _pylint_reports
+        pylint --rcfile=.pylintrc --exit-zero --persistent=n --output-format=json:_pylint_reports/pylint_report.json,colorized --reports=yes $(git ls-files '*.py')
+        pylint-json2html -o _pylint_reports/pylint_report.html -e utf-8 _quality/pylint_report.json
 
     - name: Upload pylint reports after fixing errors
       uses: actions/upload-artifact@v2
       with:
         name: pylint_reports
-        path: pylint_reports
+        path: _pylint_reports
 
     - name: Download artifacts
       uses: actions/download-artifact@v2
       with:
-        name: pylint_reports
+        name: _pylint_reports
 
     - name: Commit changes
       id: commit_changes

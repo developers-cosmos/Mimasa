@@ -31,14 +31,18 @@ jobs:
 
     - name: Check for Pylint errors
       run: |
-        pylint --rcfile=.pylintrc --exit-zero --persistent=n $(git ls-files '*.py')
+        pylint --rcfile=.pylintrc --exit-zero --persistent=n --output-format=html --reports=yes --files-output=yes --reports-dir=pylint_reports $(git ls-files '*.py')
 
-    - name: Check if changes are present
-      run: |
-        if [ -z "$(git status --porcelain)" ]; then
-          echo "No changes to commit."
-          exit 0
-        fi
+    - name: Upload pylint reports after fixing errors
+      uses: actions/upload-artifact@v2
+      with:
+        name: pylint_reports
+        path: pylint_reports
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: pylint_reports
 
     - name: Commit changes
       id: commit_changes
@@ -60,7 +64,7 @@ jobs:
         branch: ${{ github.ref }}
 
     - name: Comment on Pull Request
-      if: success() && steps.commit_changes.outputs.exit_code != 0
+      if: success() && steps.commit_changes.outputs.exit_code != 0 && [ "${{ github.event_name }}" == "pull_request" ]
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

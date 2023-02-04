@@ -1,9 +1,8 @@
 [MASTER]
-
 # Optional list of files or directories that should not be checked
-ignore=tests/*,docs/*,venv/*
+ignore=docs/*,venv/*
 
-# A list of plugins (as comma separated string of python modules names) to load, usually to register additional checker.
+# A list of plugins to load, usually to register additional checker.
 load-plugins=pylint_flask,pylint_django,pylint_autopep8
 
 [MESSAGES CONTROL]
@@ -21,7 +20,7 @@ indent-string='    '
 
 [FORMAT]
 # Maximum number of characters allowed in a single line
-max-line-length=100
+max-line-length=120
 
 [TYPECHECK]
 # List of class names for which member attributes and methods should not be checked
@@ -61,10 +60,9 @@ exception-msg-template='{module}.{function}: {message}'
 max-methods=20
 
 [REPORTS]
-
 # Set the output format. Available formats are text, parseable, colorized, msvs
 # (visual studio) and html
-output-format=text
+output-format=colorized
 
 # Include message's id in output
 include-ids=yes

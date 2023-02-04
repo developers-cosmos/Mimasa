@@ -48,7 +48,6 @@ jobs:
       id: add_labels
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_HEAD_REF: ${{ env.GITHUB_HEAD_REF }}
         GITHUB_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         GITHUB_PULL_REQUEST_BODY: ${{ github.event.pull_request.body }}
         GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}

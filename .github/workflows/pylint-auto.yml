@@ -77,7 +77,8 @@ jobs:
         branch: ${{ env.BRANCH_NAME }}
 
     - name: Comment on Pull Request
-      if: success() && [ "${{ github.event_name }}" == "pull_request" ]
+      if: success()
+      when: github.event_name == 'pull_request'
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

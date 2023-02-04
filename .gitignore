@@ -349,7 +349,6 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-
 # Project Specific
 data/datasets/**
 data/models/**
@@ -364,8 +363,11 @@ dist/**
 release_notes.txt
 release_notes.md
 
+pylint_report.html
+pylint_report.json
 _pylint_reports/**
-**pylint_reports**
+**pylint_report**
+
 mimasa-v*
 Mimasa-*
 mimasa-*

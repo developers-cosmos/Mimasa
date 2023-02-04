@@ -43,12 +43,12 @@ jobs:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         sync-labels: true
 
-    - name: Find suitable labels for PR
+    - name: Add label based on branch or PR title
       if: github.event.pull_request
       id: add_labels
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_HEAD_REF: ${{ github.head.ref }}
+        GITHUB_HEAD_REF: ${{ env.GITHUB_HEAD_REF }}
         GITHUB_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         GITHUB_PULL_REQUEST_BODY: ${{ github.event.pull_request.body }}
         GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}

@@ -46,6 +46,8 @@ jobs:
     - name: Find suitable labels for PR
       if: github.event.pull_request
       id: add_labels
+      env:
+        GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "BRANCH_NAME=$(echo "${{ github.ref  }}" | sed "s/refs\/heads\///")" >> $GITHUB_ENV
         echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
@@ -53,6 +55,7 @@ jobs:
         echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
         echo "REPO=${{ github.repository }}" >> $GITHUB_ENV
         echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+        env
         python .github/add_labels.py "${{ secrets.GITHUB_TOKEN }}"
 
     # - name: Add label based on branch or PR title

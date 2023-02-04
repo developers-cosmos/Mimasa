@@ -13,6 +13,7 @@ OWNER = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("OWNER")
 REPO = os.getenv("GITHUB_REPOSITORY") or os.getenv("REPO")
 PULL_REQUEST_NUMBER = os.getenv("GITHUB_PULL_REQUEST_NUMBER") or os.getenv("PR_NUMBER")
 PR_TITLE = PR_TITLE.lower()
+ACCESS_TOKEN = os.environ.get("GITHUB_ACCESS_TOKEN")
 
 def check_environment():
     health_check = (
@@ -43,7 +44,7 @@ def add_labels(access_token, labels_to_add):
 
     # Set up the headers for the API request
     headers = {
-        "Authorization": f"Token {access_token}",
+        "Authorization": f"Token {ACCESS_TOKEN}",
         "Accept": "application/vnd.github+json",
         "Content-Type": "application/json",
     }

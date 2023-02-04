@@ -41,7 +41,7 @@ jobs:
         fi
 
     - name: Commit changes
-    id: commit_changes
+      id: commit_changes
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"

@@ -27,7 +27,7 @@ def main():
 
     if len(matching_labels) > 0:
         matching_labels = matching_labels[:-2]
-        os["LABELS"] = matching_labels
+        os.environ["LABELS"] = matching_labels
         sys.exit(0)
 
     sys.exit(1)

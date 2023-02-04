@@ -7,17 +7,17 @@ on:
     types: [opened, edited, synchronize]
 
 jobs:
-  show_environment:
+  show-environment:
     name: "Show environment variables"
     runs-on: ubuntu-latest
 
     steps:
-    - name: "Show environmetn variables"
+    - name: "Show environment variables"
       run: |
         env
 
   add-label:
-  name: "Add labels to pull request & issues"
+    name: "Add labels to pull request & issues"
     runs-on: ubuntu-latest
     permissions:
       contents: read

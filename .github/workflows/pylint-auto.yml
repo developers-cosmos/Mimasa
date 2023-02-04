@@ -61,21 +61,23 @@ jobs:
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git add .
+        echo "commit_done=false" >> $GITHUB_ENV
         if [ -z "$(git status --porcelain)" ]; then
           echo "No changes to commit."
           exit 0
         fi
         git commit -m "Fix Pylint errors with Black"
+        echo "commit_done=true" >> $GITHUB_ENV
 
     - name: Push changes
-      if: steps.commit_changes.outputs.stdout != 'No changes to commit.'
+      if: ${{ env.commit_done }} == true
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ env.BRANCH_NAME }}
 
     - name: Comment on Pull Request
-      if: success() && steps.commit_changes.outputs.stdout != 'No changes to commit.' && [ "${{ github.event_name }}" == "pull_request" ]
+      if: success() && ${{ env.commit_done }} == true && [ "${{ github.event_name }}" == "pull_request" ]
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

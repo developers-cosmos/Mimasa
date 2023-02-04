@@ -49,26 +49,36 @@ jobs:
       with:
         labels: ${{ env.LABELS }}
 
-    - name: Add labels for issues
-      if: steps.add_labels.outputs.exit_code == 0 && github.event.issue
+    - name: Find suitable labels for Issues
+      if: github.event.issue
+      id: add_labels_for_issues
+      run: |
+        echo "ISSUE_TITLE=${{ github.event.issue.title }}" >> $GITHUB_ENV
+        echo "ISSUE_BODY=${{ github.event.issue.body }}" >> $GITHUB_ENV
+        echo "LABELS=$(
+          if [[ "${{ env.ISSUE_TITLE }}" =~ 'bug' ]] ||
+            [[ "${{ env.ISSUE_BODY }}" =~ 'bug' ]]; then
+            echo 'bug,'
+          else
+            echo ''
+          fi
+          if [[ "${{ env.ISSUE_TITLE }}" =~ 'enhancement' ]] ||
+            [[ "${{ env.ISSUE_BODY }}" =~ 'enhancement' ]]; then
+            echo 'enhancement,'
+          else
+            echo ''
+          fi
+          if [[ "${{ env.ISSUE_TITLE }}" =~ 'question' ]] ||
+            [[ "${{ env.ISSUE_BODY }}" =~ 'question' ]]; then
+            echo 'question'
+          else
+            echo ''
+          fi
+        )" >> $GITHUB_ENV
+
+    - name: Add labels for Issues
+      if: steps.add_labels_for_issues.outputs.exit_code == 0 && github.event.issue
       uses: actions-ecosystem/action-add-labels@v1
       with:
-        labels: |
-          ${{
-            if contains(toJson(github.event.issue.title), 'bug') ||
-               contains(toJson(github.event.issue.body), 'bug')
-            then 'bug,'
-            else ''
-          }}
-          ${{
-            if contains(toJson(github.event.issue.title), 'enhancement') ||
-               contains(toJson(github.event.issue.body), 'enhancement')
-            then 'enhancement,'
-            else ''
-          }}
-          ${{
-            if contains(toJson(github.event.issue.title), 'question') ||
-               contains(toJson(github.event.issue.body), 'question')
-            then 'question'
-            else ''
-          }}
+        labels: "${{ env.LABELS }}"
+

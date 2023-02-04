@@ -19,7 +19,7 @@ exclude = '''
 [tool.pylint]
 load-plugins = ['pylint_flask', 'pylint_django', 'pylint_autopep8']
 
-[tool.pylint.MESSAGES CONTROL]
+[tool.pylint.MESSAGES_CONTROL]
 enable = ['C', 'R', 'W', 'E', 'F']
 
 [tool.pylint.BASIC]

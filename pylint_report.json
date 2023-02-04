@@ -81,22 +81,22 @@
         "type": "warning",
         "module": "add_labels",
         "obj": "add_labels",
-        "line": 28,
+        "line": 29,
         "column": 15,
-        "endLine": 28,
+        "endLine": 29,
         "endColumn": 27,
         "path": ".github/add_labels.py",
         "symbol": "redefined-outer-name",
-        "message": "Redefining name 'access_token' from outer scope (line 57)",
+        "message": "Redefining name 'access_token' from outer scope (line 58)",
         "message-id": "W0621"
     },
     {
         "type": "convention",
         "module": "add_labels",
         "obj": "main",
-        "line": 51,
+        "line": 52,
         "column": 0,
-        "endLine": 51,
+        "endLine": 52,
         "endColumn": 8,
         "path": ".github/add_labels.py",
         "symbol": "missing-function-docstring",
@@ -107,13 +107,13 @@
         "type": "warning",
         "module": "add_labels",
         "obj": "main",
-        "line": 51,
+        "line": 52,
         "column": 9,
-        "endLine": 51,
+        "endLine": 52,
         "endColumn": 21,
         "path": ".github/add_labels.py",
         "symbol": "redefined-outer-name",
-        "message": "Redefining name 'access_token' from outer scope (line 57)",
+        "message": "Redefining name 'access_token' from outer scope (line 58)",
         "message-id": "W0621"
     },
     {
@@ -4234,7 +4234,7 @@
         "endColumn": null,
         "path": "src/utils/utils.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==Mimasa.src.facedetector.retina_face:[59:68]\n==Mimasa.src.facedetector.yolo:[82:93]\n        if len(idxs) > 0:\n            # loop over the indexes we are keeping\n            for i in idxs.flatten():\n                # extract the bounding box coordinates\n                (x, y) = (boxes[i][0], boxes[i][1])\n                (w, h) = (boxes[i][2], boxes[i][3])\n\n                # draw a rectangle around the face\n                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)\n\n                # add labels and confidence score",
+        "message": "Similar lines in 2 files\n==Mimasa.src.facedetector.retina_face:[59:68]\n==Mimasa.src.facedetector.yolo:[82:93]\n        if len(idxs) > 0:\n            # loop over the indexes we are keeping\n            for i in idxs.flatten():\n                # extract the bounding box coordinates\n                (x, y) = (boxes[i][0], boxes[i][1])\n                (w, h) = (boxes[i][2], boxes[i][3])\n\n                # draw a rectangle around the face\n                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)",
         "message-id": "R0801"
     }
 ]

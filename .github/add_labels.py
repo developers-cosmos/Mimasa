@@ -14,6 +14,7 @@ REPO = os.getenv("GITHUB_REPOSITORY") or os.getenv("REPO")
 PULL_REQUEST_NUMBER = os.getenv("GITHUB_PULL_REQUEST_NUMBER") or os.getenv("PR_NUMBER")
 PR_TITLE = PR_TITLE.lower()
 
+
 def get_labels_to_add():
     """Determine labels to add based on branch format, PR title, and PR body"""
     labels_to_add = []

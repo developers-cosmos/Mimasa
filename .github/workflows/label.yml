@@ -27,10 +27,13 @@ jobs:
 
     - name: Add label based on branch or PR title
       id: add_labels
+      env:
+        LABELS: ${{ steps.add_labels.outputs.labels }}
       run: |
-        echo "BRANCH_NAME=$(echo ${{ github.ref }} | cut -d '/' -f 3)" >> $GITHUB_ENV
+        echo "BRANCH_NAME=${{ GITHUB_HEAD_REF }}" >> $GITHUB_ENV
         echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
         python .github/add_labels.py
+        labels=$(cat labels.txt)
         exit_code=$?
 
     - name: Add label to PR

@@ -6,6 +6,9 @@ on:
       - '!main'
   pull_request:
 
+env:
+  NO_COMMIT: false
+
 jobs:
   fix_pylint_errors:
     runs-on: ubuntu-latest
@@ -63,22 +66,21 @@ jobs:
         git add .
         if [ -z "$(git status --porcelain)" ]; then
           echo "No changes to commit."
-          NO_COMMIT="true"
-          echo "NO_COMMIT=$NO_COMMIT" >> GITHUB_ENV
+          echo "NO_COMMIT=true" >> GITHUB_ENV
           exit 0
         fi
         git commit -m "Fix Pylint errors with Black"
 
     - name: Push changes
       id: push_changes
-      if: ${{ steps.commit_changes.outputs.NO_COMMIT == 'true' }}
+      if: ${{ steps.commit_changes.outputs.NO_COMMIT == 'false' }}
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ env.BRANCH_NAME }}
 
     - name: Comment on Pull Request
-      if: steps.push_changes.outcome != 'skipped' && [ "${{ github.event_name }}" == "pull_request" ]
+      if: ${{ steps.commit_changes.outputs.NO_COMMIT == 'false' }} && [ "${{ github.event_name }}" == "pull_request" ]
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

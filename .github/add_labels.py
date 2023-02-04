@@ -17,7 +17,7 @@ def main():
     pr_title = os.getenv("GITHUB_PULL_REQUEST_TITLE") or os.getenv("PR_TITLE") or ""
     pr_title = pr_title.lower()
 
-    matching_labels = ""
+    matching_labels = []
     for i in range(len(labels)):
         label = labels[i]
         branch_format = branch_formats[i] + "/"

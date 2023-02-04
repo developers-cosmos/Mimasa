@@ -79,9 +79,7 @@ def get_landmarks(frame):
     :return: list of facial landmarks
     """
     detector = dlib.get_frontal_face_detector()
-    model_file = os.path.join(
-        os.getcwd(), "data", "models", "shape_predictor_68_face_landmarks.dat"
-    )
+    model_file = os.path.join(os.getcwd(), "data", "models", "shape_predictor_68_face_landmarks.dat")
     predictor = dlib.shape_predictor(model_file)
 
     # detect faces
@@ -199,9 +197,7 @@ frames, fps, frame_width, frame_height = get_frames(input_video_path)
 
 output_video_path = os.path.join(os.getcwd(), "data", "videos", "output.mp4")
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
-output_video = cv2.VideoWriter(
-    output_video_path, fourcc, fps, (frame_width, frame_height)
-)
+output_video = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height))
 
 # Map the aligned phoneme representation to the corresponding frames
 # and apply the appropriate facial expressions and mouth movements to each frame

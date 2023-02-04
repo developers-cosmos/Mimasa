@@ -32,19 +32,13 @@ tts = gTTS("Hello, I am changing the language", lang="fr")
 tts.save(os.path.join(os.getcwd(), "data", "videos", "output_speech.mp3"))
 
 # Load the new speech audio
-new_speech_audio = AudioSegment.from_file(
-    os.path.join(os.getcwd(), "data", "videos", "output_speech.mp3")
-)
+new_speech_audio = AudioSegment.from_file(os.path.join(os.getcwd(), "data", "videos", "output_speech.mp3"))
 
 # Convert the music segment to an audio file
-librosa.output.write_wav(
-    os.path.join(os.getcwd(), "data", "videos", "music.wav"), music_segment, sr
-)
+librosa.output.write_wav(os.path.join(os.getcwd(), "data", "videos", "music.wav"), music_segment, sr)
 
 # Load the music segment
-music_audio = AudioSegment.from_file(
-    os.path.join(os.getcwd(), "data", "videos", "music.wav")
-)
+music_audio = AudioSegment.from_file(os.path.join(os.getcwd(), "data", "videos", "music.wav"))
 
 # Overlay the new speech on top of the original music
 result = music_audio.overlay(new_speech_audio)

@@ -33,9 +33,7 @@ config = {
 
 
 class MyHPSS(nussl.separation.base.MaskSeparationBase):
-    def __init__(
-        self, audio_signal, kernel_size=31, mask_type="soft", mask_threshold=0.5
-    ):
+    def __init__(self, audio_signal, kernel_size=31, mask_type="soft", mask_threshold=0.5):
         """Setup code goes here."""
 
         # The super class will save all of these attributes for us.

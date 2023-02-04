@@ -3,7 +3,7 @@ import os
 import sys
 import requests
 
-BRANCH_FORMATS = ['feat', 'bug', 'chore', 'release', 'documentation']
+BRANCH_FORMATS = ["feat", "bug", "chore", "release", "documentation"]
 # pull request details
 PR_HEAD_REF = os.getenv("GITHUB_HEAD_REF") or os.getenv("BRANCH_NAME") or ""
 PR_TITLE = os.getenv("GITHUB_PULL_REQUEST_TITLE") or os.getenv("PR_TITLE") or ""
@@ -12,6 +12,7 @@ OWNER = os.getenv("OWNER")
 REPO = os.getenv("REPO")
 PULL_REQUEST_NUMBER = int(os.getenv("PR_NUMBER"))
 PR_TITLE = PR_TITLE.lower()
+
 
 def get_labels_to_add():
     """Determine labels to add based on branch format, PR title, and PR body"""
@@ -23,6 +24,7 @@ def get_labels_to_add():
 
     return list(set(labels_to_add))
 
+
 def add_labels(access_token, labels_to_add):
     """Make API request to add labels to pull request"""
     # Define the API endpoint for adding labels to a pull request
@@ -32,13 +34,11 @@ def add_labels(access_token, labels_to_add):
     headers = {
         "Authorization": f"Token {access_token}",
         "Accept": "application/vnd.github+json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
 
     # Make the API request to add labels to the pull request
-    labels_data = {
-        "labels": labels_to_add
-    }
+    labels_data = {"labels": labels_to_add}
     response = requests.post(url, headers=headers, json=labels_data)
 
     # Check if the request was successful
@@ -47,9 +47,11 @@ def add_labels(access_token, labels_to_add):
     else:
         print(f"Failed to add labels: {response.text}")
 
+
 def main(access_token):
     final_labels = get_labels_to_add()
     add_labels(access_token, final_labels)
+
 
 if __name__ == "__main__":
     access_token = sys.argv[1]

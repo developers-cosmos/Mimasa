@@ -10,9 +10,7 @@ from src.common.config import Config
 from src.common.video import Video
 from src.common.exceptions import FaceDetectionError
 
-logging.basicConfig(
-    level=Config.LOG_LEVEL, format="%(asctime)s [%(levelname)s]: %(message)s"
-)
+logging.basicConfig(level=Config.LOG_LEVEL, format="%(asctime)s [%(levelname)s]: %(message)s")
 
 
 def get_current_time() -> str:

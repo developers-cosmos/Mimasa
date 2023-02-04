@@ -19,9 +19,7 @@ class ViolaJones(FaceDetector):
         Initializes the classifier with the path to the classifier xml file.
         """
         super().__init__()
-        self.classifier = cv2.CascadeClassifier(
-            "data/models/classifiers/haarcascade_frontalface_default.xml"
-        )
+        self.classifier = cv2.CascadeClassifier("data/models/classifiers/haarcascade_frontalface_default.xml")
 
     def detect_faces(self, frame):
         """

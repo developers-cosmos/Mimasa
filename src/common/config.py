@@ -61,6 +61,4 @@ class Config:
 
     # declare a private constructor to prevent instantiation of this class
     def __init__(self):
-        raise NotImplementedError(
-            "Config is a static class and cannot be instantiated."
-        )
+        raise NotImplementedError("Config is a static class and cannot be instantiated.")

@@ -12,9 +12,7 @@ from src.common.config import Config
 from src.utils import utils
 from src.common.exceptions import AudioSeparationError
 
-logging.basicConfig(
-    level=Config.LOG_LEVEL, format="%(asctime)s [%(levelname)s]: %(message)s"
-)
+logging.basicConfig(level=Config.LOG_LEVEL, format="%(asctime)s [%(levelname)s]: %(message)s")
 
 
 class NUSSL(AudioSeparator):
@@ -48,9 +46,7 @@ class NUSSL(AudioSeparator):
             )
             logging.info("NUSSL separator initialized successfully")
         except Exception as e:
-            logging.error(
-                "Failed to initialize NUSSL separator due to {}".format(str(e))
-            )
+            logging.error("Failed to initialize NUSSL separator due to {}".format(str(e)))
 
     def _separate_audio(self):
         """
@@ -79,17 +75,10 @@ class NUSSL(AudioSeparator):
 
             destination = destination or Config.AUDIO_OUTPUT_PATH
             filename = (
-                __class__.__base__.__name__.lower()
-                + "_"
-                + self.__class__.__name__.lower()
-                + utils.get_current_time()
+                __class__.__base__.__name__.lower() + "_" + self.__class__.__name__.lower() + utils.get_current_time()
             )
-            self.vocals_path = (
-                f"{destination}/{filename}_speech.{Config.AUDIO_DEFAULT_FORMAT}"
-            )
-            self.music_path = (
-                f"{destination}/{filename}_music.{Config.AUDIO_DEFAULT_FORMAT}"
-            )
+            self.vocals_path = f"{destination}/{filename}_speech.{Config.AUDIO_DEFAULT_FORMAT}"
+            self.music_path = f"{destination}/{filename}_music.{Config.AUDIO_DEFAULT_FORMAT}"
 
             logging.info("Filename for output vocals: %s" % self.vocals_path)
             logging.info("Filename for output muisc: %s" % self.music_path)
@@ -117,9 +106,7 @@ class NUSSL(AudioSeparator):
             self._separate_audio()
             self._write_estimates_to_files(destination)
         except Exception as e:
-            raise AudioSeparationError(
-                "Unable to separate Audio. Failed with exception: %s" % e
-            )
+            raise AudioSeparationError("Unable to separate Audio. Failed with exception: %s" % e)
 
     def get_vocals(self) -> Audio:
         """

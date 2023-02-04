@@ -68,14 +68,14 @@ jobs:
         git commit -m "Fix Pylint errors with Black"
 
     - name: Push changes
-      if: contains(toJson(steps.commit_changes.outputs), 'No changes to commit') == 'false'
+      if: contains(toJson(steps.commit_changes.outputs), 'No changes to commit') == false
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ env.BRANCH_NAME }}
 
     - name: Comment on Pull Request
-      if: contains(toJson(steps.commit_changes.outputs), 'No changes to commit') == 'false' && [ "${{ github.event_name }}" == "pull_request" ]
+      if: contains(toJson(steps.commit_changes.outputs), 'No changes to commit') == false && [ "${{ github.event_name }}" == "pull_request" ]
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

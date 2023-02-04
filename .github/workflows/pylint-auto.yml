@@ -11,10 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set branch name
+      run: |
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          branch_name="${{ github.event.pull_request.head.ref }}"
+        else
+          branch_name="${{ github.ref }}"
+        fi
+        echo "BRANCH_NAME=${branch_name}" >> $GITHUB_ENV
+
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        ref: ${{ github.head.ref }}
+        ref: ${{ env.BRANCH_NAME }}
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -63,7 +72,7 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.head.ref }}
+        branch: ${{ env.BRANCH_NAME }}
 
     - name: Comment on Pull Request
       if: success() && steps.commit_changes.outputs.stdout != 'No changes to commit.' && [ "${{ github.event_name }}" == "pull_request" ]

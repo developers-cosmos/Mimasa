@@ -14,31 +14,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.x
+
     - name: Add label based on modified paths
       uses: actions/labeler@v4
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         sync-labels: true
 
-    - name: Get config data
-      id: config
-      run: |
-        echo "LABELS=($(cat .github/labels_config.txt | awk '{print $1}'))" >> $GITHUB_ENV
-        echo "BRANCH_FORMATS=($(cat .github/labels_config.txt | awk '{print $2}'))" >> $GITHUB_ENV
-
     - name: Add label based on branch or PR title
       id: add_label
       run: |
-        LABELS=${{ env.LABELS }}
-        BRANCH_FORMATS=${{ env.BRANCH_FORMATS }}
-        for i in "${!LABELS[@]}"; do
-          if [[ "${{ github.event.pull_request.head.ref }}" == "${BRANCH_FORMATS[$i]}*" ]] ||
-              [[ "$(echo "${{ github.event.pull_request.title }}" | tr '[:upper:]' '[:lower:]')" == *"$(echo "${LABELS[$i]}" | tr '[:upper:]' '[:lower:]')"* ]]; then
-            echo "${LABELS[$i]}"
-            exit 0
-          fi
-        done
-        exit 1
+        python .github/add_label.py
+        exit_code=$?
 
     - name: Add label to PR
       if: steps.add_label.outputs.exit_code == 0
@@ -47,5 +38,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         script: |
-          const label = steps.add_label.outputs.stdout.trim()
-          github.issues.addLabels({ issue_number: context.issue.number, labels: [label] })
+          const labelsString = ${{ env.LABELS}}
+          const labels = labelsString.split(' ')
+          github.issues.addLabels({ issue_number: context.issue.number, labels: labels })

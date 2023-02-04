@@ -1,5 +1,5 @@
-label_feat feat/
-label_bug bug/
-label_documentation documentation/
-label_chore chore/
-label_release release/
+feat feat
+bug bug
+documentation documentation
+chore chore
+release release

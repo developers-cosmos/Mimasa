@@ -42,6 +42,7 @@ jobs:
         fi
 
     - name: Commit changes
+    id: commit_changes
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
@@ -53,6 +54,7 @@ jobs:
         git commit -m "Fix Pylint errors with Black"
 
     - name: Push changes
+      if: steps.commit_changes.outputs.exit_code != 0
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}

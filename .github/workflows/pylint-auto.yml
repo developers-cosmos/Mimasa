@@ -48,19 +48,19 @@ jobs:
         git add .
         if [ -z "$(git diff-index --cached --quiet HEAD --)" ]; then
           echo "No changes to commit."
-          exit 1
+          exit 0
         fi
         git commit -m "Fix Pylint errors with Black"
-        exit 0
 
     - name: Push changes
+      if: steps.commit_changes.outputs.exit_code != 0
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref }}
 
     - name: Comment on Pull Request
-      if: success()
+      if: success() and steps.commit_changes.outputs.exit_code != 0
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

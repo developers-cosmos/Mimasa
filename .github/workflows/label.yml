@@ -28,7 +28,7 @@ jobs:
     - name: Add label based on branch or PR title
       id: add_label
       run: |
-        python .github/add_label.py
+        python .github/add_labels.py
         exit_code=$?
 
     - name: Add label to PR

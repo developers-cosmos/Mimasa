@@ -6,13 +6,18 @@ import requests
 BRANCH_FORMATS = ["feat", "bug", "chore", "release", "documentation"]
 
 # pull request details
-PR_HEAD_REF = os.getenv("GITHUB_HEAD_REF") or os.getenv("BRANCH_NAME") or ""
-PR_TITLE = os.getenv("GITHUB_PULL_REQUEST_TITLE") or os.getenv("PR_TITLE") or ""
+PR_HEAD_REF = os.getenv("BRANCH_NAME") or os.getenv("GITHUB_HEAD_REF")
+PR_TITLE = os.getenv("GITHUB_PULL_REQUEST_TITLE") or os.getenv("PR_TITLE")
 PR_BODY = os.getenv("GITHUB_PULL_REQUEST_BODY") or os.getenv("PR_BODY")
 OWNER = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("OWNER")
 REPO = os.getenv("GITHUB_REPOSITORY") or os.getenv("REPO")
 PULL_REQUEST_NUMBER = os.getenv("GITHUB_PULL_REQUEST_NUMBER") or os.getenv("PR_NUMBER")
 PR_TITLE = PR_TITLE.lower()
+
+def check_environment():
+    health_check = PR_HEAD_REF is not None and PR_TITLE is not None and OWNER is not None \
+        and REPO is not None and PULL_REQUEST_NUMBER is not None
+    return health_check
 
 
 def get_labels_to_add():
@@ -55,5 +60,8 @@ def main(access_token):
 
 
 if __name__ == "__main__":
+    if not check_environment:
+        sys.exit(1)
+
     access_token = sys.argv[1]
     main(access_token)

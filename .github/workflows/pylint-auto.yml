@@ -33,7 +33,7 @@ jobs:
       run: |
         mkdir _pylint_reports
         pylint --rcfile=.pylintrc --exit-zero --persistent=n --output-format=json:_pylint_reports/pylint_report.json,colorized --reports=yes $(git ls-files '*.py')
-        pylint-json2html -o _pylint_reports/pylint_report.html -e utf-8 _quality/pylint_report.json
+        pylint-json2html -o _pylint_reports/pylint_report.html -e utf-8 _pylint_reports/pylint_report.json
 
     - name: Upload pylint reports after fixing errors
       uses: actions/upload-artifact@v2
@@ -44,7 +44,7 @@ jobs:
     - name: Download artifacts
       uses: actions/download-artifact@v2
       with:
-        name: _pylint_reports
+        name: pylint_reports
 
     - name: Commit changes
       id: commit_changes

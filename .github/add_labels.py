@@ -1,37 +1,62 @@
 #!/usr/bin/env python3
 import os
-import sys
+import requests
+
+BRANCH_FORMATS = ['feat', 'bug', 'chore', 'release', 'documentation']
+PR_TITLE_FORMAT = ['bug', 'feature', 'question']
+PR_BODY_FORMAT = ['bug', 'feature', 'question']
+
+# pull request details
+PR_HEAD_REF = os.getenv("GITHUB_HEAD_REF") or os.getenv("BRANCH_NAME") or ""
+PR_TITLE = os.getenv("GITHUB_PULL_REQUEST_TITLE") or os.getenv("PR_TITLE") or ""
+PR_BODY = os.getenv("PR_BODY")
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+OWNER = os.getenv("OWNER")
+REPO = os.getenv("REPO")
+PULL_REQUEST_NUMBER = os.getenv("PR_NUMBER")
+PR_TITLE = PR_TITLE.lower()
+
+def get_labels_to_add():
+    """Determine labels to add based on branch format, PR title, and PR body"""
+    labels_to_add = []
+    for label in BRANCH_FORMATS:
+        branch_format = label + "/"
+        if PR_HEAD_REF.startswith(branch_format) or " {label} " in PR_TITLE:
+            labels_to_add.append(label)
+
+    for label in PR_TITLE_FORMAT:
+        if " {label} " in PR_TITLE:
+            labels_to_add.append(label)
+
+    for label in PR_BODY_FORMAT:
+        if " {label} " in PR_BODY:
+            labels_to_add.append(label)
+    return list(set(labels_to_add))
+
+def add_labels(labels_to_add):
+    """Make API request to add labels to pull request"""
+    # Define the API endpoint for adding labels to a pull request
+    url = f"https://api.github.com/repos/{OWNER}/{REPO}/issues/{PULL_REQUEST_NUMBER}/labels"
+
+    # Set up the headers for the API request
+    headers = {
+        "Authorization": f"Token {ACCESS_TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json"
+    }
+
+    # Make the API request to add labels to the pull request
+    response = requests.post(url, headers=headers, json=labels_to_add)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        print("Labels added successfully!")
+    else:
+        print(f"Failed to add labels: {response.text}")
 
 def main():
-    # Get labels and formats from config file
-    labels = []
-    branch_formats = []
-    with open(".github/labels_config.txt") as f:
-        for line in f:
-            label, branch_format = line.strip().split()
-            labels.append(label)
-            branch_formats.append(branch_format)
-
-    # Get pull request details
-    pr_head_ref = os.getenv("GITHUB_HEAD_REF") or os.getenv("BRANCH_NAME") or ""
-    pr_title = os.getenv("GITHUB_PULL_REQUEST_TITLE") or os.getenv("PR_TITLE") or ""
-    pr_title = pr_title.lower()
-
-    matching_labels = []
-    for i in range(len(labels)):
-        label = labels[i]
-        branch_format = branch_formats[i] + "/"
-
-        if pr_head_ref.startswith(branch_format) or label in pr_title:
-            matching_labels.append(label)
-
-    if len(matching_labels) > 0:
-        result = '\n'.join(matching_labels)
-        with open("labels.txt", "w") as f:
-            f.write(result)
-        sys.exit(0)
-
-    sys.exit(1)
+    final_labels = get_labels_to_add()
+    add_labels(final_labels)
 
 if __name__ == "__main__":
     main()

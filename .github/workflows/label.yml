@@ -39,15 +39,18 @@ jobs:
       run: |
         echo "BRANCH_NAME=$(echo "${{ github.ref  }}" | sed "s/refs\/heads\///")" >> $GITHUB_ENV
         echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+        echo "PR_BODY=${{ github.event.pull_request.body }}" >> $GITHUB_ENV
+        echo "ACCESS_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+        echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
+        echo "REPO=${{ github.repository }}" >> $GITHUB_ENV
+        echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
         python .github/add_labels.py
-        echo "LABELS=$(cat labels.txt | awk '{printf "%s\\n", $0}')" >> $GITHUB_ENV
-        exit_code=$?
 
-    - name: Add label based on branch or PR title
-      if: steps.add_labels.outputs.exit_code == 0 && github.event.pull_request
-      uses: actions-ecosystem/action-add-labels@v1
-      with:
-        labels: ${{ env.LABELS }}
+    # - name: Add label based on branch or PR title
+    #   if: steps.add_labels.outputs.exit_code == 0 && github.event.pull_request
+    #   uses: actions-ecosystem/action-add-labels@v1
+    #   with:
+    #     labels: ${{ env.LABELS }}
 
     - name: Find suitable labels for Issues
       if: github.event.issue

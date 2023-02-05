@@ -4,6 +4,12 @@
 
 The idea behind Mimasa is to provide a seamless translation experience for people who are communicating with individuals who speak different languages. The application uses advanced computer vision and machine learning techniques to detect and track the facial movements and speech of a person in real-time, and then uses natural language processing (NLP) to translate the speech to another language. The output audio is then synced with the facial movements of the person to provide a more natural and realistic translation experience. Additionally, Mimasa can also separate the music and speech from the video input, which allows for a more accurate translation experience. Overall, Mimasa aims to bridge the language barrier and make communication between people of different languages easier and more efficient.
 
+## Announcement
+
+For the latest updates and news regarding Mimasa, please follow the [Announcement thread](https://github.com/developers-cosmos/Mimasa/discussions/categories/announcements) on our Github repository.
+
+**[Call for Support and Ideas for Mimasa Application](https://github.com/developers-cosmos/Mimasa/discussions/11)**
+
 ## Table of Contents
 
 - [Idea](./docs/idea/concept.md)
@@ -82,4 +88,22 @@ Mimasa is still in concept stage and requires planning to finalize the concept &
 
 ## Contribution
 
-We welcome any contributions to the project. If you would like to contribute, please fork the repository and make changes as you see fit. Once you are done, you can submit a pull request and we will review your changes. Email: ritheeshbaradwaj@gmail.com
+We welcome any contributions to the project. If you're interested in making a contribution, follow these steps:
+
+If you're interested in making a contribution, follow these steps:
+
+1. Fork the repository to your own GitHub account
+2. Clone the forked repository to your local machine
+3. Create a branch for the feature or bug fix you want to work on
+4. Make changes and commit them to your branch
+5. Push your changes to your forked repository
+6. Create a pull request to the main repository for review and merge
+
+## Contact Information
+
+We appreciate your interest in Mimasa Application and welcome any questions or feedback you may have. You can reach us through the following channels:
+
+- Email: ritheeshbaradwaj@gmail.com
+- [GitHub Issues](https://github.com/developers-cosmos/Mimasa/issues)
+
+Thank you!

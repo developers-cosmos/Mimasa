@@ -13,8 +13,7 @@ OWNER = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("OWNER")
 REPO = os.getenv("GITHUB_REPOSITORY") or os.getenv("REPO")
 PULL_REQUEST_NUMBER = os.getenv("GITHUB_PULL_REQUEST_NUMBER") or os.getenv("PR_NUMBER")
 PR_TITLE = PR_TITLE.lower()
-ACCESS_TOKEN = os.environ.get("GITHUB_ACCESS_TOKEN")
-
+ACCESS_TOKEN = os.environ.get("MIMASA_ADD_LABELS") or os.environ.get("GITHUB_ACCESS_TOKEN")
 
 def check_environment():
     health_check = (
@@ -38,7 +37,7 @@ def get_labels_to_add():
     return list(set(labels_to_add))
 
 
-def add_labels(access_token, labels_to_add):
+def add_labels(labels_to_add):
     """Make API request to add labels to pull request"""
     # Define the API endpoint for adding labels to a pull request
     url = f"https://api.github.com/repos/{OWNER}/{REPO}/issues/{PULL_REQUEST_NUMBER}/labels"
@@ -61,14 +60,13 @@ def add_labels(access_token, labels_to_add):
         print(f"Failed to add labels: {response.text}")
 
 
-def main(access_token):
+def main():
     final_labels = get_labels_to_add()
-    add_labels(access_token, final_labels)
+    add_labels(final_labels)
 
 
 if __name__ == "__main__":
     if not check_environment:
         sys.exit(0)
 
-    access_token = sys.argv[1]
-    main(access_token)
+    main()

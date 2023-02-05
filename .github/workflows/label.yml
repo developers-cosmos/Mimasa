@@ -64,7 +64,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
       run: |
-        python .github/add_labels.py test
+        python .github/add_labels.py
 
     # - name: Add label based on branch or PR title
     #   if: steps.add_labels.outputs.exit_code == 0 && github.event.pull_request

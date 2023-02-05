@@ -1,0 +1,66 @@
+[tool.black]
+line-length = 120
+target-version = ['py310']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.pylint]
+load-plugins = ['pylint_flask', 'pylint_django', 'pylint_autopep8']
+
+[tool.pylint.MESSAGES_CONTROL]
+enable = ['C', 'R', 'W', 'E', 'F']
+
+[tool.pylint.BASIC]
+indent-string = '    '
+
+[tool.pylint.FORMAT]
+max-line-length = 120
+
+[tool.pylint.TYPECHECK]
+ignored-classes = ['_ABCMeta']
+
+[tool.pylint.VARIABLES]
+init-import = true
+
+[tool.pylint.SIMILARITIES]
+min-similarity-lines = 4
+ignore-comments = true
+
+[tool.pylint.TYPING]
+ignore-mixin-members = true
+
+[tool.pylint.LOGGING]
+logging-modules = ['logging']
+
+[tool.pylint.LOGGING.HANDLER]
+disable-existing-loggers = true
+
+[tool.pylint.DESIGN]
+max-args = 10
+
+[tool.pylint.EXCEPTIONS]
+exception-msg-template = '{module}.{function}: {message}'
+
+[tool.pylint.CLASSES]
+max-methods = 20
+
+[tool.pylint.REPORTS]
+output-format = 'colorized'
+include-ids = true
+files-output = false
+reports = true
+evaluation = '10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)'
+comment = false
+

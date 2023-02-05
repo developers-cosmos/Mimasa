@@ -24,9 +24,7 @@ SOURCES = ["vocals", "accompaniment"]
 SOURCES_SUBSET = ["vocals", "accompaniment"]
 AUDIO_BASE_DIR = os.path.join(os.getcwd(), "data", "audios")
 
-weights_path = os.path.join(
-    os.getcwd(), "data", "models", "weights", "UNet", "bestcheckpoint_2.pth"
-)
+weights_path = os.path.join(os.getcwd(), "data", "models", "weights", "UNet", "bestcheckpoint_2.pth")
 
 
 def warpgrid(bs, h, w, warp=True):
@@ -52,17 +50,13 @@ class Wrapper(torch.nn.Module):
         self.L = len(SOURCES_SUBSET)
         self.model = model
         self.main_device = main_device
-        self.grid_warp = torch.from_numpy(
-            warpgrid(BATCH_SIZE, 256, STFT_WIDTH, warp=True)
-        ).float()
+        self.grid_warp = torch.from_numpy(warpgrid(BATCH_SIZE, 256, STFT_WIDTH, warp=True)).float()
 
     def forward(self, x):
         if x.shape[0] == BATCH_SIZE:
             mags = F.grid_sample(x, self.grid_warp)
         else:  # for the last batch, where the number of samples are generally lesser than the batch_size
-            custom_grid_warp = torch.from_numpy(
-                warpgrid(x.shape[0], 256, STFT_WIDTH, warp=True)
-            ).float()
+            custom_grid_warp = torch.from_numpy(warpgrid(x.shape[0], 256, STFT_WIDTH, warp=True)).float()
             mags = F.grid_sample(x, custom_grid_warp)
 
         # gt_masks = torch.div(mags[:, :-1], mags[:, -1].unsqueeze(1).expand(x.shape[0], self.L, *mags.shape[2:]))
@@ -158,20 +152,14 @@ def _stft(sources):
             hop_length=HOP_LENGTH,
             window=torch.hann_window(NFFT),
         )
-        stft = (
-            stft_output.view(*shape[:-1], *stft_output.size()[1:3], 2)
-            .data.cpu()
-            .numpy()
-        )
+        stft = stft_output.view(*shape[:-1], *stft_output.size()[1:3], 2).data.cpu().numpy()
     stft = stft[..., 0] + stft[..., 1] * 1j
     return stft
 
 
 def create_folder(path):
     if not os.path.exists(path):
-        os.umask(
-            0
-        )  # To mask the permission restrictions on new files/directories being create
+        os.umask(0)  # To mask the permission restrictions on new files/directories being create
         os.makedirs(path, 0o755)  # setting permissions for the folder
 
 
@@ -180,9 +168,7 @@ def get_signal_energy(signal):
 
 
 def save_chunks(chunk_id, subset_type, track_name, sources, energy_profile):
-    save_folder_path = os.path.join(
-        AUDIO_BASE_DIR, subset_type, track_name, str(chunk_id)
-    )
+    save_folder_path = os.path.join(AUDIO_BASE_DIR, subset_type, track_name, str(chunk_id))
     create_folder(save_folder_path)
     true_label = np.zeros(len(SOURCES) + 1, dtype="int")
     for source_id, source in enumerate([*SOURCES, "MIX"]):
@@ -190,9 +176,7 @@ def save_chunks(chunk_id, subset_type, track_name, sources, energy_profile):
         signal_energy = get_signal_energy(signal)
         if int(signal_energy) > ENERGY_THRESHOLD:
             true_label[source_id] = 1
-        save_path = os.path.join(
-            save_folder_path, source + "_" + str(int(round(signal_energy))) + ".wav"
-        )
+        save_path = os.path.join(save_folder_path, source + "_" + str(int(round(signal_energy))) + ".wav")
         energy_profile[source_id][os.path.dirname(save_path)] = signal_energy
         librosa.output.write_wav(save_path, signal, TARGET_SAMPLING_RATE)
     return energy_profile, true_label[:-1]
@@ -277,9 +261,7 @@ def source_separation(model, stft, HOP_LENGTH=256, TARGET_SAMPLING_RATE=10880):
     pred_masks = pred_masks.detach().numpy()
 
     print(pred_masks)
-    pred_audio = torch.from_numpy(
-        istft_reconstruction(pred_masks[0], np.zeros_like(pred_masks[0]), HOP_LENGTH)
-    )
+    pred_audio = torch.from_numpy(istft_reconstruction(pred_masks[0], np.zeros_like(pred_masks[0]), HOP_LENGTH))
 
     pred_audio = pred_audio.detach().numpy()
 

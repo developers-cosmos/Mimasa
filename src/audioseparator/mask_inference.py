@@ -37,9 +37,7 @@ class MaskInference(nn.Module):
             dropout,
         )
         hidden_size = hidden_size * (int(bidirectional) + 1)
-        self.embedding = Embedding(
-            num_features, hidden_size, num_sources, activation, num_audio_channels
-        )
+        self.embedding = Embedding(num_features, hidden_size, num_sources, activation, num_audio_channels)
 
     def forward(self, data):
         mix_magnitude = data  # save for masking

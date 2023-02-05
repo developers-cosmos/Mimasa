@@ -1,9 +1,23 @@
 name: Labeler
-on: [pull_request, issues, issue_comment]
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, edited, synchronize]
 
 jobs:
-  label:
+  show-environment:
+    name: "Show environment variables"
+    runs-on: ubuntu-latest
 
+    steps:
+    - name: "Show environment variables"
+      run: |
+        env
+
+  add-label:
+    name: "Add labels to pull request & issues"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -11,7 +25,88 @@ jobs:
       pull-requests: write
 
     steps:
-    - uses: actions/labeler@v4
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.x
+
+    - name: Install dependencies
+      run: |
+        pip install requests
+
+    - name: Add label based on modified paths
+      uses: actions/labeler@v4
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         sync-labels: true
+
+    - name: Set branch name
+      run: |
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          branch_name="${{ github.event.pull_request.head.ref }}"
+        else
+          branch_name="${{ github.ref }}"
+        fi
+        echo "BRANCH_NAME=${branch_name}" >> $GITHUB_ENV
+
+    - name: Add label based on branch or PR title
+      if: github.event.pull_request
+      id: add_labels
+      env:
+        GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_HEAD_REF: ${{ env.BRANCH_NAME }}
+        GITHUB_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+        GITHUB_PULL_REQUEST_BODY: ${{ github.event.pull_request.body }}
+        GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+      run: |
+        python .github/add_labels.py
+
+    # - name: Add label based on branch or PR title
+    #   if: steps.add_labels.outputs.exit_code == 0 && github.event.pull_request
+    #   uses: actions-ecosystem/action-add-labels@v1
+    #   with:
+    #     labels: ${{ env.LABELS }}
+    # echo "BRANCH_NAME=$(echo "${{ github.ref  }}" | sed "s/refs\/heads\///")" >> $GITHUB_ENV
+    # echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+    # echo "PR_BODY=${{ github.event.pull_request.body }}" >> $GITHUB_ENV
+    # echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
+    # echo "REPO=${{ github.repository }}" >> $GITHUB_ENV
+    # echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+    - name: Find suitable labels for Issues
+      if: github.event.issue
+      id: add_labels_for_issues
+      run: |
+        echo "ISSUE_TITLE=${{ github.event.issue.title }}" >> $GITHUB_ENV
+        echo "ISSUE_BODY=${{ github.event.issue.body }}" >> $GITHUB_ENV
+        echo "LABELS=$(
+          if [[ "${{ env.ISSUE_TITLE }}" =~ 'bug' ]] ||
+            [[ "${{ env.ISSUE_BODY }}" =~ 'bug' ]]; then
+            echo 'bug,'
+          else
+            echo ''
+          fi
+          if [[ "${{ env.ISSUE_TITLE }}" =~ 'enhancement' ]] ||
+            [[ "${{ env.ISSUE_BODY }}" =~ 'enhancement' ]]; then
+            echo 'enhancement,'
+          else
+            echo ''
+          fi
+          if [[ "${{ env.ISSUE_TITLE }}" =~ 'question' ]] ||
+            [[ "${{ env.ISSUE_BODY }}" =~ 'question' ]]; then
+            echo 'question'
+          else
+            echo ''
+          fi
+        )" >> $GITHUB_ENV
+
+    - name: Add labels for Issues
+      if: steps.add_labels_for_issues.outputs.exit_code == 0 && github.event.issue
+      uses: actions-ecosystem/action-add-labels@v1
+      with:
+        labels: "${{ env.LABELS }}"

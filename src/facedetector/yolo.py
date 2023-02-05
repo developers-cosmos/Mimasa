@@ -42,9 +42,7 @@ class YOLO(FaceDetector):
         # construct a blob from the input frame and then perform a forward
         # pass of the YOLO object detector, giving us our bounding boxes and
         # associated probabilities
-        blob = cv2.dnn.blobFromImage(
-            frame, 1 / 255.0, (416, 16), swapRB=True, crop=False
-        )
+        blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 16), swapRB=True, crop=False)
         self.net.setInput(blob)
         layer_outputs = self.net.forward(self.net.getUnconnectedOutLayersNames())
 

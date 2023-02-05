@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 
+
 def main(target_release):
     # Open the input file and the output file
     with open("CHANGELOG.md", "r") as input_file, open("release_notes.md", "w", encoding="utf-8") as output_file:
@@ -18,6 +19,7 @@ def main(target_release):
             # If we're in the target release section, write the line to the output file
             if in_target_release:
                 output_file.write(line)
+
 
 if __name__ == "__main__":
     target_release = sys.argv[1]

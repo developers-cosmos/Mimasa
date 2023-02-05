@@ -63,7 +63,7 @@ jobs:
     - name: Get Changelog
       run: |
         version=$(echo "$(echo $GITHUB_REF | cut -d '/' -f 3 | cut -d 'v' -f 2)")
-        python get_release_notes.py $version
+        python .github/get_release_notes.py $version
 
     - name: Create Release
       id: create_release

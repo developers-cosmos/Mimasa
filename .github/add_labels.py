@@ -15,6 +15,7 @@ PULL_REQUEST_NUMBER = os.getenv("GITHUB_PULL_REQUEST_NUMBER") or os.getenv("PR_N
 PR_TITLE = PR_TITLE.lower()
 ACCESS_TOKEN = os.environ.get("MIMASA_ADD_LABELS") or os.environ.get("GITHUB_ACCESS_TOKEN")
 
+
 def check_environment():
     health_check = (
         PR_HEAD_REF is not None

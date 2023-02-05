@@ -3,7 +3,7 @@ import os
 import sys
 import requests
 
-BRANCH_FORMATS = ["feat", "bug", "chore", "release", "documentation"]
+BRANCH_FORMATS = ["feature", "bug", "chore", "release", "documentation"]
 
 # pull request details
 PR_HEAD_REF = os.getenv("BRANCH_NAME") or os.getenv("GITHUB_HEAD_REF")

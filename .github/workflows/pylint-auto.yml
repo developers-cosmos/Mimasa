@@ -99,7 +99,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pullRequest.number,
-                body: 'Linting errors observed and fixed 🎉. Please pull the latest changes!!!',
+                body: 'Linting errors observed and fixed 🎉. Please pull the latest changes!!',
               });
             }
           }

@@ -73,14 +73,14 @@ jobs:
 
     - name: Push changes
       id: push_changes
-      if: ${{ steps.commit_changes.outputs.${{ env.NO_COMMIT }} != 'true' }}
+      if: ${{ env.NO_COMMIT != 'true' }}
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ env.BRANCH_NAME }}
 
     - name: Comment on Pull Request
-      if: ${{ steps.commit_changes.outputs.${{ env.NO_COMMIT }} != 'true' }} && [ "${{ github.event_name }}" == "pull_request" ]
+      if: ${{ env.NO_COMMIT != 'true' }} && [ "${{ github.event_name }}" == "pull_request" ]
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -80,24 +80,26 @@ jobs:
         branch: ${{ env.BRANCH_NAME }}
 
     - name: Comment on Pull Request
-      if: (${{ env.NO_COMMIT }} == 'false') && (${{ github.event_name }} == 'pull_request')
+      if: (${{ env.NO_COMMIT }} != 'true') && (${{ github.event_name }} == 'pull_request')
       uses: actions/github-script@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         script: |
-          const result = await github.pulls.list({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            head: context.sha,
-          });
-
-          if (result.data.length) {
-            const pullRequest = result.data[0];
-            await github.issues.createComment({
+          if (process.env.NO_COMMIT !== 'true') {
+            const result = await github.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: pullRequest.number,
-              body: 'Linting errors observed and fixed 🎉. Please pull the latest changes!!!',
+              head: context.sha,
             });
+
+            if (result.data.length) {
+              const pullRequest = result.data[0];
+              await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pullRequest.number,
+                body: 'Linting errors observed and fixed 🎉. Please pull the latest changes!!!',
+              });
+            }
           }

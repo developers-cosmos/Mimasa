@@ -5,9 +5,11 @@ in a given video asynchronously
 """
 import asyncio
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from src.common.libraries import *
 from src.utils.utils import setup_logger, get_current_time
+
 
 class AsyncQueue:
     def __init__(self):
@@ -22,6 +24,7 @@ class AsyncQueue:
         async with self._lock:
             return self._queue[index]
 
+
 class AsyncFaceDetector:
     def __init__(self, video: Video):
         self.face_detector = None
@@ -31,6 +34,7 @@ class AsyncFaceDetector:
         self.video_capture = None
         self.video_writer = None
         self.total_frames = 0
+        self.num_workers = 4
 
         self._initialize_detector()
 
@@ -110,7 +114,7 @@ class AsyncFaceDetector:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
         return frame
 
-    async def _detect_face(self, frame_index, frames_queue, frame_with_faces):
+    async def _detect_face_task(self, frame_index, frames_queue, frame_with_faces):
         frame = await frames_queue.get()
         if frame is None:
             self.logger.debug("Queue is empty, breaking loop")
@@ -121,12 +125,44 @@ class AsyncFaceDetector:
         frame_with_faces[frame_index] = [frame, faces]
         self.logger.debug(f"Appended frame with faces to frame_with_faces at index {frame_index}")
 
-    async def _detect_faces(self, frames_queue, frame_with_faces):
+    async def _detect_faces_with_async_tasks(self, frames_queue, frame_with_faces):
         tasks = []
         for i in range(0, self.total_frames):
-            task = asyncio.create_task(self._detect_face(i, frames_queue, frame_with_faces))
+            task = asyncio.create_task(self._detect_face_task(i, frames_queue, frame_with_faces))
             tasks.append(task)
         await asyncio.gather(*tasks)
+
+    # async def _detect_faces_with_concurrent_futures(self, frames_queue, frame_with_faces):
+    #     with ThreadPoolExecutor(max_workers=self.num_workers) as executor:
+    #         frame = await frames_queue.get()
+    #         for frame_index in range(self.total_frames):
+    #         futures = [executor.submit(self._detect_face_future, frame_index, frames_queue) for frame_index, frame in enumerate(frames_queue)]
+    #         for future in as_completed(futures):
+    #             frame_index, result = future.result()
+    #             frame_with_faces[frame_index] = result
+    #     return frame_with_faces
+
+    def _detect_future_face(self, frame_index, frames_queue, frame_with_faces):
+        # TODO: check if get_nowait() can be used here
+        frame = frames_queue.get_nowait()
+        if frame is None:
+            self.logger.debug("Queue is empty, breaking loop")
+            return
+        # Detect faces in the frame
+        faces = self.face_detector.detect_faces(frame)
+        # Add the frame with faces to frame_with_faces
+        frame_with_faces[frame_index] = [frame, faces]
+        self.logger.debug(f"Appended frame with faces to frame_with_faces at index {frame_index}")
+
+    async def _detect_faces_with_concurrent_futures(self, frames_queue, frame_with_faces):
+        with ThreadPoolExecutor(max_workers=self.num_workers) as executor:
+            loop = asyncio.get_event_loop()
+            futures = [
+                loop.run_in_executor(executor, self._detect_future_face, i, frames_queue, frame_with_faces)
+                for i in range(self.total_frames)
+            ]
+            for f in asyncio.as_completed(futures):
+                await f
 
     def _write_to_output(self, frame_with_faces):
         """Write the frames with faces to an output video file"""
@@ -157,8 +193,8 @@ class AsyncFaceDetector:
             # Start the tasks to read frames, detect faces, and write to the output file
             await asyncio.gather(
                 self._read_frames(frames_queue),
-                self._detect_faces(frames_queue, frame_with_faces),
-                return_exceptions=True
+                self._detect_faces_with_concurrent_futures(frames_queue, frame_with_faces),
+                return_exceptions=True,
             )
             self._write_to_output(frame_with_faces)
         except Exception as e:

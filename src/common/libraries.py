@@ -13,3 +13,7 @@ import cv2
 import nussl
 import torch
 from pydub import AudioSegment
+
+from src.common.config import Config
+from src.common.video import Video
+from src.common.exceptions import FaceDetectionError

@@ -15,7 +15,8 @@ from subprocess import Popen, PIPE
 from src.common.config import Config
 from src.common.audio import Audio
 from src.common.video import Video
-from src.utils import utils
+from src.facedetector.utils import get_face_detector, get_async_face_detector, detect_faces_in_realtime
+from src.audioseparator.utils import get_audio_separator
 
 logging.basicConfig(
     stream=sys.stdout, level=Config.LOG_LEVEL, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -28,10 +29,14 @@ async def run_face_detection():
     """
     logging.info("Starting Face Detection")
     video = Video(Config.VIDEO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
-    video_detector = utils.get_detector(detector_type=Config.VIDEO_DETECTOR)
+    face_detector = get_face_detector(detector_type=Config.VIDEO_DETECTOR)
 
     try:
-        await utils.detect_faces_in_realtime(detector=video_detector, video=video)
+        if not Config.FACE_DETECTION_ASYNC_ENABLED:
+            await detect_faces_in_realtime(detector=face_detector, video=video)
+        else:
+            async_detector = get_async_face_detector(video=video)
+            await async_detector.detect_faces_in_realtime(detector=face_detector)
     except Exception as e:
         logging.error(f"Error in Face Detection: {e}")
 
@@ -42,7 +47,7 @@ async def run_audio_separation():
     """
     logging.info("Starting Audio Separation")
     audio = Audio(Config.AUDIO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
-    separator = utils.get_audio_separator(Config.AUDIO_SEPARATOR)
+    separator = get_audio_separator(Config.AUDIO_SEPARATOR)
 
     try:
         await separator.separate_vocals_and_music(audio=audio)

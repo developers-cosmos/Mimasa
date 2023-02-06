@@ -25,6 +25,7 @@ class Config:
 
     # common settings
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    FACE_DETECTION_ASYNC_ENABLED = True
 
     ORIGINAL_SAMPLING_RATE = 44100
     AUDIO_DEFAULT_FORMAT = "wav"
@@ -36,7 +37,7 @@ class Config:
     ## Video Options
     VIDEO_INPUT_PATH = DATA_FOLDER / "videos" / "inputs"
     VIDEO_OUTPUT_PATH = DATA_FOLDER / "videos" / "outputs"
-    VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input.mp4"
+    VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input2.mp4"
     VIDEO_FORMATS = ["mp4"]
     VIDEO_DETECTOR = "MTCNN"
 

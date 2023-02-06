@@ -9,6 +9,18 @@ import os
 from src.common.libraries import *
 from src.utils.utils import setup_logger, get_current_time
 
+class AsyncQueue:
+    def __init__(self):
+        self._queue = []
+        self._lock = asyncio.Lock()
+
+    async def insert_at(self, index, item):
+        async with self._lock:
+            self._queue.insert(index, item)
+
+    async def get_at(self, index):
+        async with self._lock:
+            return self._queue[index]
 
 class AsyncFaceDetector:
     def __init__(self, video: Video):
@@ -18,6 +30,7 @@ class AsyncFaceDetector:
         self.logger = None
         self.video_capture = None
         self.video_writer = None
+        self.total_frames = 0
 
         self._initialize_detector()
 
@@ -59,12 +72,12 @@ class AsyncFaceDetector:
 
             fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
             video_fps = (self.video_capture.get(cv2.CAP_PROP_FPS),)
-            total_frames = self.video_capture.get(cv2.CAP_PROP_FRAME_COUNT)
+            self.total_frames = int(self.video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
             height = self.video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
             width = self.video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 
             self.logger.info(f"Frame Per second: {video_fps}")
-            self.logger.info(f"Total Frames: {total_frames}")
+            self.logger.info(f"Total Frames: {self.total_frames}")
             self.logger.info(f"Height: {height} \nWidth: {width}")
 
             self.video_writer = cv2.VideoWriter(
@@ -88,29 +101,42 @@ class AsyncFaceDetector:
             await frames_queue.put(frame)
             self.logger.debug("Put frame on queue")
 
-    async def _detect_faces(self, frames_queue, frame_with_faces):
-        """Retrieve frames from the queue, detect faces in the frame, and add the frame with faces to frame_with_faces"""
-        while True:
-            frame = await frames_queue.get()
-            if frame is None:
-                self.logger.debug("Queue is empty, breaking loop")
-                break
-            # Detect faces in the frame
-            faces = self.face_detector.detect_faces(frame)
-            # Add the frame with faces to frame_with_faces
-            frame_with_faces.append([frame, faces])
-            self.logger.debug("Appended frame with faces to frame_with_faces")
+    def _draw_bounding_boxes(self, frame, faces):
+        for face in faces:
+            if self.face_detector.__class__.__name__ == "ViolaJones":
+                x, y, w, h = face
+            else:
+                x, y, w, h = face["box"]
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        return frame
 
-    async def _write_to_output(self, frame_with_faces):
+    async def _detect_face(self, frame_index, frames_queue, frame_with_faces):
+        frame = await frames_queue.get()
+        if frame is None:
+            self.logger.debug("Queue is empty, breaking loop")
+            return
+        # Detect faces in the frame
+        faces = self.face_detector.detect_faces(frame)
+        # Add the frame with faces to frame_with_faces
+        frame_with_faces[frame_index] = [frame, faces]
+        self.logger.debug(f"Appended frame with faces to frame_with_faces at index {frame_index}")
+
+    async def _detect_faces(self, frames_queue, frame_with_faces):
+        tasks = []
+        for i in range(0, self.total_frames):
+            task = asyncio.create_task(self._detect_face(i, frames_queue, frame_with_faces))
+            tasks.append(task)
+        await asyncio.gather(*tasks)
+
+    def _write_to_output(self, frame_with_faces):
         """Write the frames with faces to an output video file"""
-        for frame, faces in frame_with_faces:
-            for face in faces:
-                if self.face_detector.__class__.__name__ == "ViolaJones":
-                    x, y, w, h = face
-                else:
-                    x, y, w, h = face["box"]
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        for i, f in enumerate(frame_with_faces):
+            frame = f[0]
+            faces = f[1]
+            if faces:
+                self._draw_bounding_boxes(frame, faces)
             self.video_writer.write(frame)
+            self.logger.debug(f"Wrote frame {i} with faces to output video")
         self.video_writer.release()
         self.logger.info("Finished writing to output video")
 
@@ -126,14 +152,15 @@ class AsyncFaceDetector:
             frames_queue = asyncio.Queue()
 
             # Create a list to store the frames with faces
-            frame_with_faces = []
+            frame_with_faces = [None] * self.total_frames
 
             # Start the tasks to read frames, detect faces, and write to the output file
             await asyncio.gather(
                 self._read_frames(frames_queue),
                 self._detect_faces(frames_queue, frame_with_faces),
-                self._write_to_output(frame_with_faces), return_exceptions=True
+                return_exceptions=True
             )
+            self._write_to_output(frame_with_faces)
         except Exception as e:
             self.logger.error("Failed to detect faces from the given video file due to {}".format(str(e)))
             raise FaceDetectionError(str(e))

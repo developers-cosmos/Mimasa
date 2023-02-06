@@ -3,6 +3,8 @@
 This file contains utility functions that are commonly used throughout the application.
 """
 
+import asyncio
+from datetime import datetime
 from src.facedetector import viola_jones, mtcnn, ssd, yolo, retina_face
 from src.audioseparator import nussl_separator
 from src.common.libraries import *
@@ -10,36 +12,29 @@ from src.common.config import Config
 from src.common.video import Video
 from src.common.exceptions import FaceDetectionError
 
-logging.basicConfig(level=Config.LOG_LEVEL, format="%(asctime)s [%(levelname)s]: %(message)s")
+formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(funcName)s: %(message)s", "%d-%m-%Y %H:%M:%S")
 
+def get_current_time():
+    """Returns the current time as a string"""
+    return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-def get_current_time() -> str:
-    """Returns the current time"""
+def setup_logger(logger_name: str, log_file: str, log_level: int = logging.WARNING):
+    """To setup as many loggers"""
 
-    # get the current time
-    current_time = datetime.datetime.now()
+    handler = logging.FileHandler(log_file)
+    handler.setFormatter(formatter)
 
-    # format the time as a string
-    time_str = current_time.strftime("%Y-%m-%d_%H-%M-%S")
-    return time_str
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(log_level)
+    logger.addHandler(handler)
 
+    return logger
 
-def detect_faces_in_realtime(detector, video: Video):
-    """
-    This function is used to detect faces in real-time video feed.
-    It takes the detector object and video filename as input.
-    If video filename is not provided, it captures video feed from default camera.
+async def detect_faces_in_realtime(detector, video: Video):
+    log_file = f"{Config.LOGS_FOLDER_PATH}/face_detector.log"
+    logger = setup_logger("FaceDetector", log_file, Config.LOG_LEVEL)
 
-    Parameters:
-    detector (object): Face detection object, should be inherited from the FaceDetector ABC
-    video_input_filename (str, optional): filename of the video file. Defaults to None.
-
-    Returns:
-    None
-    """
     video_input_filename = video.get_filename()
-    print(type(video_input_filename))
-
     out_filename = (
         "FaceDetector".lower()
         + "_"
@@ -51,55 +46,67 @@ def detect_faces_in_realtime(detector, video: Video):
     )
     video_output_filename = Config.VIDEO_OUTPUT_PATH / out_filename
 
-    logging.info("Filename for input video: %s" % video_input_filename)
-    logging.info("Filename for output video: %s" % video_output_filename)
+    logger.info("Filename for input video: %s" % video_input_filename)
+    logger.info("Filename for output video: %s" % video_output_filename)
 
     cap = None
+    out = None
     write_to_file = os.path.exists(Config.VIDEO_OUTPUT_PATH)
     if write_to_file and os.path.exists(video_input_filename):
         cap = cv2.VideoCapture(str(video_input_filename))
-        fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        out = cv2.VideoWriter(str(video_output_filename), fourcc, 20.0, (640, 480))
-        logging.debug("Video is taken from input folder")
-    else:
+        fourcc = cv2.VideoWriter_fourcc(*"X264")
+        fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+        video_fps = (cap.get(cv2.CAP_PROP_FPS),)
+        total_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+        logger.info(
+            f"Frame Per second: {video_fps} \nTotal Frames: {total_frames} \n Height: {height} \nWidth: {width}"
+        )
+        out = cv2.VideoWriter(str(video_output_filename), apiPreference=0, fourcc=fourcc, fps=video_fps[0], frameSize=(int(width), int(height)))
+        logger.debug("Video is taken from input folder")
+    else:  # this might not work properly
         cap = cv2.VideoCapture(0)
-        logging.debug("Real time video capture started...")
+        logger.debug("Real time video capture started...")
 
     if not cap.isOpened():
-        logging.error("Error opening video")
+        logger.error("Error opening video")
         raise FaceDetectionError("Error opening video")
 
-    while True:
-        # Read a frame from the video
+    while cap.isOpened():
         ret, frame = cap.read()
 
-        # Detect faces in the frame
+        if not ret:
+            logger.warning("Error reading frame")
+            break
+
         faces = detector.detect_faces(frame)
 
-        # Draw a rectangle around the detected faces
-        for face in faces:
-            if detector.__class__.__name__ == "ViolaJones":
-                x, y, w, h = face
-            else:
-                x, y, w, h = face["box"]
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        if len(faces) == 0:
+            logger.debug("No faces detected")
+        else:
+            for face in faces:
+                if detector.__class__.__name__ == "ViolaJones":
+                    x, y, w, h = face
+                else:
+                    x, y, w, h = face["box"]
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
         if write_to_file:
-            # Write the frame to the output file
             out.write(frame)
         else:
-            # Display the frame
             cv2.imshow("Video", frame)
-
-            # Exit the loop if the 'q' key is pressed
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
-    # Release the video capture and close the window
+        await asyncio.sleep(0)
+
+    if out:
+        out.release()
     cap.release()
     cv2.destroyAllWindows()
 
-    logging.debug("Face Detection is completed successfully")
+    logger.debug("Face Detection is completed successfully")
 
 
 def get_detector(detector_type):

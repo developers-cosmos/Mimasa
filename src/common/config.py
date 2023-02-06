@@ -25,7 +25,6 @@ class Config:
 
     # common settings
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-    LOG_LEVEL = logging.DEBUG
 
     ORIGINAL_SAMPLING_RATE = 44100
     AUDIO_DEFAULT_FORMAT = "wav"
@@ -58,6 +57,10 @@ class Config:
 
     ##### NUSSL
     MODEL_NUSSL_PATH = MODELS_PATH / "nussl" / "checkpoints" / "best.model.pth"
+
+    # logging configuration
+    LOGS_FOLDER_PATH = BASE_DIR / "_logs"
+    LOG_LEVEL = logging.DEBUG
 
     # declare a private constructor to prevent instantiation of this class
     def __init__(self):

@@ -1,4 +1,4 @@
-numpy==1.23.* # NOTE: Upgrading to 1.24.* might cause problems
+numpy==1.24.* # NOTE: Upgrading to 1.24.* might cause problems
 opencv_python==4.7.*
 mtcnn==0.1.1
 pydub==0.25.1

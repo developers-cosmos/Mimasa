@@ -17,7 +17,6 @@ class SSD(FaceDetector):
         """
         Initialize the class by loading the pre-trained model
         """
-        super().__init__()
         self.detector = cv2.dnn.readNetFromCaffe("path/to/model.prototxt", "path/to/weights.caffemodel")
 
     def detect_faces(self, frame):

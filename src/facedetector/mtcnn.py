@@ -17,7 +17,6 @@ class MTCNNDetector(FaceDetector):
         """
         Initialize the class and call the parent class constructor
         """
-        super().__init__()
         self.detector = MTCNN()
 
     def detect_faces(self, frame):

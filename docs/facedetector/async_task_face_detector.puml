@@ -1,0 +1,39 @@
+@startuml
+
+title AsyncTaskFaceDetector - detect_faces_in_realtime
+
+participant async_task as "AsyncTaskFaceDetector"
+participant face_detector as "FaceDetector"
+participant video_capture as "VideoCapture"
+participant video_writer as "VideoWriter"
+
+async_task -> async_task : _initialize_face_detection(face_detector)
+face_detector -> face_detector : initialize()
+
+async_task -> video_capture : open(video_file)
+video_capture -> video_capture : open()
+
+async_task -> async_task : frames_queue = asyncio.Queue()
+
+async_task -> async_task : total_frames = get_total_frames(video_capture)
+video_capture -> video_capture : get_total_frames()
+
+async_task -> video_writer : initialize(video_file, fourcc, fps, (width, height))
+video_writer -> video_writer : initialize()
+
+async_task -> async_task : frame_with_faces = [None] * total_frames
+
+async_task -> async_task : read_frames_task = asyncio.create_task(_read_frames())
+async_task -> async_task : detect_faces_task = asyncio.create_task(_detect_faces_with_async_tasks())
+
+async_task -> async_task : tasks = [read_frames_task, detect_faces_task]
+async_task -> async_task : asyncio.gather(*tasks, return_exceptions=True)
+
+async_task -> async_task : _write_frames_to_output()
+video_writer -> video_writer : write(frame)
+
+async_task -> video_capture : release()
+async_task -> video_writer : release()
+async_task -> video_capture : destroyAllWindows()
+
+@enduml

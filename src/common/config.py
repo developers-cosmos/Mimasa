@@ -25,7 +25,7 @@ class Config:
 
     # common settings
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-    LOG_LEVEL = logging.DEBUG
+    FACE_DETECTION_ASYNC_ENABLED = True
 
     ORIGINAL_SAMPLING_RATE = 44100
     AUDIO_DEFAULT_FORMAT = "wav"
@@ -37,9 +37,11 @@ class Config:
     ## Video Options
     VIDEO_INPUT_PATH = DATA_FOLDER / "videos" / "inputs"
     VIDEO_OUTPUT_PATH = DATA_FOLDER / "videos" / "outputs"
-    VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input.mp4"
+    VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input1.mp4"
     VIDEO_FORMATS = ["mp4"]
-    VIDEO_DETECTOR = "MTCNN"
+    VIDEO_DETECTOR = "MTCNN"  # possible values: ["ViolaJones", "MTCNN", "SSD", "YOLO", "RetinaFace"]
+    VIDEO_ASYNC_FACE_DETECTOR = "ConcurrentFuturesFaceDetector"  # possible values: ["AsyncTaskFaceDetector", "ConcurrentFuturesFaceDetector", "AsyncIOAndCPUFaceDetector"]
+    FACE_DETECTOR_NUM_WORK_THREADS = 8
 
     ## Datasets
 
@@ -58,6 +60,10 @@ class Config:
 
     ##### NUSSL
     MODEL_NUSSL_PATH = MODELS_PATH / "nussl" / "checkpoints" / "best.model.pth"
+
+    # logging configuration
+    LOGS_FOLDER_PATH = BASE_DIR / "_logs"
+    LOG_LEVEL = logging.DEBUG
 
     # declare a private constructor to prevent instantiation of this class
     def __init__(self):

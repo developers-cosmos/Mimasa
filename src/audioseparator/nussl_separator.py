@@ -3,7 +3,6 @@
 NUSSL Class
 """
 
-import logging
 from src.audioseparator.audio_separator import AudioSeparator
 from src.audioseparator.mask_inference import MaskInference
 from src.common.audio import Audio
@@ -11,8 +10,6 @@ from src.common.libraries import nussl, torch
 from src.common.config import Config
 from src.utils import utils
 from src.common.exceptions import AudioSeparationError
-
-logging.basicConfig(level=Config.LOG_LEVEL, format="%(asctime)s [%(levelname)s]: %(message)s")
 
 
 class NUSSL(AudioSeparator):
@@ -26,6 +23,9 @@ class NUSSL(AudioSeparator):
         self.music_path = None
         self.estimates = {}
 
+        log_file = f"{Config.LOGS_FOLDER_PATH}/audio_separation.log"
+        self.logger = utils.setup_logger(NUSSL.__base__.__name__, log_file, Config.LOG_LEVEL)
+
         self._initialize_separator(model_path)
 
     def _initialize_separator(self, model_path: str = None):
@@ -33,7 +33,7 @@ class NUSSL(AudioSeparator):
         Initialize the NUSSL separator with the given model path and device
         """
         try:
-            logging.debug("NUSSL separator is loading...")
+            self.logger.debug("NUSSL separator is loading...")
 
             stft_params = nussl.STFTParams(window_length=512, hop_length=128)
             nf = stft_params.window_length // 2 + 1
@@ -44,16 +44,16 @@ class NUSSL(AudioSeparator):
             self.separator = nussl.separation.deep.DeepMaskEstimation(
                 nussl.AudioSignal(), model_path=model_path, device=Config.DEVICE
             )
-            logging.info("NUSSL separator initialized successfully")
+            self.logger.info("NUSSL separator initialized successfully")
         except Exception as e:
-            logging.error("Failed to initialize NUSSL separator due to {}".format(str(e)))
+            self.logger.error("Failed to initialize NUSSL separator due to {}".format(str(e)))
 
-    def _separate_audio(self):
+    async def _separate_audio(self):
         """
         Separate the audio signal into vocals and music
         """
         try:
-            logging.debug("AudioSeparation started...")
+            self.logger.debug("AudioSeparation started...")
             # Perform the audio separation
             estimates = self.separator()
 
@@ -62,16 +62,16 @@ class NUSSL(AudioSeparator):
                 "vocals": estimates[0],
                 "bass+drums+other": self.separator.audio_signal - estimates[0],
             }
-            logging.debug("Audio separated into vocals and music")
+            self.logger.debug("Audio separated into vocals and music")
         except Exception as e:
-            logging.error("Failed to separate audio due to {}".format(str(e)))
+            self.logger.error("Failed to separate audio due to {}".format(str(e)))
 
     def _write_estimates_to_files(self, destination: str = None):
         """
         Write the separated audio signals to destination
         """
         try:
-            logging.debug("Writing estimations to output files.")
+            self.logger.debug("Writing estimations to output files.")
 
             destination = destination or Config.AUDIO_OUTPUT_PATH
             filename = (
@@ -80,33 +80,35 @@ class NUSSL(AudioSeparator):
             self.vocals_path = f"{destination}/{filename}_speech.{Config.AUDIO_DEFAULT_FORMAT}"
             self.music_path = f"{destination}/{filename}_music.{Config.AUDIO_DEFAULT_FORMAT}"
 
-            logging.info("Filename for output vocals: %s" % self.vocals_path)
-            logging.info("Filename for output muisc: %s" % self.music_path)
+            self.logger.info("Filename for output vocals: %s" % self.vocals_path)
+            self.logger.info("Filename for output music: %s" % self.music_path)
 
             speech_signal = self.estimates["vocals"]
             speech_signal.write_audio_to_file(self.vocals_path)
 
             music_signal = self.estimates["bass+drums+other"]
             music_signal.write_audio_to_file(self.music_path)
-            logging.debug("Estimates written to files")
+            self.logger.debug("Estimates written to files")
         except Exception as e:
-            logging.error("Failed to write estimates to files due to {}".format(str(e)))
+            self.logger.error("Failed to write estimates to files due to {}".format(str(e)))
 
-    def separate_vocals_and_music(self, audio: Audio, destination: str = None):
+    async def separate_vocals_and_music(self, audio: Audio, destination: str = None):
         """
-        Separates the vocals and music from the audio
+        Separates the vocals and music from the audio asynchronously
         """
         try:
-            logging.info("Filename for input audio: %s" % audio.get_filename())
+            self.logger.info("Filename for input audio: %s" % audio.get_filename())
 
             # Set the audio signal to be separated
             self.separator.audio_signal = nussl.AudioSignal(
                 audio.get_filename(), sample_rate=Config.ORIGINAL_SAMPLING_RATE
             )
-            self._separate_audio()
+            # await asyncio.run_coroutine_threadsafe(self._separate_audio(), loop=asyncio.get_event_loop())
+            await self._separate_audio()
             self._write_estimates_to_files(destination)
         except Exception as e:
-            raise AudioSeparationError("Unable to separate Audio. Failed with exception: %s" % e)
+            self.logger.error("Failed to separate vocals and music due to {}".format(str(e)))
+            raise AudioSeparationError(e)
 
     def get_vocals(self) -> Audio:
         """

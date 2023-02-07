@@ -1,5 +1,7 @@
 # Mimasa Features
 
+## [User Stories](./STORIES.md)
+
 Below is a list of features that needs to be implemented for Mimasa.
 
 ## 1. User Sign-up & Login

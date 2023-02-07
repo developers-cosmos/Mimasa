@@ -1,4 +1,4 @@
-# Mimasa - EmoteTrans [A Real-time Multilingual Face Translator] [![Build Python Package](https://github.com/developers-cosmos/Mimasa/actions/workflows/python-build.yml/badge.svg?branch=main)](https://github.com/developers-cosmos/Mimasa/actions/workflows/python-build.yml) [![Release](https://github.com/developers-cosmos/Mimasa/actions/workflows/release.yml/badge.svg)](https://github.com/developers-cosmos/Mimasa/actions/workflows/release.yml)
+# [Mimasa - EmoteTrans [A Real-time Multilingual Face Translator]](https://github.com/developers-cosmos/Mimasa) [![Build Python Package](https://github.com/developers-cosmos/Mimasa/actions/workflows/python-build.yml/badge.svg?branch=main)](https://github.com/developers-cosmos/Mimasa/actions/workflows/python-build.yml) [![Release](https://github.com/developers-cosmos/Mimasa/actions/workflows/release.yml/badge.svg)](https://github.com/developers-cosmos/Mimasa/actions/workflows/release.yml)
 
 ## Overview
 

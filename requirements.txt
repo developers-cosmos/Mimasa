@@ -14,7 +14,7 @@ autopep8
 black
 
 # performance metric
-psutil
+psutil==5.9.*
 
 # below requirements are for audioseparator/tmp files
 # flerken==0.2.4.post4
@@ -22,3 +22,6 @@ psutil
 # librosa==0.9.2
 # moviepy==1.0.3
 # soundfile==0.11.0
+
+# testing
+matplotlib==3.6.*

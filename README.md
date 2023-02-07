@@ -13,7 +13,7 @@ For the latest updates and news regarding Mimasa, please follow the [Announcemen
 ## Table of Contents
 
 - [Idea](./docs/idea/concept.md)
-  - [Detailed Steps](./docs/docs/idea/concept.md/#steps)
+  - [Detailed Steps](./docs/idea/concept.md/#steps)
   - [Tools & Technologies](./docs/idea/concept.md/#tools--technologies)
   - [Steps With Examples](./docs/idea/concept.md/#overview)
 - [Design](./docs/design/DESIGN.md)

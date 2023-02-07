@@ -67,7 +67,7 @@ source venv/bin/activate
 5.Install the required packages using pip.
 
 ```shell
-ip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 6.Launch the Mimasa application.

@@ -18,7 +18,6 @@ class RetinaFace(FaceDetector):
         """
         Initialize the class and set the model path
         """
-        super().__init__()
         self.net = cv2.dnn.readNet(model_path)
 
     def detect_faces(self, frame):

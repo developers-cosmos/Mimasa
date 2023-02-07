@@ -37,9 +37,11 @@ class Config:
     ## Video Options
     VIDEO_INPUT_PATH = DATA_FOLDER / "videos" / "inputs"
     VIDEO_OUTPUT_PATH = DATA_FOLDER / "videos" / "outputs"
-    VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input2.mp4"
+    VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input1.mp4"
     VIDEO_FORMATS = ["mp4"]
-    VIDEO_DETECTOR = "MTCNN"
+    VIDEO_DETECTOR = "MTCNN"  # possible values: ["ViolaJones", "MTCNN", "SSD", "YOLO", "RetinaFace"]
+    VIDEO_ASYNC_FACE_DETECTOR = "ConcurrentFuturesFaceDetector"  # possible values: ["AsyncTaskFaceDetector", "ConcurrentFuturesFaceDetector", "AsyncIOAndCPUFaceDetector"]
+    FACE_DETECTOR_NUM_WORK_THREADS = 8
 
     ## Datasets
 

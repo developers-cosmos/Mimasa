@@ -4,16 +4,43 @@ This file contains utility functions that are commonly used for face detection.
 """
 
 import asyncio
-from src.facedetector import viola_jones, mtcnn, ssd, yolo, retina_face, async_face_detctor
+from src.facedetector import viola_jones, mtcnn, ssd, yolo, retina_face
+from src.facedetector import async_task_face_detector, concurrent_futures_face_detector, async_io_and_cpu_face_detector
 from src.common.libraries import *
 from src.utils.utils import setup_logger, get_current_time
 
 formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(funcName)s: %(message)s", "%d-%m-%Y %H:%M:%S")
 
 
-def get_async_face_detector(video: Video):
-    """Returns an instance of AsyncFaceDetector"""
-    return async_face_detctor.AsyncFaceDetector(video)
+"""
+Below are the performance metrics of face detection without asynchronous approach:
+
+1. Input video details: video of length 6 seconds
+
+Frame Per second: (23.976023976023978,)
+Total Frames: 146
+Height: 720.0, Width: 1280.0
+num_of_worker_threads: 4
+
+Peformance:
+
+Execution time of 'main': 79.56 seconds
+Memory usage of 'main': 700.83 MB
+Average CPU usage of 'main': 39.94%
+----------------------------------------------------------------
+2. Input video details: video of length 16 seconds
+
+Frame Per second: (23.976023976023978,)
+Total Frames: 388
+Height: 720.0, Width: 1280.0
+number of worker threads: 8
+
+Performance:
+
+Execution time of 'main': 367.57 seconds
+Memory usage of 'main': 1474.86 MB
+Average CPU usage of 'main': 19.52%
+"""
 
 
 async def detect_faces_in_realtime(detector, video: Video):
@@ -127,3 +154,27 @@ def get_face_detector(detector_type):
         # return retina_face.RetinaFace()
     else:
         raise ValueError(f"Invalid detector type: {detector_type}")
+
+
+def get_async_face_detector(approach_type: str, video: Video):
+    """
+    This function is used to get the async face detector object based on the async_face_detector.
+    It takes async_face_detector as input and returns the detector object
+
+    Parameters:
+    approach_type (str): type of detector. It should be one of the following
+    ["AsyncTaskFaceDetector", "ConcurrentFuturesFaceDetector", "AsyncIOAndCPUFaceDetector"]
+
+    video (Video): video object with input filename set.
+
+    Returns:
+    object: async_face_detector object
+    """
+    if approach_type == "AsyncTaskFaceDetector":
+        return async_task_face_detector.AsyncTaskFaceDetector(video=video)
+    elif approach_type == "ConcurrentFuturesFaceDetector":
+        return concurrent_futures_face_detector.ConcurrentFuturesFaceDetector(video=video)
+    elif approach_type == "AsyncIOAndCPUFaceDetector":
+        return async_io_and_cpu_face_detector.AsyncIOAndCPUFaceDetector(video=video)
+    else:
+        raise ValueError("Invalid approach for async face detector is specified")

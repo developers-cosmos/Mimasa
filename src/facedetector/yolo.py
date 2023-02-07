@@ -24,7 +24,6 @@ class YOLO(FaceDetector):
     """
 
     def __init__(self, model_path, confidence, threshold):
-        super().__init__()
         self.net = cv2.dnn.readNetFromDarknet(model_path, "cfg/yolov3.cfg")
         self.confidence = confidence
         self.threshold = threshold

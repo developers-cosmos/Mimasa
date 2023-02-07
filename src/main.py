@@ -15,7 +15,12 @@ from subprocess import Popen, PIPE
 from src.common.config import Config
 from src.common.audio import Audio
 from src.common.video import Video
-from src.facedetector.utils import get_face_detector, get_async_face_detector, detect_faces_in_realtime
+from src.utils.utils import track_performance
+from src.facedetector.utils import (
+    get_face_detector,
+    get_async_face_detector,
+    detect_faces_in_realtime,
+)
 from src.audioseparator.utils import get_audio_separator
 
 logging.basicConfig(
@@ -35,10 +40,11 @@ async def run_face_detection():
         if not Config.FACE_DETECTION_ASYNC_ENABLED:
             await detect_faces_in_realtime(detector=face_detector, video=video)
         else:
-            async_detector = get_async_face_detector(video=video)
-            await async_detector.detect_faces_in_realtime(detector=face_detector)
+            async_detector = get_async_face_detector(approach_type=Config.VIDEO_ASYNC_FACE_DETECTOR, video=video)
+            await async_detector.detect_faces_in_realtime(face_detector=face_detector)
     except Exception as e:
         logging.error(f"Error in Face Detection: {e}")
+        raise
 
 
 async def run_audio_separation():
@@ -55,12 +61,13 @@ async def run_audio_separation():
         logging.error(f"Error in Audio Separation: {e}")
 
 
+@track_performance
 async def main():
     """
     Main function to run the async functions concurrently
     """
     input_coroutines = [run_face_detection(), run_audio_separation()]
-    await asyncio.gather(*input_coroutines, return_exceptions=True)
+    await asyncio.gather(*input_coroutines)
 
 
 def setup():
@@ -70,16 +77,20 @@ def setup():
     else:
         logs = glob.glob(f"{Config.LOGS_FOLDER_PATH}/*")
         for log in logs:
-            os.remove(log)
+            if os.path.exists(log):
+                try:
+                    os.remove(log)
+                except:
+                    pass
 
-    # redirect stderr, stdout to a file
-    saveerr = sys.stderr
-    fsock1 = open(f"{Config.LOGS_FOLDER_PATH}/stderr.log", "w")
-    sys.stderr = fsock1
+    # Uncomment the following to redirect stderr, stdout to a file
+    # saveerr = sys.stderr
+    # fsock1 = open(f"{Config.LOGS_FOLDER_PATH}/stderr.log", "w")
+    # sys.stderr = fsock1
 
-    saveout = sys.stdout
-    fsock2 = open(f"{Config.LOGS_FOLDER_PATH}/stdout.log", "w")
-    sys.stdout = fsock2
+    # saveout = sys.stdout
+    # fsock2 = open(f"{Config.LOGS_FOLDER_PATH}/stdout.log", "w")
+    # sys.stdout = fsock2
 
 
 if __name__ == "__main__":

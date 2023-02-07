@@ -24,7 +24,7 @@ class NUSSL(AudioSeparator):
         self.estimates = {}
 
         log_file = f"{Config.LOGS_FOLDER_PATH}/audio_separation.log"
-        self.logger = utils.setup_logger("FaceDetector", log_file, Config.LOG_LEVEL)
+        self.logger = utils.setup_logger(NUSSL.__base__.__name__, log_file, Config.LOG_LEVEL)
 
         self._initialize_separator(model_path)
 

@@ -13,6 +13,9 @@ pylint-plugin-utils
 autopep8
 black
 
+# performance metric
+psutil
+
 # below requirements are for audioseparator/tmp files
 # flerken==0.2.4.post4
 # gtts==2.3.1

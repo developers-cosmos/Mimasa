@@ -2,14 +2,12 @@
 """
 This file contains utility functions that are commonly used throughout the application.
 """
-
-import os
 import time
 import logging
 from datetime import datetime
-from src.common.config import Config
+from src.common.logger import Logger
 
-formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(funcName)s: %(message)s", "%d-%m-%Y %H:%M:%S")
+formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(funcName)s: %(message)s", "%d-%m-%Y %H:%M:%S")
 
 
 def get_current_time():
@@ -32,10 +30,8 @@ def setup_logger(logger_name: str, log_file: str, log_level: int = logging.WARNI
 
 def track_performance(func):
     """a decorator that can be applied to any function to track its execution time"""
-
-    logger = setup_logger(
-        "Performance Tracker", f"{Config.LOGS_FOLDER_PATH}/performance.log", log_level=Config.LOG_LEVEL
-    )
+    logger = Logger(name="PerformanceTracker")
+    logger.add_file_handler("performance.log")
 
     async def wrapper(*args, **kwargs):
         import psutil

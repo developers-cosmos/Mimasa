@@ -6,7 +6,6 @@ Config Class
 from pathlib import Path
 import os
 import torch
-import logging
 
 
 class Config:
@@ -15,9 +14,9 @@ class Config:
     # the application is expected to run from root directory
     BASE_DIR = Path(os.getcwd())
 
-    # api keys for Mimasa
-    API_KEY = "your-api-key"
-    API_URL = "https://api.mimasa.com"
+    # # api keys for Mimasa
+    # API_KEY = "your-api-key"
+    # API_URL = "https://api.mimasa.com"
 
     # user inputs
     INPUT_LANGUAGE = "en-US"
@@ -37,11 +36,11 @@ class Config:
     ## Video Options
     VIDEO_INPUT_PATH = DATA_FOLDER / "videos" / "inputs"
     VIDEO_OUTPUT_PATH = DATA_FOLDER / "videos" / "outputs"
-    VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input1.mp4"
+    VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input2.mp4"
     VIDEO_FORMATS = ["mp4"]
     VIDEO_DETECTOR = "MTCNN"  # possible values: ["ViolaJones", "MTCNN", "SSD", "YOLO", "RetinaFace"]
     VIDEO_ASYNC_FACE_DETECTOR = "ConcurrentFuturesFaceDetector"  # possible values: ["AsyncTaskFaceDetector", "ConcurrentFuturesFaceDetector", "AsyncIOAndCPUFaceDetector"]
-    FACE_DETECTOR_NUM_WORK_THREADS = 8
+    FACE_DETECTOR_NUM_WORK_THREADS = 3  # min(32, (os.cpu_count() or 1) + 4)
 
     ## Datasets
 
@@ -63,7 +62,9 @@ class Config:
 
     # logging configuration
     LOGS_FOLDER_PATH = BASE_DIR / "_logs"
-    LOG_LEVEL = logging.DEBUG
+    LOG_LEVEL = "debug"  # possible options: ["debug", "info", "warning", "error", "critical",]
+    REDIRECT_STDOUT_TO_FILE = True
+    REDIRECT_STDERR_TO_FILE = False
 
     # declare a private constructor to prevent instantiation of this class
     def __init__(self):

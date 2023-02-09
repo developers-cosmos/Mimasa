@@ -65,6 +65,9 @@ class ConcurrentFuturesFaceDetector:
             if not attr.startswith("__"):
                 setattr(self, attr, getattr(async_detector, attr))
 
+        self.logger = Logger(name=self.__class__.__name__)
+        self.logger.add_file_handler("face_detection.log")
+
     async def _read_frames(self):
         """Read frames from the input video stream and put them on the queue"""
         while True:
@@ -126,7 +129,7 @@ class ConcurrentFuturesFaceDetector:
         try:
             self.frame_with_faces = [None] * self.total_frames
 
-            logging.info("Face detection started...")
+            self.logger.info("Face detection started...")
 
             # Start the tasks to read frames, detect faces, and write to the output to video file
             await asyncio.gather(

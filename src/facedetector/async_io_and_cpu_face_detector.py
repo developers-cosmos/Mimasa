@@ -80,6 +80,9 @@ class AsyncIOAndCPUFaceDetector:
             if not attr.startswith("__"):
                 setattr(self, attr, getattr(async_detector, attr))
 
+        self.logger = Logger(name=self.__class__.__name__)
+        self.logger.add_file_handler("face_detection.log")
+
     async def _read_frames(self):
         """Read frames from the input video stream and put them on the queue"""
         while True:
@@ -149,7 +152,7 @@ class AsyncIOAndCPUFaceDetector:
         for frame in self.final_frames:
             self.video_writer.write(frame)
         self.video_writer.release()
-        logging.debug("Finished writing video to output file")
+        self.logger.debug("Finished writing video to output file")
 
     async def detect_faces_in_realtime(self, async_detector, face_detector):
         """
@@ -159,7 +162,7 @@ class AsyncIOAndCPUFaceDetector:
         try:
             self.final_frames = [None] * self.total_frames
 
-            logging.info("Face detection started...")
+            self.logger.info("Face detection started...")
             tasks = [
                 self._read_frames(),
                 asyncio.ensure_future(self._detect_faces_cpu_bound()),

@@ -2,12 +2,11 @@
 """
 This file contains utility functions that are commonly used throughout the application.
 """
+import os
 import time
 import logging
 from datetime import datetime
 from src.common.logger import Logger
-
-formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(funcName)s: %(message)s", "%d-%m-%Y %H:%M:%S")
 
 
 def get_current_time():
@@ -15,9 +14,13 @@ def get_current_time():
     return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 
+def get_filename_from_path(path):
+    return os.path.basename(path)
+
+
 def setup_logger(logger_name: str, log_file: str, log_level: int = logging.WARNING):
     """To setup as many loggers"""
-
+    formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(funcName)s: %(message)s", "%d-%m-%Y %H:%M:%S")
     handler = logging.FileHandler(log_file)
     handler.setFormatter(formatter)
 

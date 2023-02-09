@@ -8,6 +8,8 @@ from src.common.audio import Audio
 
 class AudioSeparator:
     """
+    Class for separating speech and music in an audio file
+
     AudioSeparator interface with following functionalities:
         separateVocalsAndMusic(audio: Audio)
         getVocals(): Audio

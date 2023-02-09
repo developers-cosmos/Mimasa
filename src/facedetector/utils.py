@@ -156,7 +156,7 @@ def get_face_detector(detector_type):
         raise ValueError(f"Invalid detector type: {detector_type}")
 
 
-def get_async_face_detector(approach_type: str, video: Video):
+def get_async_face_detector(approach_type: str):
     """
     This function is used to get the async face detector object based on the async_face_detector.
     It takes async_face_detector as input and returns the detector object
@@ -165,16 +165,16 @@ def get_async_face_detector(approach_type: str, video: Video):
     approach_type (str): type of detector. It should be one of the following
     ["AsyncTaskFaceDetector", "ConcurrentFuturesFaceDetector", "AsyncIOAndCPUFaceDetector"]
 
-    video (Video): video object with input filename set.
-
     Returns:
     object: async_face_detector object
     """
     if approach_type == "AsyncTaskFaceDetector":
-        return async_task_face_detector.AsyncTaskFaceDetector(video=video)
+        return async_task_face_detector.AsyncTaskFaceDetector()
     elif approach_type == "ConcurrentFuturesFaceDetector":
-        return concurrent_futures_face_detector.ConcurrentFuturesFaceDetector(video=video)
+        return concurrent_futures_face_detector.ConcurrentFuturesFaceDetector()
     elif approach_type == "AsyncIOAndCPUFaceDetector":
-        return async_io_and_cpu_face_detector.AsyncIOAndCPUFaceDetector(video=video)
+        return async_io_and_cpu_face_detector.AsyncIOAndCPUFaceDetector()
     else:
-        raise ValueError("Invalid approach for async face detector is specified")
+        raise ValueError(
+            f"VIDEO_ASYNC_FACE_DETECTOR: {approach_type} value is not a supported asynchronous face detection approach."
+        )

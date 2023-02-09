@@ -28,7 +28,7 @@ Peformance:
 
 Execution time of 'main': 93.81 seconds
 Memory usage of 'main': 639.89 MB
-CPU usage of 'main': 0.00%
+CPU usage of 'main': 20.18%
 ----------------------------------------------------------------------------------------------
 2. Input video details: video of length 16 seconds
 
@@ -111,7 +111,7 @@ class AsyncTaskFaceDetector:
         """
         self._initialize(async_detector, face_detector)
         try:
-            self.final_frames = [None] * self.total_frames
+            self.frame_with_faces = [None] * self.total_frames
 
             # Start the tasks to read frames, detect faces, and write to the output to video file
             await asyncio.gather(

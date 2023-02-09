@@ -12,7 +12,7 @@ concurrent_futures = {"6 seconds": {"memory": 648.14, "cpu": 33.86}, "16 seconds
 
 asyncio_and_cpu = {"6 seconds": {"memory": 643.96, "cpu": 22.99}, "16 seconds": {"memory": 1588.00, "cpu": 41.65}}
 
-async_task = {"6 seconds": {"memory": 639.89, "cpu": 0.00}, "16 seconds": {"memory": 1445.79, "cpu": 20.62}}
+async_task = {"6 seconds": {"memory": 639.89, "cpu": 20.18}, "16 seconds": {"memory": 1445.79, "cpu": 20.62}}
 
 without_async = {"6 seconds": {"memory": 700.83, "cpu": 39.94}, "16 seconds": {"memory": 1474.86, "cpu": 19.52}}
 

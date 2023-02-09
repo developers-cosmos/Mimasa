@@ -47,11 +47,10 @@ Average CPU usage of 'main': 31.45%
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
-from src.facedetector.async_face_detector import AsyncFaceDetector
 from src.common.libraries import *
 
 
-class ConcurrentFuturesFaceDetector(AsyncFaceDetector):
+class ConcurrentFuturesFaceDetector:
     def __init__(self):
         self.face_detector = None
 
@@ -125,7 +124,7 @@ class ConcurrentFuturesFaceDetector(AsyncFaceDetector):
         """
         self._initialize(async_detector, face_detector)
         try:
-            self.final_frames = [None] * self.total_frames
+            self.frame_with_faces = [None] * self.total_frames
 
             # Start the tasks to read frames, detect faces, and write to the output to video file
             await asyncio.gather(

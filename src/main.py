@@ -17,13 +17,9 @@ from src.common import constants
 from src.common.audio import Audio
 from src.common.video import Video
 from src.utils.utils import track_performance
-from src.facedetector.utils import (
-    get_face_detector,
-    detect_faces_in_realtime,
-)
+from src.facedetector.utils import get_face_detector, detect_faces_in_realtime, get_async_face_detector
 from src.audioseparator.utils import get_audio_separator
 from src.facedetector.async_face_detector import AsyncFaceDetector
-from src.facedetector.async_io_and_cpu_face_detector import AsyncIOAndCPUFaceDetector
 
 logging.basicConfig(
     stream=sys.stdout, level=Config.LOG_LEVEL, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -42,13 +38,8 @@ async def run_face_detection():
         if not Config.FACE_DETECTION_ASYNC_ENABLED:
             await detect_faces_in_realtime(detector=face_detector, video=video)
         else:
-            if Config.VIDEO_ASYNC_FACE_DETECTOR not in constants.VIDEO_ASYNC_FACE_DETECTORS_LIST:
-                raise ValueError(
-                    f"VIDEO_ASYNC_FACE_DETECTOR: {Config.VIDEO_ASYNC_FACE_DETECTOR} value is not a supported asynchronous face detection approach. Supported approaches: {constants.VIDEO_ASYNC_FACE_DETECTORS_LIST}"
-                )
             async_face_detector = AsyncFaceDetector(video=video)
-            async_approach_ctor = globals()[Config.VIDEO_ASYNC_FACE_DETECTOR]
-            async_approach_type = async_approach_ctor()
+            async_approach_type = get_async_face_detector(Config.VIDEO_ASYNC_FACE_DETECTOR)
             await async_face_detector.detect_faces_in_realtime(
                 async_approach=async_approach_type, face_detector=face_detector
             )
@@ -76,7 +67,7 @@ async def main():
     """
     Main function to run the async functions concurrently
     """
-    input_coroutines = [run_face_detection(), run_audio_separation()]
+    input_coroutines = [run_face_detection()]
     await asyncio.gather(*input_coroutines)
 
 

@@ -66,7 +66,7 @@ class Logger:
         self.log_file_base = f"{Config.LOGS_FOLDER_PATH}"
         self.disabled_levels = disabled_levels or []
         if formatter is None:
-            formatter = logging.Formatter("[%(asctime)s] [%(levelname)-8s] %(message)s", "%d-%m-%Y %H:%M:%S")
+            formatter = logging.Formatter("[%(asctime)s] [%(levelname)-8s] [%(name)s] %(message)s", "%d-%m-%Y %H:%M:%S")
         if handlers is None:
             handlers = [logging.StreamHandler()]
         for handler in handlers:
@@ -76,7 +76,7 @@ class Logger:
 
     def add_file_handler(self, filename, level="debug", max_bytes=10485760, backup_count=5, formatter=None):
         if formatter is None:
-            formatter = logging.Formatter("[%(asctime)s] [%(levelname)-8s] %(message)s", "%d-%m-%Y %H:%M:%S")
+            formatter = logging.Formatter("[%(asctime)s] [%(levelname)-8s] [%(name)s] %(message)s", "%d-%m-%Y %H:%M:%S")
 
         filename = f"{self.log_file_base}/{filename}"
         handler = handlers.RotatingFileHandler(filename, maxBytes=max_bytes, backupCount=backup_count)

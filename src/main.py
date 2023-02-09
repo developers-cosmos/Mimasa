@@ -65,7 +65,10 @@ async def main():
     """
     Main function to run the async functions concurrently
     """
-    input_coroutines = [run_face_detection(), run_audio_separation()]
+    input_coroutines = [
+        run_face_detection(),
+        run_audio_separation(),
+    ]
     await asyncio.gather(*input_coroutines)
 
 

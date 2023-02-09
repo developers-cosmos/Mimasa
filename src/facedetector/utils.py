@@ -7,9 +7,8 @@ import asyncio
 from src.facedetector import viola_jones, mtcnn, ssd, yolo, retina_face
 from src.facedetector import async_task_face_detector, concurrent_futures_face_detector, async_io_and_cpu_face_detector
 from src.common.libraries import *
-from src.utils.utils import setup_logger, get_current_time
-
-formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(funcName)s: %(message)s", "%d-%m-%Y %H:%M:%S")
+from src.utils.utils import get_current_time
+from src.common.logger import Logger
 
 
 """
@@ -44,8 +43,8 @@ Average CPU usage of 'main': 19.52%
 
 
 async def detect_faces_in_realtime(detector, video: Video):
-    log_file = f"{Config.LOGS_FOLDER_PATH}/face_detector.log"
-    logger = setup_logger("FaceDetector", log_file, Config.LOG_LEVEL)
+    logger = Logger(name="FaceDetector")
+    logger.add_file_handler("face_detection.log")
 
     video_input_filename = video.get_filename()
     out_filename = (

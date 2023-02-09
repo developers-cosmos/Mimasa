@@ -8,12 +8,11 @@ initializing all necessary components and executing the main logic of the progra
 import os
 import glob
 import sys
-import logging
 import asyncio
 from subprocess import Popen, PIPE
 
 from src.common.config import Config
-from src.common import constants
+from src.common.logger import Logger
 from src.common.audio import Audio
 from src.common.video import Video
 from src.utils.utils import track_performance
@@ -21,16 +20,15 @@ from src.facedetector.utils import get_face_detector, detect_faces_in_realtime, 
 from src.audioseparator.utils import get_audio_separator
 from src.facedetector.async_face_detector import AsyncFaceDetector
 
-logging.basicConfig(
-    stream=sys.stdout, level=Config.LOG_LEVEL, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+main_logger = Logger("MAIN")
+main_logger.add_file_handler("main.log")
 
 
 async def run_face_detection():
     """
     Async function to run face detection logic
     """
-    logging.info("Starting Face Detection")
+    main_logger.info("Starting Face Detection")
     video = Video(Config.VIDEO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
     face_detector = get_face_detector(detector_type=Config.VIDEO_DETECTOR)
 
@@ -44,7 +42,7 @@ async def run_face_detection():
                 async_approach=async_approach_type, face_detector=face_detector
             )
     except Exception as e:
-        logging.error(f"Error in Face Detection: {e}")
+        main_logger.error(f"Error in Face Detection: {e}")
         raise
 
 
@@ -52,14 +50,14 @@ async def run_audio_separation():
     """
     Async function to run audio separation logic
     """
-    logging.info("Starting Audio Separation")
+    main_logger.info("Starting Audio Separation")
     audio = Audio(Config.AUDIO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
     separator = get_audio_separator(Config.AUDIO_SEPARATOR)
 
     try:
         await separator.separate_vocals_and_music(audio=audio)
     except Exception as e:
-        logging.error(f"Error in Audio Separation: {e}")
+        main_logger.error(f"Error in Audio Separation: {e}")
 
 
 @track_performance
@@ -67,7 +65,7 @@ async def main():
     """
     Main function to run the async functions concurrently
     """
-    input_coroutines = [run_face_detection()]
+    input_coroutines = [run_face_detection(), run_audio_separation()]
     await asyncio.gather(*input_coroutines)
 
 
@@ -84,16 +82,28 @@ def setup():
                 except:
                     pass
 
-    # Uncomment the following to redirect stderr, stdout to a file
-    # saveerr = sys.stderr
-    # fsock1 = open(f"{Config.LOGS_FOLDER_PATH}/stderr.log", "w")
-    # sys.stderr = fsock1
+    if Config.REDIRECT_STDOUT_TO_FILE:
+        global saveout
+        saveout = sys.stdout
+        fsock2 = open(f"{Config.LOGS_FOLDER_PATH}/stdout.log", "w")
+        sys.stdout = fsock2
 
-    # saveout = sys.stdout
-    # fsock2 = open(f"{Config.LOGS_FOLDER_PATH}/stdout.log", "w")
-    # sys.stdout = fsock2
+    if Config.REDIRECT_STDERR_TO_FILE:
+        global saveerr
+        saveerr = sys.stderr
+        fsock1 = open(f"{Config.LOGS_FOLDER_PATH}/stderr.log", "w")
+        sys.stderr = fsock1
+
+
+def teardown():
+    if Config.REDIRECT_STDOUT_TO_FILE:
+        sys.stdout = saveout
+
+    if Config.REDIRECT_STDERR_TO_FILE:
+        sys.stderr = saveerr
 
 
 if __name__ == "__main__":
     setup()
     asyncio.run(main())
+    teardown()

@@ -113,6 +113,8 @@ class AsyncTaskFaceDetector:
         try:
             self.frame_with_faces = [None] * self.total_frames
 
+            logging.info("Face detection started...")
+
             # Start the tasks to read frames, detect faces, and write to the output to video file
             await asyncio.gather(
                 self._read_frames(),

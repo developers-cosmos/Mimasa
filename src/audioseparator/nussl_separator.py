@@ -10,6 +10,7 @@ from src.common.libraries import nussl, torch
 from src.common.config import Config
 from src.utils import utils
 from src.common.exceptions import AudioSeparationError
+from src.common.logger import Logger
 
 
 class NUSSL(AudioSeparator):
@@ -23,8 +24,8 @@ class NUSSL(AudioSeparator):
         self.music_path = None
         self.estimates = {}
 
-        log_file = f"{Config.LOGS_FOLDER_PATH}/audio_separation.log"
-        self.logger = utils.setup_logger(NUSSL.__base__.__name__, log_file, Config.LOG_LEVEL)
+        self.logger = Logger(name=self.__class__.__name__)
+        self.logger.add_file_handler("audio_separation.log")
 
         self._initialize_separator(model_path)
 

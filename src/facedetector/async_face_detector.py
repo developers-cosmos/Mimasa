@@ -6,8 +6,9 @@ in a given video asynchronously
 import asyncio
 import os
 from src.common.libraries import *
-from src.utils.utils import setup_logger, get_current_time
+from src.utils.utils import get_current_time
 from src.common.config import Config
+from src.common.logger import Logger
 
 
 class AsyncFaceDetector:
@@ -41,8 +42,8 @@ class AsyncFaceDetector:
             self.output_file = Config.VIDEO_OUTPUT_PATH / out_filename
 
             # setup logging
-            log_file = f"{Config.LOGS_FOLDER_PATH}/face_detector.log"
-            self.logger = setup_logger(self.__class__.__name__, log_file, Config.LOG_LEVEL)
+            self.logger = Logger(name=self.__class__.__name__)
+            self.logger.add_file_handler("face_detection.log")
             self.logger.debug("AsyncFaceDetector is initialized successfully")
         else:
             self.logger.error("Failed to initialize face detection. Check the input & output vide paths")

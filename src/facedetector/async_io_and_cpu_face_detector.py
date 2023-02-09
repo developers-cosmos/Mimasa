@@ -159,6 +159,7 @@ class AsyncIOAndCPUFaceDetector:
         try:
             self.final_frames = [None] * self.total_frames
 
+            logging.info("Face detection started...")
             tasks = [
                 self._read_frames(),
                 asyncio.ensure_future(self._detect_faces_cpu_bound()),

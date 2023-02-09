@@ -12,31 +12,20 @@ from src.common.config import Config
 
 class AsyncFaceDetector:
     def __init__(self, video: Video):
-        self.face_detector = None
         self.input_file = video.get_filename()
         self.output_file = ""
         self.logger = None
         self.video_capture = None
         self.video_writer = None
         self.total_frames = 0
+        self.num_processing_workers = Config.FACE_DETECTOR_NUM_WORK_THREADS
+        self.face_detector = None
 
         # Create a queue to store the frames from the video
         self.frames_queue = asyncio.Queue()
 
-        # Create a list to track the frames and faces
-        self.frame_with_faces = []
-
-        # create a queue to store the frames with faces and index to track the order of the frames
-        self.frame_with_faces_queue = asyncio.Queue()
-
-        # create a list to store the final processed frames
-        self.final_frames = None
-
-        self.writer_task_running = True
-        self.num_writer_workers = Config.FACE_DETECTOR_NUM_WORK_THREADS
-        self.num_processing_workers = 2
-
         self._initialize_detector()
+        self._initialize_face_detection()
 
     def _initialize_detector(self):
         if os.path.exists(Config.VIDEO_OUTPUT_PATH) and os.path.exists(self.input_file):
@@ -59,13 +48,10 @@ class AsyncFaceDetector:
             self.logger.error("Failed to initialize face detection. Check the input & output vide paths")
             raise FaceDetectionError("Could not find input video file or video output path.")
 
-    def _initialize_face_detection(self, detector_type):
+    def _initialize_face_detection(self):
         self.logger.debug("Initializing face detection...")
 
         try:
-            # get the detector from its type
-            self.face_detector = detector_type
-
             # Create an instance of the video capture object
             self.video_capture = cv2.VideoCapture(str(self.input_file))
 
@@ -105,12 +91,13 @@ class AsyncFaceDetector:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
         return frame
 
-    # async def detect_faces_in_realtime(self, face_detector, async_approach):
-    #     """
-    #     Detect faces in a video in real-time and write the frames with faces to an output video file
-    #     """
-    #     print(
-    #         f"Detecting faces in video using face detector: {face_detector.__class__.__name__} and approach: {async_approach.__class__.__name__}"
-    #     )
-
-    #     await async_approach.detect_faces_in_realtime(face_detector)
+    async def detect_faces_in_realtime(self, async_approach, face_detector):
+        """
+        Detect faces in a video in real-time and write the frames with faces to an output video file
+        """
+        # added to maintain compatibility while drawing bounding boxes
+        self.face_detector = face_detector
+        self.logger.info(
+            f"Detecting faces in video using face detector: {face_detector.__class__.__name__} and approach: {async_approach.__class__.__name__}"
+        )
+        await async_approach.detect_faces_in_realtime(self, face_detector)

@@ -52,8 +52,19 @@ from src.common.libraries import *
 
 
 class ConcurrentFuturesFaceDetector(AsyncFaceDetector):
-    def __init__(self, video: Video):
-        super().__init__(video)
+    def __init__(self):
+        self.face_detector = None
+
+        # Create a list to track the frames and faces
+        self.frame_with_faces = []
+
+    def _initialize(self, async_detector, face_detector):
+        self.face_detector = face_detector
+
+        # get the members of AsyncFaceDetector instance
+        for attr in dir(async_detector):
+            if not attr.startswith("__"):
+                setattr(self, attr, getattr(async_detector, attr))
 
     async def _read_frames(self):
         """Read frames from the input video stream and put them on the queue"""
@@ -79,6 +90,7 @@ class ConcurrentFuturesFaceDetector(AsyncFaceDetector):
 
     async def _detect_faces_with_concurrent_futures(self):
         """frames are processed concurrently"""
+        self.logger.info(f"Maximum number of threads used: {self.num_processing_workers}")
         with ThreadPoolExecutor(max_workers=self.num_processing_workers) as executor:
             loop = asyncio.get_event_loop()
             futures = [loop.run_in_executor(executor, self._detect_faces, i) for i in range(self.total_frames)]
@@ -107,17 +119,13 @@ class ConcurrentFuturesFaceDetector(AsyncFaceDetector):
         self.video_writer.release()
         self.logger.info("Finished writing to output video")
 
-    async def detect_faces_in_realtime(self, face_detector):
+    async def detect_faces_in_realtime(self, async_detector, face_detector):
         """
         Detect faces in a video in real-time and write the frames with faces to an output video file
         """
-        self.logger.info(
-            f"Detecting faces in video using face detector: {face_detector.__class__.__name__} and approach: {self.__class__.__name__}"
-        )
+        self._initialize(async_detector, face_detector)
         try:
-            # initialize the face detection
-            self._initialize_face_detection(face_detector)
-            self.frame_with_faces = [None] * self.total_frames
+            self.final_frames = [None] * self.total_frames
 
             # Start the tasks to read frames, detect faces, and write to the output to video file
             await asyncio.gather(

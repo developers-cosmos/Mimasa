@@ -57,15 +57,28 @@ Average CPU usage of 'main': 41.65%
 """
 
 import asyncio
-from src.facedetector.async_face_detector import AsyncFaceDetector
 
 from src.common.libraries import *
 from concurrent.futures import ThreadPoolExecutor
 
 
-class AsyncIOAndCPUFaceDetector(AsyncFaceDetector):
-    def __init__(self, video: Video):
-        super().__init__(video)
+class AsyncIOAndCPUFaceDetector:
+    def __init__(self):
+        self.face_detector = None
+
+        # create a queue to store the frames with faces and index to track the order of the frames
+        self.frame_with_faces_queue = asyncio.Queue()
+
+        # create a list to store the final processed frames
+        self.final_frames = None
+
+    def _initialize(self, async_detector, face_detector):
+        self.face_detector = face_detector
+
+        # get the members of AsyncFaceDetector instance
+        for attr in dir(async_detector):
+            if not attr.startswith("__"):
+                setattr(self, attr, getattr(async_detector, attr))
 
     async def _read_frames(self):
         """Read frames from the input video stream and put them on the queue"""
@@ -102,7 +115,8 @@ class AsyncIOAndCPUFaceDetector(AsyncFaceDetector):
     async def _detect_faces_cpu_bound(self):
         """frames are processed concurrently"""
         await asyncio.sleep(2)
-        with ThreadPoolExecutor(max_workers=self.num_writer_workers) as executor:
+        self.logger.info(f"Maximum number of threads used: {self.num_processing_workers}")
+        with ThreadPoolExecutor(max_workers=self.num_processing_workers) as executor:
             loop = asyncio.get_event_loop()
             futures = [
                 loop.run_in_executor(executor, self._detect_and_enqueue_faces, i) for i in range(self.total_frames)
@@ -114,7 +128,7 @@ class AsyncIOAndCPUFaceDetector(AsyncFaceDetector):
 
     async def _write_to_output_from_queue(self):
         """Write the frames with faces to an output video file"""
-        while not self.frame_with_faces_queue.empty() or self.writer_task_running:
+        while True:
             try:
                 result = await self.frame_with_faces_queue.get()
                 if result is None:
@@ -125,7 +139,6 @@ class AsyncIOAndCPUFaceDetector(AsyncFaceDetector):
                 if faces:
                     frame = self._draw_bounding_boxes(frame, faces)
                 self.final_frames[frame_index] = frame
-                # self.video_writer.write(frame)
                 self.logger.debug("Saved frame at index: %d", frame_index)
             except Exception as e:
                 self.logger.error(f"Error while writing frame to video: {e}")
@@ -138,16 +151,12 @@ class AsyncIOAndCPUFaceDetector(AsyncFaceDetector):
         self.video_writer.release()
         logging.debug("Finished writing video to output file")
 
-    async def detect_faces_in_realtime(self, face_detector):
+    async def detect_faces_in_realtime(self, async_detector, face_detector):
         """
         Detect faces in a video in real-time and write the frames with faces to an output video file
         """
-        self.logger.info(
-            f"Detecting faces in video using face detector: {face_detector.__class__.__name__} and approach: {self.__class__.__name__}"
-        )
+        self._initialize(async_detector, face_detector)
         try:
-            # initialize the face detection
-            self._initialize_face_detection(face_detector)
             self.final_frames = [None] * self.total_frames
 
             tasks = [

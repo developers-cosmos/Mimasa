@@ -2,6 +2,8 @@
 import os
 import sys
 import requests
+import subprocess
+import json
 
 BRANCH_FORMATS = ["feature", "bug", "chore", "release", "documentation", "ci/cd"]
 
@@ -53,21 +55,27 @@ def get_existing_labels():
 
     # Set up the headers for the API request
     headers = {
-        "Authorization": f"Token {ACCESS_TOKEN}",
         "Accept": "application/vnd.github+json",
-        "Content-Type": "application/json",
     }
-
-    # GET request to retrieve the existing labels on the pull request
-    response = requests.get(url, headers=headers)
 
     # Check if the request was successful
     if response.status_code != 200:
         print(f"Failed to retrieve existing labels: {response.text}")
         return
 
-    labels_json = response.json()
-    print(labels_json)
+    print(response.json())
+
+    response = subprocess.run(['curl', '-H', '"Accept: application/vnd.github+json"', f'{url}'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    labels_json = None
+    if response.returncode == 0:
+        labels_json = json.loads(response.stdout.decode('utf-8'))
+        print(labels_json)
+    else:
+        print(response.stderr.decode('utf-8'))
+
+        # GET request to retrieve the existing labels on the pull request
+        response = requests.get(url, headers=headers)
 
     # Combine the existing labels with the new labels to add
     existing_labels = [label["name"] for label in labels_json]

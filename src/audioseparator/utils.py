@@ -3,10 +3,7 @@
 This file contains utility functions that are commonly used for audio separation.
 """
 
-import logging
 from src.audioseparator import nussl_separator
-
-formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(funcName)s: %(message)s", "%d-%m-%Y %H:%M:%S")
 
 
 def get_audio_separator(separator_type: str = None, model_path: str = None):

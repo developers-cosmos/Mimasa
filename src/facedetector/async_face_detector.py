@@ -39,7 +39,7 @@ class AsyncFaceDetector:
                 + "."
                 + Config.VIDEO_DEFAULT_FORMAT
             )
-            self.output_file = Config.VIDEO_OUTPUT_PATH / out_filename
+            self.output_file = Config.TRANSLATION_OUTPUT_PATH / out_filename
 
             # setup logging
             self.logger = Logger(name=self.__class__.__name__)

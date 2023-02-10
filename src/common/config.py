@@ -33,6 +33,11 @@ class Config:
     # Data Folder
     DATA_FOLDER = BASE_DIR / "data"
 
+    ## Translation Unit Settings
+    TRANSLATION_INPUT_PATH = DATA_FOLDER / "translation" / "inputs"
+    TRANSLATION_OUTPUT_PATH = DATA_FOLDER / "translation" / "outputs"
+    TRANSLATION_VIDEO_INPUT_FILENAME = TRANSLATION_INPUT_PATH / "movie2.mp4"
+
     ## Video Options
     VIDEO_INPUT_PATH = DATA_FOLDER / "videos" / "inputs"
     VIDEO_OUTPUT_PATH = DATA_FOLDER / "videos" / "outputs"

@@ -3,7 +3,7 @@ import os
 import sys
 import requests
 
-BRANCH_FORMATS = ["feature", "bug", "chore", "release", "documentation"]
+BRANCH_FORMATS = ["feature", "bug", "chore", "release", "documentation", "ci/cd"]
 
 # pull request details
 PR_HEAD_REF = os.getenv("BRANCH_NAME") or os.getenv("GITHUB_HEAD_REF")
@@ -38,6 +38,9 @@ def get_labels_to_add():
         branch_format = label + "/"
         if PR_HEAD_REF.startswith(branch_format) or " {label} " in PR_TITLE:
             labels_to_add.append(label)
+
+    if " workflow " in PR_TITLE:
+        labels_to_add.append("ci/cd")
 
     return list(set(labels_to_add))
 

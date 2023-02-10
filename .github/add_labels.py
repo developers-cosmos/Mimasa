@@ -45,6 +45,29 @@ def get_labels_to_add():
 
     return list(set(labels_to_add))
 
+def get_existing_labels():
+    # Define the API endpoint for getting labels of a pull request
+    url = f"https://api.github.com/repos/{OWNER}/{REPO}/issues/{PULL_REQUEST_NUMBER}/labels"
+
+    # Set up the headers for the API request
+    headers = {
+        "Authorization": f"Token {ACCESS_TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
+    }
+
+    # GET request to retrieve the existing labels on the pull request
+    response = requests.get(url, headers=headers)
+
+    # Check if the request was successful
+    if response.status_code != 200:
+        print(f"Failed to retrieve existing labels: {response.text}")
+        return
+
+    # Combine the existing labels with the new labels to add
+    existing_labels = response.json().get("labels", [])
+
+    return existing_labels
 
 def add_labels(labels_to_add):
     """Make API request to add labels to pull request"""
@@ -58,10 +81,15 @@ def add_labels(labels_to_add):
         "Content-Type": "application/json",
     }
 
+    existing_labels = get_existing_labels()
+    if len(existing_labels) > 0:
+        print(f"Existing labels: {existing_labels}")
+        labels_to_add = list(set(existing_labels + labels_to_add))
+
     # Make the API request to add labels to the pull request
     labels_data = {"labels": labels_to_add}
 
-    print(f"Adding labels: {labels_data} with url: {url}")
+    print(f"Adding final labels: {labels_data} with url: {url}")
     try:
         response = requests.post(url, headers=headers, json=labels_data)
         response.raise_for_status()

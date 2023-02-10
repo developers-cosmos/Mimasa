@@ -65,7 +65,7 @@ def get_existing_labels():
         return
 
     # Combine the existing labels with the new labels to add
-    existing_labels = response.json().get("labels", [])
+    existing_labels = [label["name"] for label in response.json()]
 
     return existing_labels
 

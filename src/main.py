@@ -23,12 +23,13 @@ async def main():
     """
     Main function to run the async functions concurrently
     """
+    input_video_file_path = Config.TRANSLATION_VIDEO_INPUT_FILENAME
+    input_langauge = Config.INPUT_LANGUAGE
+    target_language = Config.TARGET_LANGUAGE
     try:
         main_logger.info("Initializing Mimasa Application...")
-        video = Video(Config.TRANSLATION_VIDEO_INPUT_FILENAME, Config.INPUT_LANGUAGE)
-        translation_unit = Translation(
-            video=video, output_language=Config.TARGET_LANGUAGE, input_language=Config.INPUT_LANGUAGE
-        )
+        video = Video(file_path=input_video_file_path, language=input_langauge)
+        translation_unit = Translation(video=video, output_language=target_language, input_language=input_langauge)
         main_logger.info("Mimasa Application initialized successfully")
 
         main_logger.info("Translation started...")

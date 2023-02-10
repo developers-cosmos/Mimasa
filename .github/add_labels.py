@@ -41,7 +41,8 @@ def get_labels_to_add():
 def add_labels(labels_to_add):
     """Make API request to add labels to pull request"""
     # Define the API endpoint for adding labels to a pull request
-    url = f"https://api.github.com/repos/developers-cosmos/{REPO}/issues/{PULL_REQUEST_NUMBER}/labels"
+    OWNER = OWNER.split("/")[0]
+    url = f"https://api.github.com/repos/{OWNER}/{REPO}/issues/{PULL_REQUEST_NUMBER}/labels"
 
     # Set up the headers for the API request
     headers = {

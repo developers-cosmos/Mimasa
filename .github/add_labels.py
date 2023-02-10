@@ -87,6 +87,8 @@ def add_labels(labels_to_add):
     if len(existing_labels) > 0:
         print(f"Existing labels: {existing_labels}")
         labels_to_add = list(set(existing_labels + labels_to_add))
+    else:
+        print("No existing labels found")
 
     # Make the API request to add labels to the pull request
     labels_data = {"labels": labels_to_add}

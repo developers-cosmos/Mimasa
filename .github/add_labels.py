@@ -45,6 +45,7 @@ def get_labels_to_add():
 
     return list(set(labels_to_add))
 
+
 def get_existing_labels():
     # Define the API endpoint for getting labels of a pull request
     url = f"https://api.github.com/repos/{OWNER}/{REPO}/issues/{PULL_REQUEST_NUMBER}/labels"
@@ -68,6 +69,7 @@ def get_existing_labels():
     existing_labels = [label["name"] for label in response.json()]
 
     return existing_labels
+
 
 def add_labels(labels_to_add):
     """Make API request to add labels to pull request"""

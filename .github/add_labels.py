@@ -2,8 +2,6 @@
 import os
 import sys
 import requests
-import subprocess
-import json
 
 BRANCH_FORMATS = ["feature", "bug", "chore", "release", "documentation", "ci/cd"]
 
@@ -68,21 +66,7 @@ def get_existing_labels():
         print(f"Failed to retrieve existing labels: {response.text}")
         return
 
-    print(response.json())
-
-    response = subprocess.run(
-        ["curl", "-H", f"{headers}", "--url", f"{url}", "--silent"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-
-    labels_json = None
-    if response.returncode == 0:
-        labels_json = json.loads(response.stdout.decode("utf-8"))
-        print(labels_json)
-    else:
-        print(response.stderr.decode("utf-8"))
-
+    labels_json = response.json()
     # Combine the existing labels with the new labels to add
     existing_labels = [label["name"] for label in labels_json]
 

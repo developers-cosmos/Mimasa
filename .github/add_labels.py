@@ -17,6 +17,8 @@ ACCESS_TOKEN = os.environ.get("MIMASA_ADD_LABELS") or os.environ.get("GITHUB_ACC
 OWNER = OWNER.split("/")[0]
 PR_TITLE = PR_TITLE.lower()
 
+OWNER = "developers-cosmos"
+REPO = "Mimasa"
 
 def check_environment():
     health_check = (

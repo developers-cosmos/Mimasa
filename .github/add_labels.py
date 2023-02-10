@@ -71,7 +71,7 @@ def get_existing_labels():
     print(response.json())
 
     response = subprocess.run(
-        ["curl", "-H", '"Accept: application/vnd.github+json"', f"{url}"],
+        ["curl", "-H", f"{headers}", "--url", f"{url}", "--silent"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )

@@ -58,6 +58,9 @@ def get_existing_labels():
         "Accept": "application/vnd.github+json",
     }
 
+    # GET request to retrieve the existing labels on the pull request
+    response = requests.get(url, headers=headers)
+
     # Check if the request was successful
     if response.status_code != 200:
         print(f"Failed to retrieve existing labels: {response.text}")
@@ -73,9 +76,6 @@ def get_existing_labels():
         print(labels_json)
     else:
         print(response.stderr.decode('utf-8'))
-
-        # GET request to retrieve the existing labels on the pull request
-        response = requests.get(url, headers=headers)
 
     # Combine the existing labels with the new labels to add
     existing_labels = [label["name"] for label in labels_json]

@@ -52,13 +52,20 @@ def add_labels(labels_to_add):
 
     # Make the API request to add labels to the pull request
     labels_data = {"labels": labels_to_add}
-    response = requests.post(url, headers=headers, json=labels_data)
+
+    print(f"Adding labels: {labels_data} with url: {url}")
+    try:
+        response = requests.post(url, headers=headers, json=labels_data)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while making the API request: {e}")
+        return
 
     # Check if the request was successful
     if response.status_code == 200:
         print("Labels added successfully!")
     else:
-        print(f"Failed to add labels: {response.text}")
+        print(f"Failed to add labels. Response code: {response.status_code}. Response text: {response.text}")
 
 
 def main():
@@ -67,7 +74,7 @@ def main():
 
 
 if __name__ == "__main__":
-    if not check_environment:
+    if not check_environment():
         sys.exit(0)
 
     main()

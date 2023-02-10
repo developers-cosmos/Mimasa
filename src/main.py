@@ -29,9 +29,7 @@ async def main():
     try:
         main_logger.info("Initializing Mimasa Application...")
         video = Video(file_path=input_video_file_path, language=input_langauge)
-        translation_unit = Translation(
-            video=video, output_language=target_language, input_language=input_langauge
-        )
+        translation_unit = Translation(video=video, output_language=target_language, input_language=input_langauge)
         main_logger.info("Mimasa Application initialized successfully")
 
         main_logger.info("Translation started...")

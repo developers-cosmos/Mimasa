@@ -20,6 +20,7 @@ PR_TITLE = PR_TITLE.lower()
 OWNER = "developers-cosmos"
 REPO = "Mimasa"
 
+
 def check_environment():
     health_check = (
         PR_HEAD_REF is not None

@@ -15,10 +15,11 @@ PULL_REQUEST_NUMBER = os.getenv("GITHUB_PULL_REQUEST_NUMBER") or os.getenv("PR_N
 ACCESS_TOKEN = os.environ.get("MIMASA_ADD_LABELS") or os.environ.get("GITHUB_ACCESS_TOKEN")
 
 OWNER = OWNER.split("/")[0]
+REPO = REPO.split("/")[-1]
 PR_TITLE = PR_TITLE.lower()
 
-OWNER = "developers-cosmos"
-REPO = "Mimasa"
+# OWNER = "developers-cosmos"
+# REPO = "Mimasa"
 
 
 def check_environment():
@@ -65,8 +66,11 @@ def get_existing_labels():
         print(f"Failed to retrieve existing labels: {response.text}")
         return
 
+    labels_json = response.json()
+    print(labels_json)
+
     # Combine the existing labels with the new labels to add
-    existing_labels = [label["name"] for label in response.json()]
+    existing_labels = [label["name"] for label in labels_json]
 
     return existing_labels
 

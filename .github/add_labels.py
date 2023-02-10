@@ -68,14 +68,18 @@ def get_existing_labels():
 
     print(response.json())
 
-    response = subprocess.run(['curl', '-H', '"Accept: application/vnd.github+json"', f'{url}'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    response = subprocess.run(
+        ["curl", "-H", '"Accept: application/vnd.github+json"', f"{url}"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
 
     labels_json = None
     if response.returncode == 0:
-        labels_json = json.loads(response.stdout.decode('utf-8'))
+        labels_json = json.loads(response.stdout.decode("utf-8"))
         print(labels_json)
     else:
-        print(response.stderr.decode('utf-8'))
+        print(response.stderr.decode("utf-8"))
 
     # Combine the existing labels with the new labels to add
     existing_labels = [label["name"] for label in labels_json]

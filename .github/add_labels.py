@@ -55,7 +55,9 @@ def get_existing_labels():
 
     # Set up the headers for the API request
     headers = {
+        "Authorization": f"Token {ACCESS_TOKEN}",
         "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json",
     }
 
     # GET request to retrieve the existing labels on the pull request

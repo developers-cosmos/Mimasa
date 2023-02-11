@@ -23,6 +23,8 @@ For the latest updates and news regarding Mimasa, please follow the [Announcemen
     - [Video Translation - Part 2](./docs/design/DESIGN.md/#video-translation---part-2)
   - [Components & their Relationship](./docs/design/DESIGN.md#design-of-components)
   - [Mimasa State Behavior](./docs/design/DESIGN.md#mimasa-state-behavior)
+  - [Tech Stack](./docs/tech_stack/README.md)
+    - [Usage of Celery & Redis](./docs/tech_stack/celery_and_redis.md)
 
 ## Status
 

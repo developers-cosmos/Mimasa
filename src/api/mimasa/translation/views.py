@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView
-from .tasks import async_process
+from .tasks import run_translation
 from celery.result import AsyncResult
 from django.http import JsonResponse, HttpResponse
 from django.http import FileResponse
@@ -44,7 +44,7 @@ def download_translation(request, file_path):
 def translation(request, pk):
     mimasa_instance = MimasaModel.objects.get(id=pk)
     if mimasa_instance.task_status == "CREATED":
-        task_result = async_process.delay(pk)
+        task_result = run_translation.delay(pk)
         mimasa_instance.task_status = task_result.status
         mimasa_instance.task_id = task_result.task_id
         mimasa_instance.save()

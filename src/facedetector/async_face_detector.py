@@ -29,7 +29,7 @@ class AsyncFaceDetector:
         self._initialize_face_detection()
 
     def _initialize_detector(self):
-        if os.path.exists(Config.VIDEO_OUTPUT_PATH) and os.path.exists(self.input_file):
+        if os.path.exists(Config.VIDEO_OUTPUT_PATH) or os.path.exists(self.input_file):
             out_filename = (
                 "FaceDetector".lower()
                 + "_"
@@ -102,3 +102,4 @@ class AsyncFaceDetector:
             f"Detecting faces in video using face detector: {face_detector.__class__.__name__} and approach: {async_approach.__class__.__name__}"
         )
         await async_approach.detect_faces_in_realtime(self, face_detector)
+        return Video(self.output_file)

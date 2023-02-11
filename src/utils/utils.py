@@ -36,7 +36,7 @@ def track_performance(func):
     logger = Logger(name="PerformanceTracker")
     logger.add_file_handler("performance.log")
 
-    async def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         import psutil
 
         # get the process information before the function is called
@@ -45,7 +45,7 @@ def track_performance(func):
         cpu_start = process.cpu_percent()
 
         start_time = time.time()
-        result = await func(*args, **kwargs)
+        result = func(*args, **kwargs)
         end_time = time.time()
 
         # Get the CPU utilization of all cores combined

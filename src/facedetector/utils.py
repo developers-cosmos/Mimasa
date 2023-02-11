@@ -125,6 +125,7 @@ async def detect_faces_in_realtime(detector, video: Video):
     cv2.destroyAllWindows()
 
     logger.debug("Face Detection is completed successfully")
+    return Video(video_output_filename)
 
 
 def get_face_detector(detector_type):

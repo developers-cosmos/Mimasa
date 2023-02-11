@@ -19,7 +19,7 @@ main_logger.add_file_handler("main.log")
 
 
 @track_performance
-async def main():
+def main():
     """
     Main function to run the async functions concurrently
     """
@@ -33,7 +33,7 @@ async def main():
         main_logger.info("Mimasa Application initialized successfully")
 
         main_logger.info("Translation started...")
-        await translation_unit.translate()
+        asyncio.run(translation_unit.translate())
         main_logger.info("Translation finished successfully")
     except:
         main_logger.critical("Translation failed. Shutting down Mimasa application!!")
@@ -75,5 +75,5 @@ def teardown():
 
 if __name__ == "__main__":
     setup()
-    asyncio.run(main())
+    main()
     teardown()

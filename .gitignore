@@ -350,6 +350,37 @@ MigrationBackup/
 .ionide/
 
 # Project Specific
+# Django
+db.sqlite3
+src/api/mimasa/mimasa/settings.py
+src/api/mimasa/mimasa/local_settings.py
+
+# Celery
+src/api/mimasa/mimasa/celerybeat.pid
+src/api/mimasa/celerybeat-schedule*
+
+# Django Debug Toolbar
+src/api/mimasa/mimasa/debug_toolbar/
+
+# Django Logs
+src/api/mimasa/mimasa/logs/
+
+# Django Static Files
+src/api/mimasa/static/
+
+# Media Files
+src/api/mimasa/media/
+
+# Migrations
+src/api/mimasa/translation/migrations/
+
+# Virtual Environment
+env/
+
+# Thumbs.db file
+src/api/mimasa/Thumbs.db
+
+# datasets
 data/datasets/**
 data/models/**
 data/audios/**

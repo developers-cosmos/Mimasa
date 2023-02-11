@@ -40,11 +40,13 @@ class VideoTranslation:
         self.logger.debug(f"Starting video translation for file: {self.video_file}")
         try:
             if not Config.FACE_DETECTION_ASYNC_ENABLED:
-                await utils.detect_faces_in_realtime(detector=self.face_detector, video=self.video)
+                result = await utils.detect_faces_in_realtime(detector=self.face_detector, video=self.video)
             else:
-                await self.async_face_detector.detect_faces_in_realtime(
+                result = await self.async_face_detector.detect_faces_in_realtime(
                     async_approach=self.async_approach_type, face_detector=self.face_detector
                 )
             self.logger.info(f"Video translation completed successfully for file: {self.video_file}")
+            return result
         except Exception as e:
             self.logger.error(f"Error during video translation for file: {self.video_file}: {e}")
+            raise

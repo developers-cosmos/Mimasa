@@ -34,7 +34,7 @@
 
 <h2>Status</h2>
 
-<p><a href="https://www.repostatus.org/#concept"><img src="https://www.repostatus.org/badges/latest/concept.svg" alt="Project Status: Concept – Minimal or no implementation has been done yet." /></a></p>
+<p><a href="https://www.repostatus.org/#wip"><img src="https://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress." /></a></p>
 
 <p><a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License" /></a></p>
 
@@ -90,13 +90,89 @@ python src/main.py
 
 <p>7.Congratulations! You have successfully installed Mimasa on your local machine.</p>
 
+<h2>Django App Installation Guide for Mimasa</h2>
+
+<p>The Django app for Mimasa is a web-based application that allows users to interact with the Mimasa EmoteTrans Translation unit and perform real-time multilingual face translations. In this guide, we will walk through the steps required to install and run the Mimasa Django app on your local machine.</p>
+
+<p><strong>NOTE:</strong> Please note that the current implementation is only demo and not all components will work properly</p>
+
+<h3>Prerequisites</h3>
+
+<ul>
+<li>Python 3.10.x</li>
+<li>pip</li>
+<li>Django 4.x</li>
+<li>Redis</li>
+</ul>
+
+<h3>Steps</h3>
+
+<p>After following the above steps to setup Mimasa locally, you will need to install the following:</p>
+
+<ol>
+<li>Run the migrations</li>
+</ol>
+
+<p><code>shell
+python src/api/mimasa/manage.py makemigrations
+python src/api/mimasa/manage.py migrate
+</code></p>
+
+<ol start="2">
+<li>Run the Django server</li>
+</ol>
+
+<p><code>shell
+python src/api/mimasa/manage.py runserver
+</code></p>
+
+<ol start="3">
+<li><p>Download the Redis ZIP archive from the official Redis website (https://github.com/microsoftarchive/redis/releases)</p></li>
+<li><p>Extract the contents of the ZIP archive to a folder of your choice. Open the Command Prompt and navigate to the folder where you extracted Redis.
+Run the following command to start Redis:</p></li>
+</ol>
+
+<p><code>shell
+redis-server.exe redis.windows.conf
+</code></p>
+
+<ol start="5">
+<li>Open another Command Prompt window and navigate to the same folder. Run the following command to start the Redis CLI.</li>
+</ol>
+
+<p><code>shell
+redis-cli.exe
+</code></p>
+
+<ol start="6">
+<li>Next step is to start celery worker to perform transaction tasks for Mimasa.
+Run the following command to start a Celery worker:</li>
+</ol>
+
+<p><code>shell
+cd src/api/mimasa
+celery -A mimasa worker -l info -P eventlet
+</code></p>
+
+<ol start="7">
+<li>Congratulations! You have successfully completed the setup for Mimasa Django App, now you can perform translations at http:localhost:8000</li>
+</ol>
+
 <h3>Troubleshooting</h3>
 
 <p>If you encounter any issues during the installation process, please refer to the <a href="https://github.com/developers-cosmos/Mimasa/issues">issues</a> section of the Mimasa repository. If your issue is not already reported, feel free to create a new issue with a detailed description of the problem.</p>
 
+<h2>Demo</h2>
+
+<p>A demo of the Mimasa Django App (from Mimasa v1.1.0) can be seen from below link: <a href="https://drive.google.com/file/d/1uG8pZMbJExo8oxWyOHEuLonoIt1pZ99S/view?usp=sharing">Mimasa -EmoteTrans Django App Demo Setup</a>. This demo version provides a limited functionality of the actual application, but should give you an idea of how the application works.</p>
+
+<p><a href="https://drive.google.com/file/d/1uG8pZMbJExo8oxWyOHEuLonoIt1pZ99S/view">
+  <img src="data/images/mimasa-logo.png" alt="Mimasa - EmoteTrans Django App Demo Setup" width="250" height="250">
+</a></p>
+
 <h2>Under Development</h2>
 
-<p>Mimasa is still in concept stage and requires planning to finalize the concept &amp; start the development.</p>
+<p>Mimasa is still under development and some features may not be fully functional.</p>
 
 <h2>Contribution</h2>
 
@@ -122,5 +198,5 @@ python src/main.py
 <li><a href="https://github.com/developers-cosmos/Mimasa/issues">GitHub Issues</a></li>
 </ul>
 
-<p>Thank you!</p>
+<h2>Thank you</h2>
 

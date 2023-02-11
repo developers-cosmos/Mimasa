@@ -32,7 +32,7 @@ author_list = ["Yellenki Ritheesh Baradwaj"]
 
 setup(
     name="Mimasa",
-    version="1.0.0",
+    version="1.1.0",
     author=", ".join(author_list),
     author_email="ritheeshbaradwaj@gmail.com",
     description="A Real-time Multilingual Face Translator",

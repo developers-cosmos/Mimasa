@@ -44,7 +44,7 @@ class Config:
     VIDEO_INPUT_FILENAME = VIDEO_INPUT_PATH / "input2.mp4"
     VIDEO_FORMATS = ["mp4"]
     VIDEO_DETECTOR = "MTCNN"  # possible values: ["ViolaJones", "MTCNN", "SSD", "YOLO", "RetinaFace"]
-    VIDEO_ASYNC_FACE_DETECTOR = "AsyncIOAndCPUFaceDetector"  # possible values: ["AsyncTaskFaceDetector", "ConcurrentFuturesFaceDetector", "AsyncIOAndCPUFaceDetector"]
+    VIDEO_ASYNC_FACE_DETECTOR = "AsyncTaskFaceDetector"  # possible values: ["AsyncTaskFaceDetector", "ConcurrentFuturesFaceDetector", "AsyncIOAndCPUFaceDetector"]
     FACE_DETECTOR_NUM_WORK_THREADS = 3  # min(32, (os.cpu_count() or 1) + 4)
 
     ## Datasets

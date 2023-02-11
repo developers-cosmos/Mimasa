@@ -55,6 +55,7 @@ class Translation:
         try:
             await self.audio_translation.translate()
             self.logger.info("Audio translation completed successfully")
+            return "success"
         except Exception as e:
             self.logger.error(f"Error during audio translation: {e}")
             raise
@@ -63,8 +64,9 @@ class Translation:
         """Asynchronous coroutine for performing the video translation"""
         self.logger.debug("Starting video translation")
         try:
-            await self.video_translation.translate()
+            result = await self.video_translation.translate()
             self.logger.info("Video translation completed successfully")
+            return result
         except Exception as e:
             self.logger.error(f"Error during video translation: {e}")
             raise
@@ -73,13 +75,17 @@ class Translation:
         """Asynchronous coroutine for performing both audio and video translations in parallel"""
         self.logger.debug("Starting parallel audio and video translations")
         try:
+            utils.setup()
             self.audio_extractor.extract(output_file=self.extracted_audio_file)
 
             translation_tasks = [
                 self.translate_audio(),
                 self.translate_video(),
             ]
-            await asyncio.gather(*translation_tasks)
+            audio_task, video_task = await asyncio.gather(*translation_tasks)
+
+            output_video_filename = video_task.get_filename()
+            self.output_video_filename = output_video_filename
 
             # with ThreadPoolExecutor() as executor:
             #     audio_future = executor.submit(self.translate_audio)
@@ -106,6 +112,8 @@ class Translation:
         except Exception as e:
             self.logger.critical(f"Error during parallel audio and video translations: {e}")
             raise
+        finally:
+            utils.teardown()
 
     def translate_sync(self):
         """Asynchronous coroutine for performing both audio and video translations in parallel"""

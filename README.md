@@ -26,7 +26,7 @@ For the latest updates and news regarding Mimasa, please follow the [Announcemen
 
 ## Status
 
-[![Project Status: Concept – Minimal or no implementation has been done yet.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
+[![Project Status: WIP – Initial development is in progress.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -78,13 +78,76 @@ python src/main.py
 
 7.Congratulations! You have successfully installed Mimasa on your local machine.
 
+## Django App Installation Guide for Mimasa
+
+The Django app for Mimasa is a web-based application that allows users to interact with the Mimasa EmoteTrans Translation unit and perform real-time multilingual face translations. In this guide, we will walk through the steps required to install and run the Mimasa Django app on your local machine.
+
+**NOTE:** Please note that the current implementation is only demo and not all components will work properly
+
+### Prerequisites
+
+- Python 3.10.x
+- pip
+- Django 4.x
+- Redis
+
+### Steps
+
+After following the above steps to setup Mimasa locally, you will need to install the following:
+
+1. Run the migrations
+
+```shell
+python src/api/mimasa/manage.py makemigrations
+python src/api/mimasa/manage.py migrate
+```
+
+2. Run the Django server
+
+```shell
+python src/api/mimasa/manage.py runserver
+```
+
+3. Download the Redis ZIP archive from the official Redis website (https://github.com/microsoftarchive/redis/releases)
+
+4. Extract the contents of the ZIP archive to a folder of your choice. Open the Command Prompt and navigate to the folder where you extracted Redis.
+Run the following command to start Redis:
+
+```shell
+redis-server.exe redis.windows.conf
+```
+
+5. Open another Command Prompt window and navigate to the same folder. Run the following command to start the Redis CLI.
+
+```shell
+redis-cli.exe
+```
+
+6. Next step is to start celery worker to perform transaction tasks for Mimasa.
+Run the following command to start a Celery worker:
+
+```shell
+cd src/api/mimasa
+celery -A mimasa worker -l info -P eventlet
+```
+
+7. Congratulations! You have successfully completed the setup for Mimasa Django App, now you can perform translations at http:localhost:8000
+
 ### Troubleshooting
 
 If you encounter any issues during the installation process, please refer to the [issues](https://github.com/developers-cosmos/Mimasa/issues) section of the Mimasa repository. If your issue is not already reported, feel free to create a new issue with a detailed description of the problem.
 
+## Demo
+
+A demo of the Mimasa Django App can be seen from below link: [Mimasa -EmoteTrans Django App Demo Setup](https://drive.google.com/file/d/1uG8pZMbJExo8oxWyOHEuLonoIt1pZ99S/view?usp=sharing). This demo version provides a limited functionality of the actual application, but should give you an idea of how the application works.
+
+<a href="https://drive.google.com/file/d/1uG8pZMbJExo8oxWyOHEuLonoIt1pZ99S/view">
+  <img src="data/images/mimasa-logo.png" alt="Mimasa - EmoteTrans Django App Demo Setup" width="250" height="250">
+</a>
+
 ## Under Development
 
-Mimasa is still in concept stage and requires planning to finalize the concept & start the development.
+Mimasa is still under development and some features may not be fully functional.
 
 ## Contribution
 
@@ -106,4 +169,4 @@ We appreciate your interest in Mimasa Application and welcome any questions or f
 - Email: ritheeshbaradwaj@gmail.com
 - [GitHub Issues](https://github.com/developers-cosmos/Mimasa/issues)
 
-Thank you!
+## Thank you

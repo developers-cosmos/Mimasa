@@ -139,7 +139,7 @@ If you encounter any issues during the installation process, please refer to the
 
 ## Demo
 
-A demo of the Mimasa Django App can be seen from below link: [Mimasa -EmoteTrans Django App Demo Setup](https://drive.google.com/file/d/1uG8pZMbJExo8oxWyOHEuLonoIt1pZ99S/view?usp=sharing). This demo version provides a limited functionality of the actual application, but should give you an idea of how the application works.
+A demo of the Mimasa Django App (from Mimasa v1.1.0) can be seen from below link: [Mimasa -EmoteTrans Django App Demo Setup](https://drive.google.com/file/d/1uG8pZMbJExo8oxWyOHEuLonoIt1pZ99S/view?usp=sharing). This demo version provides a limited functionality of the actual application, but should give you an idea of how the application works.
 
 <a href="https://drive.google.com/file/d/1uG8pZMbJExo8oxWyOHEuLonoIt1pZ99S/view">
   <img src="data/images/mimasa-logo.png" alt="Mimasa - EmoteTrans Django App Demo Setup" width="250" height="250">

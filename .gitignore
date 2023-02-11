@@ -352,7 +352,7 @@ MigrationBackup/
 # Project Specific
 # Django
 db.sqlite3
-src/api/mimasa/mimasa/settings.py
+# src/api/mimasa/mimasa/settings.py # TODO: uncomment if sensitive information is added in future
 src/api/mimasa/mimasa/local_settings.py
 
 # Celery

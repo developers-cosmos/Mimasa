@@ -90,6 +90,7 @@ The Django app for Mimasa is a web-based application that allows users to intera
 - pip
 - Django 4.x
 - Redis
+- Celery
 
 ### Steps
 

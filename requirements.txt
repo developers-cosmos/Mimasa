@@ -25,3 +25,10 @@ psutil==5.9.*
 
 # testing
 matplotlib==3.6.*
+
+# Django application
+Django==4.1.*
+celery==5.2.*
+eventlet==0.33.*
+
+# Install Redis server from https://github.com/microsoftarchive/redis/releases

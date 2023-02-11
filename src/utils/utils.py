@@ -3,10 +3,12 @@
 This file contains utility functions that are commonly used throughout the application.
 """
 import os
+import glob
+import sys
 import time
 import logging
 from datetime import datetime
-from src.common.logger import Logger
+from src.common.libraries import Logger, Config
 
 
 def get_current_time():
@@ -36,7 +38,7 @@ def track_performance(func):
     logger = Logger(name="PerformanceTracker")
     logger.add_file_handler("performance.log")
 
-    async def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         import psutil
 
         # get the process information before the function is called
@@ -45,7 +47,7 @@ def track_performance(func):
         cpu_start = process.cpu_percent()
 
         start_time = time.time()
-        result = await func(*args, **kwargs)
+        result = func(*args, **kwargs)
         end_time = time.time()
 
         # Get the CPU utilization of all cores combined
@@ -70,3 +72,37 @@ def track_performance(func):
         return result
 
     return wrapper
+
+
+def setup():
+    # create folder for logs storage
+    if not os.path.exists(Config.LOGS_FOLDER_PATH):
+        os.mkdir(Config.LOGS_FOLDER_PATH)
+    else:
+        logs = glob.glob(f"{Config.LOGS_FOLDER_PATH}/*")
+        for log in logs:
+            if os.path.exists(log):
+                try:
+                    os.remove(log)
+                except:
+                    pass
+
+    if Config.REDIRECT_STDOUT_TO_FILE:
+        global saveout
+        saveout = sys.stdout
+        fsock2 = open(f"{Config.LOGS_FOLDER_PATH}/stdout.log", "w")
+        sys.stdout = fsock2
+
+    if Config.REDIRECT_STDERR_TO_FILE:
+        global saveerr
+        saveerr = sys.stderr
+        fsock1 = open(f"{Config.LOGS_FOLDER_PATH}/stderr.log", "w")
+        sys.stderr = fsock1
+
+
+def teardown():
+    if Config.REDIRECT_STDOUT_TO_FILE:
+        sys.stdout = saveout
+
+    if Config.REDIRECT_STDERR_TO_FILE:
+        sys.stderr = saveerr

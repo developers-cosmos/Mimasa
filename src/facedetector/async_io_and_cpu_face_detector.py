@@ -142,7 +142,7 @@ class AsyncIOAndCPUFaceDetector:
                 if faces:
                     frame = self._draw_bounding_boxes(frame, faces)
                 self.final_frames[frame_index] = frame
-                self.logger.debug("Saved frame at index: %d", frame_index)
+                self.logger.debug(f"Saved frame at index: {frame_index}")
             except Exception as e:
                 self.logger.error(f"Error while writing frame to video: {e}")
                 break

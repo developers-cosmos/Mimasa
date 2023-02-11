@@ -1,0 +1,86 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Mimasa - EmoteTrans</title>
+  </head>
+  <body style="background-color: #ADD8E6">
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card" style="background-color: #87CEFA">
+            <div class="card-header">
+              <img src="{% static 'mimasa-bg.png' %}" alt="Mimasa Logo" style="width:150px; height:150px;">
+            </div>
+            <div class="card-body">
+              <h1 class="text-center">Translation Registered Successful</h1>
+              <hr>
+              <b>Status: <span id="status">{{ mimasa.task_status }}</span>, id: {{ mimasa.task_id }} </b> <hr>
+              {% if mimasa.task_status == "SUCCESS" %}
+                <div class="alert alert-success text-center" role="alert">
+                  <p>Your video translation has completed successfully!</p>
+                  <p>Download the translated video by clicking the button below:</p>
+                  {% if mimasa.output_video %}
+                    <a href="{{ mimasa.output_video.url }}" class="btn btn-primary" target="_blank">Play Video</a>
+                  {% else %}
+                    <a href="{% url 'download_translation' mimasa.output_video_filename %}" class="btn btn-primary" target="_blank">Play Video</a>
+                  {% endif %}
+                  <a href="{% url 'download_translation' mimasa.output_video_filename %}" class="btn btn-primary" download>Download Video</a>
+                </div>
+              {% elif mimasa.task_status == "FAILURE" %}
+                <h3 class="text-center text-danger">Translation Failed</h3>
+                <p>Unfortunately, your video translation has failed. Please try again later or contact support for assistance.</p>
+              {% elif mimasa.task_status == "PENDING" %}
+              <p>Your translation request is being processed. Please wait!</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    function checkTaskStatus() {
+      $.ajax({
+        url: "{% url 'get_task_status' task_id=mimasa.task_id %}",
+        success: function(data) {
+          if (data.task_status === "SUCCESS") {
+            console.log("Task completed");
+            clearInterval(intervalId);
+            updateMimasaInstance("SUCCESS");
+          } else if (data.task_status === "FAILURE") {
+            console.log("Task failed");
+            clearInterval(intervalId);
+            updateMimasaInstance("FAILURE");
+          } else {
+            console.log("Task not yet completed");
+          }
+        }
+      });
+    }
+
+    function updateMimasaInstance(status) {
+      $.ajax({
+        url: "{% url 'update_mimasa_instance' pk=mimasa.id %}",
+        type: "POST",
+        data: {
+          "status": status
+        },
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        success: function(data) {
+          $("#status").text(data.status);
+          location.reload();
+        }
+      });
+    }
+
+    var intervalId = setInterval(checkTaskStatus, 3000);
+
+  </script>
+</html>

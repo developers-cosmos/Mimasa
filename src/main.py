@@ -19,7 +19,7 @@ main_logger.add_file_handler("main.log")
 
 
 @track_performance
-async def main():
+def main():
     """
     Main function to run the async functions concurrently
     """
@@ -33,47 +33,11 @@ async def main():
         main_logger.info("Mimasa Application initialized successfully")
 
         main_logger.info("Translation started...")
-        await translation_unit.translate()
+        asyncio.run(translation_unit.translate())
         main_logger.info("Translation finished successfully")
     except:
         main_logger.critical("Translation failed. Shutting down Mimasa application!!")
 
 
-def setup():
-    # create folder for logs storage
-    if not os.path.exists(Config.LOGS_FOLDER_PATH):
-        os.mkdir(Config.LOGS_FOLDER_PATH)
-    else:
-        logs = glob.glob(f"{Config.LOGS_FOLDER_PATH}/*")
-        for log in logs:
-            if os.path.exists(log):
-                try:
-                    os.remove(log)
-                except:
-                    pass
-
-    if Config.REDIRECT_STDOUT_TO_FILE:
-        global saveout
-        saveout = sys.stdout
-        fsock2 = open(f"{Config.LOGS_FOLDER_PATH}/stdout.log", "w")
-        sys.stdout = fsock2
-
-    if Config.REDIRECT_STDERR_TO_FILE:
-        global saveerr
-        saveerr = sys.stderr
-        fsock1 = open(f"{Config.LOGS_FOLDER_PATH}/stderr.log", "w")
-        sys.stderr = fsock1
-
-
-def teardown():
-    if Config.REDIRECT_STDOUT_TO_FILE:
-        sys.stdout = saveout
-
-    if Config.REDIRECT_STDERR_TO_FILE:
-        sys.stderr = saveerr
-
-
 if __name__ == "__main__":
-    setup()
-    asyncio.run(main())
-    teardown()
+    main()

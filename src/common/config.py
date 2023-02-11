@@ -12,7 +12,7 @@ class Config:
     # declare all the configuration parameters as static variables
 
     # the application is expected to run from root directory
-    BASE_DIR = Path(__file__).resolve().parent.parent.parent # Path(os.getcwd())
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Path(os.getcwd())
 
     # # api keys for Mimasa
     # API_KEY = "your-api-key"

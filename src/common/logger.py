@@ -75,7 +75,8 @@ class Logger:
         self.disabled_levels = disabled_levels or []
         if formatter is None:
             formatter = logging.Formatter(
-                "[%(asctime)s] [PID: %(process)-7d][TID: %(thread)-7d] [%(levelname)-8s] [%(name)-12s] %(message)s", "%d-%m-%Y %H:%M:%S"
+                "[%(asctime)s] [PID: %(process)-7d][TID: %(thread)-7d] [%(levelname)-8s] [%(name)-12s] %(message)s",
+                "%d-%m-%Y %H:%M:%S",
             )
         if handlers is None:
             handlers = [logging.StreamHandler()]

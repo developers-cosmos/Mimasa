@@ -24,7 +24,7 @@ class MimasaModel(models.Model):
 
     # output_video_filename = models.FileField(upload_to="output_videos/", default="", blank=True, null=True)
     output_video_filename = models.CharField(max_length=1000, default="output_videos/")
-    output_video = models.FileField(upload_to='output_videos/', null=True, blank=True, max_length=200)
+    output_video = models.FileField(upload_to="output_videos/", null=True, blank=True, max_length=200)
 
     def __str__(self):
         return f"Translation for video {self.video.name} from {self.input_language} to {self.output_language}"
@@ -35,7 +35,9 @@ class MimasaModel(models.Model):
         main_logger = Logger("MAIN")
         main_logger.add_file_handler("main.log")
         main_logger.info("Initializing Mimasa Application...")
-        main_logger.info(f"Translation for video {self.video.path} from {self.input_language} to {self.output_language}")
+        main_logger.info(
+            f"Translation for video {self.video.path} from {self.input_language} to {self.output_language}"
+        )
         try:
             video = Video(file_path=self.video.path, language=self.input_language)
             translation_unit = Translation(

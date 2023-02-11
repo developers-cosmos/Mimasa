@@ -73,6 +73,7 @@ def track_performance(func):
 
     return wrapper
 
+
 def setup():
     # create folder for logs storage
     if not os.path.exists(Config.LOGS_FOLDER_PATH):

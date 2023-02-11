@@ -23,10 +23,12 @@ class MimasaCreateView(CreateView):
         context["language_choices"] = self.language_choices
         return context
 
+
 def get_task_status(request, task_id):
     task = AsyncResult(task_id)
-    response_data = {'task_id': task_id, 'task_status': task.state}
+    response_data = {"task_id": task_id, "task_status": task.state}
     return JsonResponse(response_data)
+
 
 def update_mimasa_instance(request, pk):
     mimasa = get_object_or_404(MimasaModel, id=pk)
@@ -34,8 +36,10 @@ def update_mimasa_instance(request, pk):
     mimasa.save()
     return HttpResponse("Success")
 
+
 def download_translation(request, file_path):
-    return FileResponse(open(file_path, 'rb'))
+    return FileResponse(open(file_path, "rb"))
+
 
 def translation(request, pk):
     mimasa_instance = MimasaModel.objects.get(id=pk)

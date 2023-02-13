@@ -107,6 +107,7 @@ class NUSSL(AudioSeparator):
             # await asyncio.run_coroutine_threadsafe(self._separate_audio(), loop=asyncio.get_event_loop())
             await self._separate_audio()
             self._write_estimates_to_files(destination)
+            return self.music_path, self.vocals_path
         except Exception as e:
             self.logger.error("Failed to separate vocals and music due to {}".format(str(e)))
             raise AudioSeparationError(e)

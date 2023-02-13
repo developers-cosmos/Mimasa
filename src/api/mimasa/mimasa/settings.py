@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "translation",
     "rest_framework",
     "mimasa.celery",
+    "audio_separation",
 ]
 
 MIDDLEWARE = [

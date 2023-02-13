@@ -14,6 +14,7 @@ REPO = os.getenv("GITHUB_REPOSITORY") or os.getenv("REPO")
 PULL_REQUEST_NUMBER = os.getenv("GITHUB_PULL_REQUEST_NUMBER") or os.getenv("PR_NUMBER")
 ACCESS_TOKEN = os.environ.get("MIMASA_ADD_LABELS") or os.environ.get("GITHUB_ACCESS_TOKEN")
 
+
 OWNER = OWNER.split("/")[0]
 REPO = REPO.split("/")[-1]
 PR_TITLE = PR_TITLE.lower()

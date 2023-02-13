@@ -373,6 +373,7 @@ src/api/mimasa/media/
 
 # Migrations
 src/api/mimasa/translation/migrations/
+src/api/mimasa/audio_separation/migrations/
 
 # Virtual Environment
 env/

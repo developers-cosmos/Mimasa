@@ -8,9 +8,17 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/asgi/
 """
 
 import os
-
+import django
 from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+import audio_separation.routing
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mimasa.settings")
+django.setup()
 
-application = get_asgi_application()
+application = ProtocolTypeRouter(
+    {
+        "http": get_asgi_application(),
+        "websocket": URLRouter(audio_separation.routing.websocket_urlpatterns),
+    }
+)

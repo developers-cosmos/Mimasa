@@ -31,4 +31,10 @@ Django==4.1.*
 celery==5.2.*
 eventlet==0.33.*
 
+# DRF
+djangorestframework==3.14.*
+
+# Django Channels
+channels==4.0.*
+
 # Install Redis server from https://github.com/microsoftarchive/redis/releases

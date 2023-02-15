@@ -16,7 +16,7 @@ class AudioSeparator:
         getMusic(): Audio
     """
 
-    def separate_vocals_and_music(self, audio: Audio):
+    def separate_vocals_and_music(self, audio: Audio, destination: str):
         """
         Separate vocals and music from the given audio
         """

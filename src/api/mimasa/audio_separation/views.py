@@ -7,7 +7,6 @@ from .serializers import AudioSeparationSerializer, TaskIdSerializer
 from .models import AudioSeparationModel
 from .services import audio_separation_service
 from .tasks import run_audio_separation
-from src.common.audio import Audio
 from celery.result import AsyncResult
 
 
@@ -30,33 +29,17 @@ class AudioSeparationCreateView(generics.CreateAPIView):
                 return Response({"error": "Destination folder not found"}, status=status.HTTP_400_BAD_REQUEST)
 
             if run_in_background:
-                # Save task information in the database
-                separation_model = AudioSeparationModel(
-                    audio_filepath=audio_filepath, destination_folder=destination_folder
-                )
-                separation_model.save()
-
                 # run the audio_separation task in the background
-                task_result = run_audio_separation.delay(separation_model.id)
-                separation_model.task_status = task_result.status
-                separation_model.task_id = task_result.task_id
-                separation_model.save()
-
-                return Response(
-                    {"separation_request_id": separation_model.id, "message": "audio separation request received"}
-                )
+                task = run_audio_separation.delay(audio_filepath, destination_folder)
+                return Response({"task_id": task.id, "message": "audio separation request received"})
             else:
-                audio_obj = Audio(file_path=audio_filepath)
-                result = audio_separation_service(audio=audio_obj, destination=destination_folder)
-                if isinstance(result, Response):
-                    return result
-                else:
-                    music_filename, speech_filename = result
-                    return Response({"music_filename": music_filename, "speech_filename": speech_filename})
+                result = audio_separation_service(audio_filepath=audio_filepath, destination=destination_folder)
+                return Response(result)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# TODO: can be removed or modfied to check status based on given task_id
 class AudioSeparationRetrieveView(generics.RetrieveAPIView):
     serializer_class = TaskIdSerializer
 

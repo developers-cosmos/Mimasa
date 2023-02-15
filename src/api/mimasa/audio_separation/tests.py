@@ -5,7 +5,6 @@ from django.test import TestCase, Client
 from rest_framework import status
 from django.urls import reverse
 from .models import AudioSeparationModel
-from .serializers import TaskIdSerializer
 from django.conf import settings
 from src.common.libraries import Config
 
@@ -79,7 +78,7 @@ class AudioSeparationCreateViewTestCase(TestCase):
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("separation_request_id", response.data)
+        self.assertIn("task_id", response.data)
         self.assertEqual(response.data["message"], "audio separation request received")
 
 
@@ -101,3 +100,34 @@ class AudioSeparationRetrieveViewTestCase(TestCase):
         response = self.client.get(reverse("audio_separation_results", kwargs={"pk": 0}))
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.data, {"error": "Audio separation task not found"})
+
+
+import unittest
+from channels.testing import WebsocketCommunicator
+from .consumers import AudioSeparationConsumer
+
+
+class TestAudioSeparationRetrieveConsumer(unittest.TestCase):
+    async def test_consumer(self):
+        communicator = WebsocketCommunicator(AudioSeparationConsumer.as_asgi(), "/test/")
+
+        connected, _ = await communicator.connect()
+        self.assertTrue(connected)
+
+        task_result = ("path/to/music_file.mp3", "path/to/speech_file.mp3", "SUCCESS")
+        self.task.result = lambda: task_result
+        self.task.status = "SUCCESS"
+
+        await communicator.receive_json_from()
+        response = await communicator.receive_json_from()
+
+        self.assertEqual(
+            response,
+            {
+                "music_filename": "path/to/music_file.mp3",
+                "speech_filename": "path/to/speech_file.mp3",
+                "status": "SUCCESS",
+            },
+        )
+
+        await communicator.disconnect()

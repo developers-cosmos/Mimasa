@@ -13,7 +13,6 @@ class AudioSeparationModel(models.Model):
     task_id = models.CharField(max_length=100, unique=True)
     audio_filepath = models.CharField(max_length=500)
     destination_folder = models.CharField(max_length=500)
-    # status = models.CharField(max_length=10, choices=TASK_STATUS, default='pending')
     task_status = models.CharField(max_length=100, default="PENDING")
     created_at = models.DateTimeField(auto_now_add=True)
     music_filename = models.CharField(max_length=100, blank=True, null=True)

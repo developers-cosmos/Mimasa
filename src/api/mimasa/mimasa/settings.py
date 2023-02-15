@@ -39,9 +39,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # mimasa apps
-    "translation",
     "rest_framework",
+    "channels",
     "mimasa.celery",
+    "translation",
     "audio_separation",
 ]
 
@@ -74,6 +75,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "mimasa.wsgi.application"
+ASGI_APPLICATION = "mimasa.asgi.application"
 
 
 # Database

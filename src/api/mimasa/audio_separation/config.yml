@@ -1,0 +1,2 @@
+AMQP_URI: "redis://localhost:6379/0"
+SERVICE_NAME: "audio_separation_service"

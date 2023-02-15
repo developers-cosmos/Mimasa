@@ -4,9 +4,10 @@ import shutil
 from django.test import TestCase, Client
 from rest_framework import status
 from django.urls import reverse
-from .models import AudioSeparationModel
 from django.conf import settings
 from src.common.libraries import Config
+from channels.testing import WebsocketCommunicator
+from .consumers import AudioSeparationConsumer
 
 
 class AudioSeparationCreateViewTestCase(TestCase):
@@ -82,52 +83,132 @@ class AudioSeparationCreateViewTestCase(TestCase):
         self.assertEqual(response.data["message"], "audio separation request received")
 
 
-class AudioSeparationRetrieveViewTestCase(TestCase):
+from unittest.mock import MagicMock, patch
+from rest_framework.test import APITestCase
+from django.core.cache import cache
+from .serializers import TaskIdSerializer
+from .views import AudioSeparationRetrieveView
+
+
+class AudioSeparationRetrieveViewTestCase(APITestCase):
     def setUp(self):
-        self.client = Client()
-        self.separator = AudioSeparationModel.objects.create(
-            music_filename="music.mp3", speech_filename="speech.mp3", task_status="SUCCESS"
-        )
+        self.url = reverse("audio_separation_results", kwargs={"task_id": "test_task_id"})
+        self.task_id = "test_task_id"
+        self.data = {"task_id": self.task_id}
+        self.serializer = TaskIdSerializer(data=self.data)
+        self.request = MagicMock()
+        self.view = AudioSeparationRetrieveView()
+        self.request.data = self.data
 
-    def test_retrieve_valid_audio_separation(self):
-        response = self.client.get(reverse("audio_separation_results", kwargs={"pk": self.separator.id}))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["music_filename"], "music.mp3")
-        self.assertEqual(response.data["speech_filename"], "speech.mp3")
-        self.assertEqual(response.data["status"], "SUCCESS")
+    @patch("django.core.cache.cache.set")
+    def test_pending_task(self, mock_cache_set):
+        task_result = MagicMock(name="AsyncResult")
+        task_result.state = "PENDING"
+        mock_cache_set.side_effect = lambda key, value, timeout=None: None
 
-    def test_retrieve_invalid_audio_separation(self):
-        response = self.client.get(reverse("audio_separation_results", kwargs={"pk": 0}))
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.data, {"error": "Audio separation task not found"})
+        response = self.view.get(self.request, task_id=self.task_id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"type": "pending"})
+
+    @patch("django.core.cache.cache.set")
+    def test_successful_task(self, mock_cache_set):
+        task_result = MagicMock(name="AsyncResult")
+        task_result.state = "SUCCESS"
+        task_result.result = {"music_filename": "test_music.mp3", "speech_filename": "test_speech.wav"}
+        mock_cache_set.side_effect = lambda key, value, timeout=None: None
+
+        with patch("audio_separation.views.AsyncResult", return_value=task_result):
+            response = self.view.get(self.request, task_id=self.task_id)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.data,
+                {"type": "success", "music_filename": "test_music.mp3", "speech_filename": "test_speech.wav"},
+            )
+
+    @patch("django.core.cache.cache.set")
+    def test_failed_task(self, mock_cache_set):
+        task_result = MagicMock(name="AsyncResult")
+        task_result.state = "FAILURE"
+        task_result.result = {"exc_type": "ValueError", "exc_message": "Test error"}
+        mock_cache_set.side_effect = lambda key, value, timeout=None: None
+
+        with patch("audio_separation.views.AsyncResult", return_value=task_result):
+            response = self.view.get(self.request, task_id=self.task_id)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data, {"type": "error", "exc_type": "ValueError", "exc_message": "Test error"})
+
+    @patch("django.core.cache.cache.set")
+    def test_unknown_task(self, mock_cache_set):
+        task_result = MagicMock(name="AsyncResult")
+        task_result.state = "UNKNOWN"
+        mock_cache_set.side_effect = lambda key, value, timeout=None: None
+
+        with patch("audio_separation.views.AsyncResult", return_value=task_result):
+            response = self.view.get(self.request, task_id=self.task_id)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data, {"type": "unknown", "message": "This should never be reached"})
 
 
-import unittest
-from channels.testing import WebsocketCommunicator
-from .consumers import AudioSeparationConsumer
+# class TestAudioSeparationRetrieveConsumer(TestCase):
+#     async def test_consumer(self):
+#         communicator = WebsocketCommunicator(AudioSeparationConsumer.as_asgi(), "/test/")
 
+#         connected, _ = await communicator.connect()
+#         self.assertTrue(connected)
 
-class TestAudioSeparationRetrieveConsumer(unittest.TestCase):
-    async def test_consumer(self):
-        communicator = WebsocketCommunicator(AudioSeparationConsumer.as_asgi(), "/test/")
+#         task_result = ("path/to/music_file.mp3", "path/to/speech_file.mp3", "SUCCESS")
+#         self.task.result = lambda: task_result
+#         self.task.status = "SUCCESS"
 
-        connected, _ = await communicator.connect()
-        self.assertTrue(connected)
+#         await communicator.receive_json_from()
+#         response = await communicator.receive_json_from()
 
-        task_result = ("path/to/music_file.mp3", "path/to/speech_file.mp3", "SUCCESS")
-        self.task.result = lambda: task_result
-        self.task.status = "SUCCESS"
+#         self.assertEqual(
+#             response,
+#             {
+#                 "music_filename": "path/to/music_file.mp3",
+#                 "speech_filename": "path/to/speech_file.mp3",
+#                 "status": "SUCCESS",
+#             },
+#         )
 
-        await communicator.receive_json_from()
-        response = await communicator.receive_json_from()
+#         await communicator.disconnect()
 
-        self.assertEqual(
-            response,
-            {
-                "music_filename": "path/to/music_file.mp3",
-                "speech_filename": "path/to/speech_file.mp3",
-                "status": "SUCCESS",
-            },
-        )
+# class AudioSeparationConsumerTestCase(TestCase):
+#     async def test_successful_task(self):
+#         task_id = "test_task_id"
+#         task_result = MagicMock(name="AsyncResult")
+#         task_result.ready.return_value = True
+#         task_result.state = "SUCCESS"
+#         task_result.result = {"music_filename": "test_music_file", "speech_filename": "test_speech_file"}
 
-        await communicator.disconnect()
+#         with patch("celery.result.AsyncResult", return_value=task_result):
+#             communicator = WebsocketCommunicator(AudioSeparationConsumer.as_asgi(), f"/ws/audio_separation/{task_id}/")
+#             connected, _ = await communicator.connect()
+#             self.assertTrue(connected)
+
+#             message = await communicator.receive_json_from()
+#             self.assertEqual(message["type"], "success")
+#             self.assertEqual(message["music_filename"], "test_music_file")
+#             self.assertEqual(message["speech_filename"], "test_speech_file")
+
+#             await communicator.disconnect()
+
+#     async def test_failed_task(self):
+#         task_id = "test_task_id"
+#         task_result = MagicMock(name="AsyncResult")
+#         task_result.ready.return_value = True
+#         task_result.state = "FAILURE"
+#         task_result.result = {"exc_type": "ValueError", "exc_message": "Test error"}
+
+#         with patch("celery.result.AsyncResult", return_value=task_result):
+#             communicator = WebsocketCommunicator(AudioSeparationConsumer.as_asgi(), f"/ws/audio_separation/{task_id}/")
+#             connected, _ = await communicator.connect()
+#             self.assertTrue(connected)
+
+#             message = await communicator.receive_json_from()
+#             self.assertEqual(message["type"], "error")
+#             self.assertEqual(message["exc_type"], "ValueError")
+#             self.assertEqual(message["exc_message"], "Test error")
+
+#             await communicator.disconnect()

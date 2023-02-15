@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from .models import AudioSeparationModel
 
 
 class AudioSeparationSerializer(serializers.Serializer):
@@ -15,4 +14,4 @@ class AudioSeparationSerializer(serializers.Serializer):
 
 
 class TaskIdSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    task_id = serializers.CharField()

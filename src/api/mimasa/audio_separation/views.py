@@ -4,7 +4,6 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import AudioSeparationSerializer, TaskIdSerializer
-from .models import AudioSeparationModel
 from .services import audio_separation_service
 from .tasks import run_audio_separation
 from celery.result import AsyncResult
@@ -39,36 +38,32 @@ class AudioSeparationCreateView(generics.CreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# TODO: can be removed or modfied to check status based on given task_id
 class AudioSeparationRetrieveView(generics.RetrieveAPIView):
     serializer_class = TaskIdSerializer
 
     def get(self, request, *args, **kwargs):
-        try:
-            print(kwargs.get("id"))
-            separator = AudioSeparationModel.objects.get(id=kwargs.get("pk"))
-        except AudioSeparationModel.DoesNotExist:
-            return Response({"error": "Audio separation task not found"}, status=status.HTTP_404_NOT_FOUND)
+        task_id = kwargs.get("task_id")
+        task_result = AsyncResult(task_id)
 
-        result = AsyncResult(separator.task_id)
-        meta = result.result or result.state
-        if separator.task_status == "SUCCESS":
+        if task_result.state == "PENDING":
+            return Response({"type": "pending"})
+
+        result = task_result.result
+        if task_result.state == "SUCCESS":
             return Response(
                 {
-                    "status": separator.task_status,
-                    "music_filename": separator.music_filename,
-                    "speech_filename": separator.speech_filename,
-                    "meta": meta,
+                    "type": "success",
+                    "music_filename": result["music_filename"],
+                    "speech_filename": result["speech_filename"],
                 }
             )
-        elif separator.task_status == "FAILURE":
+        elif task_result.state == "FAILURE":
             return Response(
                 {
-                    "status": separator.task_status,
-                    "music_filename": separator.music_filename,
-                    "speech_filename": separator.speech_filename,
-                    "meta": meta,
+                    "type": "error",
+                    "exc_type": result["exc_type"],
+                    "exc_message": result["exc_message"],
                 }
             )
         else:
-            return Response({"status": separator.task_status})
+            return Response({"type": "unknown", "message": "This should never be reached"})

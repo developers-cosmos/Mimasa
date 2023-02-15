@@ -1,2 +1,3 @@
+#NOTE: This file is added to provide configuration for nameko, but its no longer used
 AMQP_URI: "redis://localhost:6379/0"
 SERVICE_NAME: "audio_separation_service"

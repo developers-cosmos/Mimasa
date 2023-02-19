@@ -26,12 +26,18 @@ jobs:
         sudo apt-get install sox -y
         pip install -r requirements.txt
 
-    - name: Build package
+    - name: Install ffmpeg and sox
       run: |
-        python setup.py sdist bdist_wheel
+        sudo apt update
+        sudo apt install ffmpeg
+        sudo apt install sox
 
     - name: Run face_detection unit tests
       run: python src/api/mimasa/manage.py test face_detection
+
+    - name: Build package
+      run: |
+        python setup.py sdist bdist_wheel
 
     - name: Upload to Github Releases
       if: ${{ github.ref == 'refs/heads/main' }}

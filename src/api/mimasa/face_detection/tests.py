@@ -24,7 +24,7 @@ class FaceDetectionCreateViewTest(TestCase):
             "destination_folder": self.face_detection_base,
             "run_in_background": False,
             "async_enabled": True,
-            "async_type": "ConcurrentFuturesFaceDetector",
+            "async_type": "AsyncTaskFaceDetector",
             "detector_type": "MTCNN",
         }
 
@@ -79,7 +79,6 @@ class FaceDetectionCreateViewTest(TestCase):
         serializer_mock.is_valid.return_value = True
         serializer_mock.validated_data = self.valid_payload
         self.valid_payload["run_in_background"] = True
-        self.valid_payload["async_type"] = "AsyncTaskFaceDetector"
         with patch("face_detection.views.FaceDetectionSerializer", return_value=serializer_mock):
             with patch("face_detection.views.run_face_detection.delay") as run_face_detection_mock:
                 task_mock = MagicMock()

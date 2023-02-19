@@ -30,6 +30,9 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
 
+    - name: Run face_detection unit tests
+      run: python src/api/mimasa/manage.py test face_detection
+
     - name: Upload to Github Releases
       if: ${{ github.ref == 'refs/heads/main' }}
       uses: actions/upload-artifact@v2

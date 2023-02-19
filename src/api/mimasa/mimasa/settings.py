@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "mimasa.celery",
     "translation",
     "audio_separation",
+    "face_detection",
 ]
 
 MIDDLEWARE = [

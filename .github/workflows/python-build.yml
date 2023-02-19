@@ -24,16 +24,16 @@ jobs:
         sudo apt-get update
         sudo apt-get install libsox-dev
         sudo apt-get install sox -y
+        sudo apt install ffmpeg -y
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Install ffmpeg and sox
-      run: |
-        sudo apt update
-        sudo apt install ffmpeg
-        sudo apt install sox
-
-    - name: Run face_detection unit tests
+    - name: Run unit tests #TODO: run UTs for all apps
       run: python src/api/mimasa/manage.py test face_detection
+
+    - name: Generate Coverage Reports
+      run: |
+        coverage run --source=src/api/mimasa src/api/mimasa/manage.py test face_detection #TODO: generate coverage with all apps
 
     - name: Build package
       run: |
@@ -51,3 +51,18 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: mimasa-build
+
+    - name: Build coverage report package
+      run: |
+        coverage html
+
+    - name: Upload to Github Releases
+      uses: actions/upload-artifact@v2
+      with:
+        name: mimasa-coverage-report
+        path: htmlcov
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: mimasa-coverage-report

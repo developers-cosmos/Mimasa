@@ -85,7 +85,6 @@ class AudioSeparationCreateViewTestCase(TestCase):
 
 from unittest.mock import MagicMock, patch
 from rest_framework.test import APITestCase
-from django.core.cache import cache
 from .serializers import TaskIdSerializer
 from .views import AudioSeparationRetrieveView
 

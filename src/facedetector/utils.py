@@ -42,7 +42,7 @@ Average CPU usage of 'main': 19.52%
 """
 
 
-async def detect_faces_in_realtime(detector, video: Video):
+async def detect_faces_in_realtime(detector, video: Video, destination: str = None):
     logger = Logger(name="FaceDetector")
     logger.add_file_handler("face_detection.log")
 
@@ -50,13 +50,14 @@ async def detect_faces_in_realtime(detector, video: Video):
     out_filename = (
         "FaceDetector".lower()
         + "_"
-        + Config.VIDEO_DETECTOR.lower()
+        + detector.__class__.__name__
         + "_"
         + get_current_time()
         + "."
         + Config.VIDEO_DEFAULT_FORMAT
     )
-    video_output_filename = Config.VIDEO_OUTPUT_PATH / out_filename
+    video_output_folder = destination or Config.VIDEO_OUTPUT_PATH
+    video_output_filename = os.path.join(video_output_folder, out_filename)
 
     logger.info("Filename for input video: %s" % video_input_filename)
     logger.info("Filename for output video: %s" % video_output_filename)

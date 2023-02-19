@@ -12,7 +12,7 @@ from src.common.logger import Logger
 
 
 class AsyncFaceDetector:
-    def __init__(self, video: Video):
+    def __init__(self, video: Video, destination: str = None):
         self.input_file = video.get_filename()
         self.output_file = ""
         self.logger = None
@@ -21,6 +21,7 @@ class AsyncFaceDetector:
         self.total_frames = 0
         self.num_processing_workers = Config.FACE_DETECTOR_NUM_WORK_THREADS
         self.face_detector = None
+        self.output_folder = destination
 
         # Create a queue to store the frames from the video
         self.frames_queue = asyncio.Queue()
@@ -39,7 +40,8 @@ class AsyncFaceDetector:
                 + "."
                 + Config.VIDEO_DEFAULT_FORMAT
             )
-            self.output_file = Config.TRANSLATION_OUTPUT_PATH / out_filename
+            self.output_folder = self.output_folder or Config.TRANSLATION_OUTPUT_PATH
+            self.output_file = self.output_folder / out_filename
 
             # setup logging
             self.logger = Logger(name=self.__class__.__name__)

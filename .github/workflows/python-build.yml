@@ -33,7 +33,7 @@ jobs:
 
     - name: Generate Coverage Reports
       run: |
-        coverage run --source=src/api/mimasa src/api/mimasa/manage.py test face_detection #TODO: generate coverage with all apps
+        coverage run src/api/mimasa/manage.py test face_detection #TODO: generate coverage with all apps
 
     - name: Build package
       run: |
@@ -60,7 +60,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: mimasa-coverage-report
-        path: htmlcov
+        path: _coverage_report
 
     - name: Download artifacts
       uses: actions/download-artifact@v2

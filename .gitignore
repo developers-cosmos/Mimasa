@@ -410,5 +410,5 @@ mimasa-*
 _*
 
 # tests
-htmlcov/**
+_coverage_report/**
 .coverage

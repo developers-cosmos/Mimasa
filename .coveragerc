@@ -1,0 +1,16 @@
+[run]
+source = src/api/mimasa
+
+omit =
+  */migrations/*
+  */__init__.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+
+[html]
+directory = _coverage_report

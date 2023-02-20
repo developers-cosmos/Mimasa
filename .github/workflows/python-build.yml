@@ -58,9 +58,7 @@ jobs:
 
     - name: Install package
       run: |
-        ls -al
-        ls mimasa-build
-        python -m pip install mimasa-build/*.whl
+        python -m pip install *.whl
 
     - name: Run unit tests
       run: python src/api/mimasa/manage.py test face_detection

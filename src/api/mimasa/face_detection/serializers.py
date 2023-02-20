@@ -27,9 +27,6 @@ class FaceDetectionSerializer(serializers.Serializer):
     )
 
     def validate(self, data):
-        if data.get("async_enabled", False) and not data.get("async_type"):
-            raise serializers.ValidationError("The 'async_type' field is required when 'async_enabled' is True.")
-
         if data["detector_type"] != "MTCNN":
             raise serializers.ValidationError("The selected face detector is not implemented.")
 

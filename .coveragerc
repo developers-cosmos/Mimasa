@@ -1,9 +1,10 @@
 [run]
-source = src/api/mimasa
+source = src/api/mimasa/
 
 omit =
   */migrations/*
   */__init__.py
+  */tests.py
 
 [report]
 exclude_lines =

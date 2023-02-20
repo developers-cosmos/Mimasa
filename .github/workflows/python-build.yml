@@ -58,6 +58,8 @@ jobs:
 
     - name: Install package
       run: |
+        ls -al
+        ls mimasa-build
         python -m pip install mimasa-build/*.whl
 
     - name: Run unit tests

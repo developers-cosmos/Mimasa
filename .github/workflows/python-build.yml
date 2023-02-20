@@ -85,19 +85,26 @@ jobs:
         name: mimasa-coverage-report
 
     - name: Post Coverage Report Comment
+      if: ${{ github.event_name }} == 'pull_request'
       uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
+          const result = await github.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: context.sha,
+          });
+
           const fs = require('fs');
           const path = require('path');
           const reportPath = path.join(process.env.GITHUB_WORKSPACE, '_coverage_report/index.html');
           const report = fs.readFileSync(reportPath, 'utf8');
-          const octokit = new Octokit();
           const comment = `## Coverage Report\n\n${report}`;
-          octokit.issues.createComment({
+          const pullRequest = result.data[0];
+          await github.issues.createComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            issue_number: context.issue.number,
-            body: comment
+            issue_number: pullRequest.number,
+            body: comment,
           });

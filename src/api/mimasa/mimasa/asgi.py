@@ -12,6 +12,7 @@ import django
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 import audio_separation.routing
+import face_detection.routing
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mimasa.settings")
 django.setup()
@@ -19,6 +20,8 @@ django.setup()
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": URLRouter(audio_separation.routing.websocket_urlpatterns),
+        "websocket": URLRouter(
+            audio_separation.routing.websocket_urlpatterns + face_detection.routing.websocket_urlpatterns
+        ),
     }
 )

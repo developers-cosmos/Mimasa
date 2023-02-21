@@ -1,4 +1,4 @@
-name: Build Python Package
+name: Build and Test Python Package
 
 on:
   push:
@@ -24,21 +24,87 @@ jobs:
         sudo apt-get update
         sudo apt-get install libsox-dev
         sudo apt-get install sox -y
+        sudo apt install ffmpeg -y
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Build package
       run: |
         python setup.py sdist bdist_wheel
 
-    - name: Upload to Github Releases
-      if: ${{ github.ref == 'refs/heads/main' }}
+    - name: Upload package to Github Releases
       uses: actions/upload-artifact@v2
       with:
         name: mimasa-build
         path: dist
 
-    - name: Download artifacts
-      if: ${{ github.ref == 'refs/heads/main' }}
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.x
+
+    - name: Download package artifacts
       uses: actions/download-artifact@v2
       with:
         name: mimasa-build
+
+    - name: Install package & dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install libsox-dev
+        sudo apt-get install sox -y
+        sudo apt install ffmpeg -y
+        python -m pip install --upgrade pip
+        python -m pip install *.whl
+
+    - name: Run unit tests
+      run: python src/api/mimasa/manage.py test face_detection
+
+    - name: Generate Coverage Reports
+      run: |
+        coverage run src/api/mimasa/manage.py test face_detection
+        coverage html
+
+    - name: Upload coverage report to Github Releases
+      uses: actions/upload-artifact@v2
+      with:
+        name: mimasa-coverage-report
+        path: _coverage_report
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: mimasa-coverage-report
+
+    - name: Post Coverage Report Comment
+      if: ${{ github.event_name }} == 'pull_request'
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const result = await github.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: context.sha,
+          });
+
+          const fs = require('fs');
+          const path = require('path');
+          const reportPath = path.join(process.env.GITHUB_WORKSPACE, '_coverage_report/index.html');
+          const report = fs.readFileSync(reportPath, 'utf8');
+          const comment = `## Coverage Report\n\n${report}`;
+          const pullRequest = result.data[0];
+          await github.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: pullRequest.number,
+            body: comment,
+          });

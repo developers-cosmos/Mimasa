@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 from django.conf import settings
 from django.test import TestCase
 from rest_framework import status
+from rest_framework import serializers
 
 from .serializers import FaceDetectionSerializer, TaskIdSerializer
 from .views import FaceDetectionCreateView, FaceDetectionRetrieveView
@@ -24,7 +25,7 @@ class FaceDetectionCreateViewTest(TestCase):
             "destination_folder": self.face_detection_base,
             "run_in_background": False,
             "async_enabled": True,
-            "async_type": "ConcurrentFuturesFaceDetector",
+            "async_type": "AsyncTaskFaceDetector",
             "detector_type": "MTCNN",
         }
 
@@ -79,7 +80,6 @@ class FaceDetectionCreateViewTest(TestCase):
         serializer_mock.is_valid.return_value = True
         serializer_mock.validated_data = self.valid_payload
         self.valid_payload["run_in_background"] = True
-        self.valid_payload["async_type"] = "AsyncTaskFaceDetector"
         with patch("face_detection.views.FaceDetectionSerializer", return_value=serializer_mock):
             with patch("face_detection.views.run_face_detection.delay") as run_face_detection_mock:
                 task_mock = MagicMock()
@@ -134,12 +134,77 @@ class FaceDetectionCreateViewTest(TestCase):
                 {"detector_type": ['"InvalidDetectorType" is not a valid choice.']},
             )
 
+    def test_invalid_data_detector_type_not_implemented(self):
+        invalid_data_detector_type_not_implemented = {
+            "video_filepath": "some/dummy/video_file.mp4",
+            "destination_folder": "some/dummy/destination_folder",
+            "detector_type": "YOLO",
+        }
+        serializer_mock = MagicMock(spec=FaceDetectionSerializer)
+        serializer_mock.is_valid.return_value = True
+        serializer_mock.validated_data = invalid_data_detector_type_not_implemented
+        with patch("face_detection.views.FaceDetectionSerializer", return_value=serializer_mock):
+            response = self.client.post("/api/face_detection/", data=invalid_data_detector_type_not_implemented)
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(
+                response.json(),
+                {"non_field_errors": ["The selected face detector is not implemented."]},
+            )
+
+    def test_invalid_data_async_type_not_supported(self):
+        invalid_data_async_type_not_supported = {
+            "video_filepath": "some/dummy/video_file.mp4",
+            "destination_folder": "some/dummy/destination_folder",
+            "run_in_background": True,
+            "async_type": "ConcurrentFuturesFaceDetector",
+        }
+        serializer_mock = MagicMock(spec=FaceDetectionSerializer)
+        serializer_mock.is_valid.return_value = True
+        serializer_mock.validated_data = invalid_data_async_type_not_supported
+        with patch("face_detection.views.FaceDetectionSerializer", return_value=serializer_mock):
+            response = self.client.post("/api/face_detection/", data=invalid_data_async_type_not_supported)
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(
+                response.json(),
+                {"non_field_errors": ["The selected async_type is currently not supported to run in background."]},
+            )
+
+
+from django.test import TestCase
+from rest_framework import serializers
+
+
+class TaskIdSerializerTestCase(TestCase):
+    def setUp(self):
+        self.serializer = TaskIdSerializer()
+
+    def test_valid_data(self):
+        data = {"task_id": "65a9c1eb-451c-4c3d-b970-d7410016e1ad"}
+        result = self.serializer.validate(data)
+        self.assertEqual(result, data)
+
+    # TODO: Implement custom validate_task_id() in TaskIdSerializer() if needed
+    # def test_missing_field(self):
+    #     data = {}
+    #     result = self.serializer.validate(data)
+    #     self.assertEqual(
+    #         result,
+    #         {"task_id": ["This field is required."]}
+    #     )
+
+    # def test_invalid_data(self):
+    #     data = {"task_id": 123}
+    #     result = self.serializer.validate(data)
+    #     self.assertEqual(
+    #         result,
+    #         {"task_id": ["Expected a string."]}
+    #     )
+
 
 from django.urls import reverse
 from django.test import TestCase, Client
 from rest_framework import status
 from unittest.mock import patch
-from celery.result import AsyncResult
 
 
 class FaceDetectionRetrieveViewTest(TestCase):
@@ -216,3 +281,56 @@ class FaceDetectionRetrieveViewTest(TestCase):
                 "message": "This should never be reached",
             },
         )
+
+
+from unittest.mock import patch, MagicMock
+from unittest import IsolatedAsyncioTestCase
+from channels.testing import WebsocketCommunicator
+from .consumers import FaceDetectionConsumer
+from mimasa.asgi import application
+
+
+class FaceDetectionConsumerTestCase(IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.task_id = "some-task-id"
+        self.result = {"video_filename": "some-video-filename.mp4"}
+
+        self.consumer = FaceDetectionConsumer()
+        self.communicator = WebsocketCommunicator(application, f"/ws/face_detection/{self.task_id}/")
+
+    async def test_successful_detection(self):
+        with patch("face_detection.consumers.AsyncResult") as mock_result:
+            mock_task = MagicMock()
+            mock_task.ready.return_value = True
+            mock_task.state = "SUCCESS"
+            mock_task.result = self.result
+            mock_result.return_value = mock_task
+
+            connected, _ = await self.communicator.connect()
+            self.assertTrue(connected)
+
+            response = await self.communicator.receive_json_from()
+
+            await self.communicator.disconnect()
+
+        self.assertEqual(response["type"], "success")
+        self.assertEqual(response["video_filename"], self.result["video_filename"])
+
+    async def test_failed_detection(self):
+        with patch("face_detection.consumers.AsyncResult") as mock_result:
+            mock_task = MagicMock()
+            mock_task.ready.return_value = True
+            mock_task.state = "FAILURE"
+            mock_task.result = {"exc_type": "ValueError", "exc_message": "Invalid input"}
+            mock_result.return_value = mock_task
+
+            connected, _ = await self.communicator.connect()
+            self.assertTrue(connected)
+
+            response = await self.communicator.receive_json_from()
+
+            await self.communicator.disconnect()
+
+        self.assertEqual(response["type"], "error")
+        self.assertEqual(response["exc_type"], mock_task.result["exc_type"])
+        self.assertEqual(response["exc_message"], mock_task.result["exc_message"])

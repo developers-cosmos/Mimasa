@@ -408,3 +408,7 @@ Mimasa-*
 mimasa-*
 
 _*
+
+# tests
+_coverage_report/**
+.coverage

@@ -24,7 +24,7 @@ psutil==5.9.*
 # soundfile==0.11.0
 
 # testing
-matplotlib==3.6.*
+matplotlib==3.7.*
 websockets==10.*
 
 # Django application

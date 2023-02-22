@@ -96,15 +96,17 @@ jobs:
             head: context.sha,
           });
 
-          const fs = require('fs');
-          const path = require('path');
-          const reportPath = path.join(process.env.GITHUB_WORKSPACE, '_coverage_report/index.html');
-          const report = fs.readFileSync(reportPath, 'utf8');
-          const comment = `## Coverage Report\n\n${report}`;
-          const pullRequest = result.data[0];
-          await github.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: pullRequest.number,
-            body: comment,
-          });
+          if (result.data.length) {
+            const fs = require('fs');
+            const path = require('path');
+            const reportPath = path.join(process.env.GITHUB_WORKSPACE, '_coverage_report/index.html');
+            const report = fs.readFileSync(reportPath, 'utf8');
+            const comment = `## Coverage Report\n\n${report}`;
+            const pullRequest = result.data[0];
+            await github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pullRequest.number,
+              body: comment,
+            });
+          }

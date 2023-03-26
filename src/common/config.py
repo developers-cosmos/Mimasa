@@ -20,7 +20,7 @@ class Config:
 
     # user inputs
     INPUT_LANGUAGE = "en-US"
-    TARGET_LANGUAGE = "hi-IN"
+    TARGET_LANGUAGE = "fr-FR"
 
     # common settings
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -45,7 +45,7 @@ class Config:
     VIDEO_FORMATS = ["mp4"]
     VIDEO_DETECTOR = "MTCNN"  # possible values: ["ViolaJones", "MTCNN", "SSD", "YOLO", "RetinaFace"]
     VIDEO_ASYNC_FACE_DETECTOR = "AsyncTaskFaceDetector"  # possible values: ["AsyncTaskFaceDetector", "ConcurrentFuturesFaceDetector", "AsyncIOAndCPUFaceDetector"]
-    FACE_DETECTOR_NUM_WORK_THREADS = 3  # min(32, (os.cpu_count() or 1) + 4)
+    FACE_DETECTOR_NUM_WORK_THREADS = 6  # min(32, (os.cpu_count() or 1) + 4)
 
     ## Datasets
 

@@ -25,7 +25,7 @@ psutil==5.9.*
 
 # testing
 matplotlib==3.7.*
-websockets==10.*
+websockets==11.*
 coverage==7.2.*
 pytest-cov==4.0.*
 

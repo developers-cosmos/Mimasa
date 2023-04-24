@@ -2,7 +2,7 @@ numpy==1.23.* # NOTE: Upgrading to 1.24.* might cause problems
 opencv_python==4.7.*
 mtcnn==0.1.1
 pydub==0.25.1
-setuptools==67.6.1
+setuptools==67.7.2
 torch==2.0.0
 nussl==1.1.9
 tensorflow

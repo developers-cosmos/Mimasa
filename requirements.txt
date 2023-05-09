@@ -30,7 +30,7 @@ coverage==7.2.*
 pytest-cov==4.0.*
 
 # Django application
-Django==4.1.*
+Django==4.2.*
 celery==5.2.*
 eventlet==0.33.*
 daphne==4.0.*

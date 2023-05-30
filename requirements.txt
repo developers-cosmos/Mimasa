@@ -27,7 +27,7 @@ psutil==5.9.*
 matplotlib==3.7.*
 websockets==11.*
 coverage==7.2.*
-pytest-cov==4.0.*
+pytest-cov==4.1.*
 
 # Django application
 Django==4.2.*

@@ -3,6 +3,13 @@
 All notable changes to this package will be documented in this file.
 This package adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.1 release
+
+### Bug Fixes
+
+* Fix dependency issues
+* Add pre-commit config to fix linting issues
+
 ## 1.1.0 release
 
 ### Features

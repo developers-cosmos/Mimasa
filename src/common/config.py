@@ -5,14 +5,23 @@ Config Class
 
 from pathlib import Path
 
+import os
+import sys
 import torch
+
+
+def is_venv():
+    """Returns if the current env is a venv"""
+    return (hasattr(sys, 'real_prefix') or
+            (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix))
 
 
 class Config:
     # declare all the configuration parameters as static variables
 
     # the application is expected to run from root directory
-    BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Path(os.getcwd())
+    # BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Path(os.getcwd())
+    BASE_DIR = Path(os.path.dirname(sys.prefix)) if is_venv() else Path(__file__).resolve().parent.parent.parent; os.chdir(BASE_DIR)
 
     # # api keys for Mimasa
     # API_KEY = "your-api-key"
@@ -66,7 +75,7 @@ class Config:
     MODEL_NUSSL_PATH = MODELS_PATH / "nussl" / "checkpoints" / "best.model.pth"
 
     # logging configuration
-    LOGS_FOLDER_PATH = BASE_DIR / "_logs"
+    LOGS_FOLDER_PATH = BASE_DIR / "logs"
     LOG_LEVEL = "debug"  # possible options: ["debug", "info", "warning", "error", "critical",]
     REDIRECT_STDOUT_TO_FILE = True
     REDIRECT_STDERR_TO_FILE = False

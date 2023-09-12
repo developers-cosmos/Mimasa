@@ -414,3 +414,6 @@ _coverage_report/**
 .coverage
 
 **venv/**
+*.rdb
+
+.DS_Store

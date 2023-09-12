@@ -2,9 +2,9 @@
 """
 VideoTranslation class is the main entry point for the video related processing.
 """
-from src.common.libraries import Video, Logger, Config
-from src.facedetector.async_face_detector import AsyncFaceDetector
+from src.common.libraries import Config, Logger, Video
 from src.facedetector import utils
+from src.facedetector.async_face_detector import AsyncFaceDetector
 
 
 class VideoTranslation:

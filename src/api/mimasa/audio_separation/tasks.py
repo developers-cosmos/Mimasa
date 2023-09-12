@@ -1,5 +1,6 @@
-from .services import audio_separation_service
 from mimasa.celery import app
+
+from .services import audio_separation_service
 
 
 @app.task

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
+
 import requests
 
 BRANCH_FORMATS = ["feature", "bug", "chore", "release", "documentation", "ci/cd"]

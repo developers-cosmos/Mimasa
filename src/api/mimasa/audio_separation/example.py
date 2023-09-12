@@ -1,6 +1,7 @@
 import asyncio
-import websockets
 import json
+
+import websockets
 
 
 async def onsuccess(music_filename, speech_filename):

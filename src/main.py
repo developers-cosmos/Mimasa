@@ -5,14 +5,11 @@ main.py
 This module contains the main entry point for the program. It is responsible for
 initializing all necessary components and executing the main logic of the program.
 """
-import os
-import glob
-import sys
 import asyncio
 
-from src.common.libraries import Config, Video, Logger
-from src.utils.utils import track_performance
+from src.common.libraries import Config, Logger, Video
 from src.translation.translation import Translation
+from src.utils.utils import track_performance
 
 main_logger = Logger("MAIN")
 main_logger.add_file_handler("main.log")

@@ -4,7 +4,7 @@ Config Class
 """
 
 from pathlib import Path
-import os
+
 import torch
 
 

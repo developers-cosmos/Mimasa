@@ -4,8 +4,8 @@ This module contains the RetinaFace class, which is a concrete implementation of
 FaceDetector class.
 """
 
-from src.facedetector.face_detector import FaceDetector
 from src.common.libraries import *
+from src.facedetector.face_detector import FaceDetector
 
 
 class RetinaFace(FaceDetector):

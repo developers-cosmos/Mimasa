@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import asyncio
+
 from django.db import models
-from django.core.files import File
 
 from src.common.libraries import Logger, Video
 from src.translation.translation import Translation

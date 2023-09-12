@@ -4,8 +4,9 @@ This module contains the MTCNNDetector class, which is a concrete implementation
 """
 
 from mtcnn import MTCNN
-from src.facedetector.face_detector import FaceDetector
+
 from src.common.libraries import *
+from src.facedetector.face_detector import FaceDetector
 
 
 class MTCNNDetector(FaceDetector):

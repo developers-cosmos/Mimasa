@@ -1,8 +1,8 @@
 import os
+
 import librosa
 import numpy as np
 import nussl
-
 
 AUDIO_BASE_DIR = os.path.join(os.getcwd(), "data", "audios")
 

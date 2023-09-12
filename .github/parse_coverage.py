@@ -1,5 +1,4 @@
 import argparse
-from bs4 import BeautifulSoup
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", type=str, required=True, help="The input HTML file path")

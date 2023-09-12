@@ -1,6 +1,3 @@
-from django.db import models
-
-
 ## NOTE: This model is no longer used
 
 # class AudioSeparationModel(models.Model):

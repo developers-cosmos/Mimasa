@@ -63,4 +63,3 @@ files-output = false
 reports = true
 evaluation = '10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)'
 comment = false
-

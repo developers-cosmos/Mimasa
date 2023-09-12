@@ -1,12 +1,12 @@
 import os
 
-from rest_framework import generics
+from celery.result import AsyncResult
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework import status
+
 from .serializers import AudioSeparationSerializer, TaskIdSerializer
 from .services import audio_separation_service
 from .tasks import run_audio_separation
-from celery.result import AsyncResult
 
 
 class AudioSeparationCreateView(generics.CreateAPIView):

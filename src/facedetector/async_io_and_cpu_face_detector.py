@@ -57,9 +57,9 @@ Average CPU usage of 'main': 41.65%
 """
 
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 from src.common.libraries import *
-from concurrent.futures import ThreadPoolExecutor
 
 
 class AsyncIOAndCPUFaceDetector:

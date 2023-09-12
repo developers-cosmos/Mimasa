@@ -9,8 +9,8 @@ It takes in 3 parameters during initialization:
 3. threshold: threshold for non-maxima suppression
 """
 
-from src.facedetector.face_detector import FaceDetector
 from src.common.libraries import *
+from src.facedetector.face_detector import FaceDetector
 
 
 class YOLO(FaceDetector):

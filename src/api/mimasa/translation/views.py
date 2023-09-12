@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import CreateView
-from .tasks import run_translation
 from celery.result import AsyncResult
-from django.http import JsonResponse, HttpResponse
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import CreateView
 
 from .models import MimasaModel
+from .tasks import run_translation
 
 
 class MimasaCreateView(CreateView):

@@ -2,8 +2,8 @@
 """
 AudioTranslation class is the main entry point for the audio related processing.
 """
-from src.common.libraries import Audio, Logger, Config
 from src.audioseparator import utils as separator_utils
+from src.common.libraries import Audio, Config, Logger
 
 
 class AudioTranslation:

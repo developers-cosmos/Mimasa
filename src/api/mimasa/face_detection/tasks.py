@@ -1,5 +1,6 @@
-from .services import face_detection_service
 from mimasa.celery import app
+
+from .services import face_detection_service
 
 
 @app.task

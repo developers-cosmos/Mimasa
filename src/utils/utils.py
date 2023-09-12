@@ -2,13 +2,14 @@
 """
 This file contains utility functions that are commonly used throughout the application.
 """
-import os
 import glob
+import logging
+import os
 import sys
 import time
-import logging
 from datetime import datetime
-from src.common.libraries import Logger, Config
+
+from src.common.libraries import Config, Logger
 
 
 def get_current_time():

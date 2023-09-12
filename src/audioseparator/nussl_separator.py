@@ -6,11 +6,11 @@ NUSSL Class
 from src.audioseparator.audio_separator import AudioSeparator
 from src.audioseparator.mask_inference import MaskInference
 from src.common.audio import Audio
-from src.common.libraries import nussl, torch
 from src.common.config import Config
-from src.utils import utils
 from src.common.exceptions import AudioSeparationError
+from src.common.libraries import nussl
 from src.common.logger import Logger
+from src.utils import utils
 
 
 class NUSSL(AudioSeparator):

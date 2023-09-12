@@ -5,10 +5,11 @@ in a given video asynchronously
 """
 import asyncio
 import os
-from src.common.libraries import *
-from src.utils.utils import get_current_time
+
 from src.common.config import Config
+from src.common.libraries import *
 from src.common.logger import Logger
+from src.utils.utils import get_current_time
 
 
 class AsyncFaceDetector:

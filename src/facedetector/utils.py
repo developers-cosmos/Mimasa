@@ -4,12 +4,14 @@ This file contains utility functions that are commonly used for face detection.
 """
 
 import asyncio
-from src.facedetector import viola_jones, mtcnn, ssd, yolo, retina_face
-from src.facedetector import async_task_face_detector, concurrent_futures_face_detector, async_io_and_cpu_face_detector
-from src.common.libraries import *
-from src.utils.utils import get_current_time
-from src.common.logger import Logger
 
+from src.common.libraries import *
+from src.common.logger import Logger
+from src.facedetector import (async_io_and_cpu_face_detector,
+                              async_task_face_detector,
+                              concurrent_futures_face_detector, mtcnn, ssd,
+                              viola_jones)
+from src.utils.utils import get_current_time
 
 """
 Below are the performance metrics of face detection without asynchronous approach:

@@ -4,8 +4,8 @@ This module contains the SSD class, which is a concrete implementation
 of the FaceDetector class.
 """
 
-from src.facedetector.face_detector import FaceDetector
 from src.common.libraries import *
+from src.facedetector.face_detector import FaceDetector
 
 
 class SSD(FaceDetector):

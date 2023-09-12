@@ -2,7 +2,7 @@
 """
 AudioExtractor Class
 """
-from src.common.libraries import AudioSegment, Video, Logger
+from src.common.libraries import AudioSegment, Logger, Video
 
 
 class AudioExtractor:

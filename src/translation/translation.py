@@ -5,11 +5,10 @@ separate asynchronous tasks for the audio and video translations.
 """
 import asyncio
 
-from concurrent.futures import ThreadPoolExecutor
-from src.common.libraries import Logger, Video, Audio, Config
+from src.common.libraries import Audio, Config, Logger, Video
 from src.translation.audio_extractor import AudioExtractor
-from src.translation.video_translation import VideoTranslation
 from src.translation.audio_translation import AudioTranslation
+from src.translation.video_translation import VideoTranslation
 from src.utils import utils
 
 

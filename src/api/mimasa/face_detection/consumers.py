@@ -1,6 +1,7 @@
 import asyncio
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
+
 from celery.result import AsyncResult
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 
 class FaceDetectionConsumer(AsyncJsonWebsocketConsumer):

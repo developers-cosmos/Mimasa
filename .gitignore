@@ -413,4 +413,4 @@ _*
 _coverage_report/**
 .coverage
 
-venv/**
+**venv/**

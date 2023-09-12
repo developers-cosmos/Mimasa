@@ -1,12 +1,13 @@
-import os
-import numpy as np
-import librosa
-import torch
-from flerken.models import UNet
-from collections import OrderedDict
-import soundfile as sf
 import logging
+import os
+from collections import OrderedDict
+
+import librosa
+import numpy as np
+import soundfile as sf
+import torch
 import torch.nn.functional as F
+from flerken.models import UNet
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s: %(message)s")

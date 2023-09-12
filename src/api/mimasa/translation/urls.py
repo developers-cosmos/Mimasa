@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import MimasaCreateView, translation, get_task_status, update_mimasa_instance, download_translation
+
+from .views import (MimasaCreateView, download_translation, get_task_status,
+                    translation, update_mimasa_instance)
 
 urlpatterns = [
     path("", MimasaCreateView.as_view(), name="mimasa_application"),

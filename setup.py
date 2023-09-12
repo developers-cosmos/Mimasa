@@ -4,7 +4,8 @@ This module contains the setup script for installing the package.
 """
 import os
 import subprocess
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 from setuptools.command.install import install
 
 DESCRIPTION = """

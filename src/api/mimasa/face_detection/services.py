@@ -1,8 +1,9 @@
-import os
 import asyncio
+import os
+
+from src.common.libraries import Video
 from src.facedetector import utils
 from src.facedetector.async_face_detector import AsyncFaceDetector
-from src.common.libraries import Video, Config
 
 
 def face_detection_service(

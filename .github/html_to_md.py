@@ -1,4 +1,5 @@
 import argparse
+
 import html2text
 
 # create argument parser

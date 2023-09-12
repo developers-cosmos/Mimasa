@@ -1,16 +1,16 @@
 import os
 import shutil
-
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
 from django.conf import settings
 from django.test import TestCase
 from rest_framework import status
-from rest_framework import serializers
+
+from src.common.libraries import Config
 
 from .serializers import FaceDetectionSerializer, TaskIdSerializer
-from .views import FaceDetectionCreateView, FaceDetectionRetrieveView
-from src.common.libraries import Config
+from .views import FaceDetectionCreateView
 
 
 class FaceDetectionCreateViewTest(TestCase):
@@ -171,7 +171,6 @@ class FaceDetectionCreateViewTest(TestCase):
 
 
 from django.test import TestCase
-from rest_framework import serializers
 
 
 class TaskIdSerializerTestCase(TestCase):
@@ -201,10 +200,11 @@ class TaskIdSerializerTestCase(TestCase):
     #     )
 
 
-from django.urls import reverse
-from django.test import TestCase, Client
-from rest_framework import status
 from unittest.mock import patch
+
+from django.test import Client, TestCase
+from django.urls import reverse
+from rest_framework import status
 
 
 class FaceDetectionRetrieveViewTest(TestCase):
@@ -283,11 +283,13 @@ class FaceDetectionRetrieveViewTest(TestCase):
         )
 
 
-from unittest.mock import patch, MagicMock
 from unittest import IsolatedAsyncioTestCase
+from unittest.mock import MagicMock, patch
+
 from channels.testing import WebsocketCommunicator
-from .consumers import FaceDetectionConsumer
 from mimasa.asgi import application
+
+from .consumers import FaceDetectionConsumer
 
 
 class FaceDetectionConsumerTestCase(IsolatedAsyncioTestCase):

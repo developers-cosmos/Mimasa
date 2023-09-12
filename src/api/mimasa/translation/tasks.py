@@ -1,5 +1,6 @@
-from .models import MimasaModel
 from mimasa.celery import app
+
+from .models import MimasaModel
 
 
 @app.task

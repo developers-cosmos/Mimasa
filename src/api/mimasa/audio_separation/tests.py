@@ -1,13 +1,12 @@
 import os
 import shutil
 
-from django.test import TestCase, Client
-from rest_framework import status
-from django.urls import reverse
 from django.conf import settings
+from django.test import Client, TestCase
+from django.urls import reverse
+from rest_framework import status
+
 from src.common.libraries import Config
-from channels.testing import WebsocketCommunicator
-from .consumers import AudioSeparationConsumer
 
 
 class AudioSeparationCreateViewTestCase(TestCase):
@@ -84,7 +83,9 @@ class AudioSeparationCreateViewTestCase(TestCase):
 
 
 from unittest.mock import MagicMock, patch
+
 from rest_framework.test import APITestCase
+
 from .serializers import TaskIdSerializer
 from .views import AudioSeparationRetrieveView
 

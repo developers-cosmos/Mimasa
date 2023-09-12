@@ -1,12 +1,12 @@
 import os
 
-from rest_framework import generics
+from celery.result import AsyncResult
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework import status
+
 from .serializers import FaceDetectionSerializer, TaskIdSerializer
 from .services import face_detection_service
 from .tasks import run_face_detection
-from celery.result import AsyncResult
 
 
 class FaceDetectionCreateView(generics.CreateAPIView):

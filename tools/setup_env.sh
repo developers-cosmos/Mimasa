@@ -8,4 +8,4 @@ sudo apt-get install libsox-dev
 sudo apt-get install sox -y
 sudo apt install ffmpeg -y
 python -m pip install --upgrade pip
-python -m pip install *.whl
+pip install -r requirements.txt

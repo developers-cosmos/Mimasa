@@ -3,17 +3,16 @@
 Config Class
 """
 
-from pathlib import Path
-
 import os
 import sys
+from pathlib import Path
+
 import torch
 
 
 def is_venv():
     """Returns if the current env is a venv"""
-    return (hasattr(sys, 'real_prefix') or
-            (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix))
+    return hasattr(sys, "real_prefix") or (hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix)
 
 
 class Config:
@@ -21,7 +20,8 @@ class Config:
 
     # the application is expected to run from root directory
     # BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Path(os.getcwd())
-    BASE_DIR = Path(os.path.dirname(sys.prefix)) if is_venv() else Path(__file__).resolve().parent.parent.parent; os.chdir(BASE_DIR)
+    BASE_DIR = Path(os.path.dirname(sys.prefix)) if is_venv() else Path(__file__).resolve().parent.parent.parent
+    os.chdir(BASE_DIR)
 
     # # api keys for Mimasa
     # API_KEY = "your-api-key"

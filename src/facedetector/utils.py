@@ -7,14 +7,10 @@ import asyncio
 
 from src.common.libraries import *
 from src.common.logger import Logger
-from src.facedetector import (
-    async_io_and_cpu_face_detector,
-    async_task_face_detector,
-    concurrent_futures_face_detector,
-    mtcnn,
-    ssd,
-    viola_jones,
-)
+from src.facedetector import (async_io_and_cpu_face_detector,
+                              async_task_face_detector,
+                              concurrent_futures_face_detector, mtcnn, ssd,
+                              viola_jones)
 from src.utils.utils import get_current_time
 
 """

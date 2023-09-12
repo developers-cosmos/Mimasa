@@ -4,7 +4,8 @@ MaskInference Class
 """
 
 import nussl
-from nussl.ml.networks.modules import AmplitudeToDB, BatchNorm, Embedding, RecurrentStack
+from nussl.ml.networks.modules import (AmplitudeToDB, BatchNorm, Embedding,
+                                       RecurrentStack)
 from torch import nn
 
 

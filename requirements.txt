@@ -35,6 +35,7 @@ Django==4.2.*
 celery==5.3.*
 eventlet==0.33.*
 daphne==4.0.*
+redis==5.0.*
 
 # DRF
 djangorestframework==3.14.*

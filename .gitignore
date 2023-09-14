@@ -385,11 +385,7 @@ src/api/mimasa/Thumbs.db
 
 # datasets
 data/datasets/**
-data/models/**
-data/audios/**
-data/videos/**
 data/dlib/**
-data/translation/**
 
 Mimasa.egg-info/**
 build/**

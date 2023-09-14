@@ -386,6 +386,10 @@ src/api/mimasa/Thumbs.db
 # datasets
 data/datasets/**
 data/dlib/**
+data/models/classifiers/**
+data/models/weights/**
+data/models/*.dat
+data/models/nussl/**
 
 Mimasa.egg-info/**
 build/**

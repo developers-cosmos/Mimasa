@@ -3,6 +3,14 @@
 All notable changes to this package will be documented in this file.
 This package adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.2 release
+
+### Bug Fixes
+
+* Fix transaltion module import error
+* Add support to download mimasa sample data
+* Improve setup envrionment script
+
 ## 1.1.1 release
 
 ### Bug Fixes

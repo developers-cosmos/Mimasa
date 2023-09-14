@@ -84,6 +84,8 @@ python src/common/download_data.py
 ./tools/run_mimasa.sh
 ```
 
+You can use options `-s` to setup mimasa package locally and `-d` option to download sample data for mimasa.
+
 8.Congratulations! You have successfully installed Mimasa on your local machine.
 
 ## Django App Installation Guide for Mimasa

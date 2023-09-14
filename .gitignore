@@ -390,6 +390,9 @@ data/models/classifiers/**
 data/models/weights/**
 data/models/*.dat
 data/models/nussl/**
+data/models/translation/audios/**
+data/models/translation/videos/**
+data/models/translation/inputs/**
 
 Mimasa.egg-info/**
 build/**

@@ -80,19 +80,25 @@ python3 -m venv venv
 source venv/bin/activate
 </code></p>
 
-<p>5.Install the required packages using pip.</p>
+<p>5.Install the required dependencies.</p>
 
 <p><code>shell
-pip install -r requirements.txt
+./tools/setup_env.sh
 </code></p>
 
-<p>6.Launch the Mimasa application.</p>
+<p>6.Download the sample data required for mimasa</p>
 
 <p><code>shell
-python src/main.py
+python src/common/download_data.py
 </code></p>
 
-<p>7.Congratulations! You have successfully installed Mimasa on your local machine.</p>
+<p>7.Launch the Mimasa application.</p>
+
+<p><code>shell
+./tools/run_mimasa.sh
+</code></p>
+
+<p>8.Congratulations! You have successfully installed Mimasa on your local machine.</p>
 
 <h2>Django App Installation Guide for Mimasa</h2>
 
@@ -132,7 +138,7 @@ python src/api/mimasa/manage.py runserver
 </code></p>
 
 <ol start="3">
-<li><p>Download the Redis ZIP archive from the official Redis website (https://github.com/microsoftarchive/redis/releases)</p></li>
+<li><p>Download the Redis ZIP archive from the official Redis website (<a href="https://github.com/microsoftarchive/redis/releases">https://github.com/microsoftarchive/redis/releases</a>)</p></li>
 <li><p>Extract the contents of the ZIP archive to a folder of your choice. Open the Command Prompt and navigate to the folder where you extracted Redis.
 Run the following command to start Redis:</p></li>
 </ol>
@@ -199,7 +205,7 @@ celery -A mimasa worker -l info -P eventlet
 <p>We appreciate your interest in Mimasa Application and welcome any questions or feedback you may have. You can reach us through the following channels:</p>
 
 <ul>
-<li>Email: ritheeshbaradwaj@gmail.com</li>
+<li>Email: <a href="&#x6d;&#97;&#105;lto&#x3a;&#x72;i&#x74;&#104;&#101;&#x65;&#x73;&#104;&#x62;&#x61;&#114;&#97;d&#119;&#x61;&#106;&#x40;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;">&#x72;i&#x74;&#104;&#101;&#x65;&#x73;&#104;&#x62;&#x61;&#114;&#97;d&#119;&#x61;&#106;&#x40;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;</a></li>
 <li><a href="https://github.com/developers-cosmos/Mimasa/issues">GitHub Issues</a></li>
 </ul>
 

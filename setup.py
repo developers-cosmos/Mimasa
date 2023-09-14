@@ -54,7 +54,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "myproject = src.main:main",
+            "mimasa = src.main:main",
         ],
     },
     env={"PYTHONPATH": os.path.abspath(os.path.join(os.path.dirname(__file__), "src"))},

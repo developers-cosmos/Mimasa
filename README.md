@@ -66,19 +66,25 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-5.Install the required packages using pip.
+5.Install the required dependencies.
 
 ```shell
-pip install -r requirements.txt
+./tools/setup_env.sh
 ```
 
-6.Launch the Mimasa application.
+6.Download the sample data required for mimasa
 
 ```shell
-python src/main.py
+python src/common/download_data.py
 ```
 
-7.Congratulations! You have successfully installed Mimasa on your local machine.
+7.Launch the Mimasa application.
+
+```shell
+./tools/run_mimasa.sh
+```
+
+8.Congratulations! You have successfully installed Mimasa on your local machine.
 
 ## Django App Installation Guide for Mimasa
 
@@ -111,7 +117,7 @@ python src/api/mimasa/manage.py migrate
 python src/api/mimasa/manage.py runserver
 ```
 
-3. Download the Redis ZIP archive from the official Redis website (https://github.com/microsoftarchive/redis/releases)
+3. Download the Redis ZIP archive from the official Redis website (<https://github.com/microsoftarchive/redis/releases>)
 
 4. Extract the contents of the ZIP archive to a folder of your choice. Open the Command Prompt and navigate to the folder where you extracted Redis.
 Run the following command to start Redis:
@@ -169,7 +175,7 @@ If you're interested in making a contribution, follow these steps:
 
 We appreciate your interest in Mimasa Application and welcome any questions or feedback you may have. You can reach us through the following channels:
 
-- Email: ritheeshbaradwaj@gmail.com
+- Email: <ritheeshbaradwaj@gmail.com>
 - [GitHub Issues](https://github.com/developers-cosmos/Mimasa/issues)
 
 ## Thank you

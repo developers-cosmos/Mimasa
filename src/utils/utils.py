@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import time
+import gdown
 from datetime import datetime
 
 from src.common.libraries import Config, Logger
@@ -107,3 +108,23 @@ def teardown():
 
     if Config.REDIRECT_STDERR_TO_FILE:
         sys.stderr = saveerr
+
+
+def download_file_from_google_drive(url, output_path):
+    logger = Logger(name="GDriveDownloader")
+    logger.add_file_handler("download.log")
+
+    if os.path.isfile(output_path):
+        logger.info(f"File already exists at {output_path}")
+        return
+
+    download_file_msg = ""
+    logger.info(f"Downloading data: {url}")
+    try:
+        os.system(f"gdown {url} -O {output_path}")
+        download_file_msg = "Download completed successfully"
+        logger.info(download_file_msg)
+    except Exception as ex:
+        download_file_msg = "An error occured: " + str(ex)
+        logger.error(download_file_msg)
+        raise ex

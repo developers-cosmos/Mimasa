@@ -21,7 +21,7 @@ class LintCommand(install):
 
     def run(self):
         """Run linter."""
-        subprocess.call(["pylint", "your_module"])
+        subprocess.call(["pylint", "src"])
         install.run(self)
 
 

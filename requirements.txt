@@ -7,12 +7,15 @@ setuptools==68.2.1
 torch==2.0.1
 nussl==1.1.9 # CFLAGS="-I/opt/homebrew/include" LDFLAGS="-L/opt/homebrew/lib" pip install nussl==1.1.9
 tensorflow==2.13.0
+gdown==4.7.1
+tqdm==4.66.1
 
 # for linting
 pylint
 pylint-plugin-utils
 autopep8
 black
+pylint_django
 
 # performance metric
 psutil==5.9.*

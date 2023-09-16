@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-main.py
+download_data.py
 
 This module contains the main entry point for downloading the data to run mimasa.
 """

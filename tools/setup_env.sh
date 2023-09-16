@@ -6,6 +6,8 @@
 # TODO: Add installation steps for Redis and Celery
 # Provide instructions for installing Redis and Celery here.
 
+# NOTE: It is suggested to run this script in python virtual env
+
 # Check if the system is running on macOS (Darwin)
 if [[ "$(uname)" == "Darwin" ]]; then
     # macOS-specific commands (you may need to install these packages via Homebrew)

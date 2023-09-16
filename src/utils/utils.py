@@ -7,7 +7,6 @@ import logging
 import os
 import sys
 import time
-import gdown
 from datetime import datetime
 
 from src.common.libraries import Config, Logger

@@ -68,7 +68,9 @@ jobs:
         python -m pip install *.whl
 
     - name: Download Sample Data
-      run: python src/common/download_data.py
+      run: |
+        source .venv/bin/activate
+        python src/common/download_data.py
 
     - name: Run unit tests
       run: python src/api/mimasa/manage.py test face_detection

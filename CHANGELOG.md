@@ -3,6 +3,13 @@
 All notable changes to this package will be documented in this file.
 This package adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.3 release
+
+### Bug Fixes
+
+* Improve the stability of the GHA with testing Auido & Video Translations
+* Fix project name in setup script
+
 ## 1.1.2 release
 
 ### Bug Fixes

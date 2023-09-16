@@ -127,3 +127,15 @@ def download_file_from_google_drive(url, output_path):
         download_file_msg = "An error occured: " + str(ex)
         logger.error(download_file_msg)
         raise ex
+
+
+def remove_file(file_path: str):
+    logger = Logger(name="CleanUp")
+    logger.add_file_handler("cleanup.log")
+    """
+    Remove a file if it exists
+    """
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        logger.info(f"Successfully removed file: {file_path}")

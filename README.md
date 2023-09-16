@@ -36,7 +36,7 @@ For the latest updates and news regarding Mimasa, please follow the [Announcemen
 
 ### Prerequisites
 
-- [Python 3.10.x](https://www.python.org/downloads/)
+- [Python 3.11.x](https://www.python.org/downloads/)
 - [pip](https://pip.pypa.io/en/stable/installation/)
 - Update the [settings](https://github.com/developers-cosmos/Mimasa/blob/main/src/common/config.py) for the application
 
@@ -96,7 +96,7 @@ The Django app for Mimasa is a web-based application that allows users to intera
 
 ### Prerequisites
 
-- Python 3.10.x
+- Python 3.11.x
 - pip
 - Django 4.x
 - Redis

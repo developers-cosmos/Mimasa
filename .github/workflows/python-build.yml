@@ -73,13 +73,18 @@ jobs:
         python src/common/download_data.py
 
     - name: Run unit tests
-      run: python src/api/mimasa/manage.py test face_detection
+      run: |
+        source .venv/bin/activate
+        python src/api/mimasa/manage.py test face_detection
 
     - name: Run Audio Translation
-      run: python src/main.py
+      run: |
+        source .venv/bin/activate
+        python src/main.py
 
     - name: Generate Coverage Reports
       run: |
+        source .venv/bin/activate
         coverage run src/api/mimasa/manage.py test face_detection
         coverage html
 

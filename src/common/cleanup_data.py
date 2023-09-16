@@ -8,15 +8,7 @@ This module contains the main entry point for cleaning the data downloaded using
 import os
 
 from src.common.config import Config
-
-
-def remove_file(file_path: str):
-    """
-    Remove a file if it exists
-    """
-
-    if os.path.exists(file_path):
-        os.remove(file_path)
+from src.utils.utils import remove_file
 
 
 def cleanup_models():

@@ -77,7 +77,7 @@ jobs:
         source .venv/bin/activate
         python src/api/mimasa/manage.py test face_detection
 
-    - name: Run Audio Translation
+    - name: Run Audio & Video Translations
       run: |
         source .venv/bin/activate
         python src/main.py

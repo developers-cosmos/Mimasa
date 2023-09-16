@@ -11,7 +11,7 @@ import torch
 
 
 def is_venv():
-    """Returns if the current env is a venv"""
+    """Returns true if the current env is a venv"""
     return hasattr(sys, "real_prefix") or (hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix)
 
 

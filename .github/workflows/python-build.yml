@@ -66,7 +66,9 @@ jobs:
         python -m pip install *.whl
 
     - name: Run unit tests
-      run: python src/api/mimasa/manage.py test face_detection
+      run: |
+        python src/common/download_data.py
+        python src/api/mimasa/manage.py test face_detection
 
     - name: Generate Coverage Reports
       run: |

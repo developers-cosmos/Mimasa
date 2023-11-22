@@ -3,7 +3,7 @@ numpy==1.26.2 # NOTE: Upgrading to 1.25.* might cause problems
 opencv_python==4.8.*
 mtcnn==0.1.1
 pydub==0.25.1
-setuptools==68.2.2
+setuptools==69.0.0
 torch==2.1.0
 nussl==1.1.9 # CFLAGS="-I/opt/homebrew/include" LDFLAGS="-L/opt/homebrew/lib" pip install nussl==1.1.9
 tensorflow==2.15.0

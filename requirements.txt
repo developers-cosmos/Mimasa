@@ -1,4 +1,4 @@
-importlib_resources==5.10.2 ### DO NOT UPDATE THE VERSION ###
+importlib_resources==6.1.1 ### DO NOT UPDATE THE VERSION ###
 numpy==1.26.2 # NOTE: Upgrading to 1.25.* might cause problems
 opencv_python==4.8.*
 mtcnn==0.1.1

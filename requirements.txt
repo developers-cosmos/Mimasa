@@ -6,7 +6,7 @@ pydub==0.25.1
 setuptools==69.0.3
 torch==2.1.2
 nussl==1.1.9 # CFLAGS="-I/opt/homebrew/include" LDFLAGS="-L/opt/homebrew/lib" pip install nussl==1.1.9
-tensorflow==2.15.0
+tensorflow==2.15.0.post1
 gdown==4.7.1
 tqdm==4.66.1
 

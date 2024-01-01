@@ -1,6 +1,6 @@
 importlib_resources==5.10.2 ### DO NOT UPDATE THE VERSION ###
 numpy==1.26.2 # NOTE: Upgrading to 1.25.* might cause problems
-opencv_python==4.8.*
+opencv_python==4.9.*
 mtcnn==0.1.1
 pydub==0.25.1
 setuptools==69.0.3

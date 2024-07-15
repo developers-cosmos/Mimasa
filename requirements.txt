@@ -35,7 +35,7 @@ pytest-cov==4.1.*
 
 # Django application
 Django==4.2.*
-celery==5.3.*
+celery==5.4.*
 eventlet==0.33.*
 daphne==4.0.*
 redis==5.0.*

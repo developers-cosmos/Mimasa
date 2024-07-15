@@ -41,7 +41,7 @@ daphne==4.0.*
 redis==5.0.*
 
 # DRF
-djangorestframework==3.14.*
+djangorestframework==3.15.*
 
 # Django Channels
 channels==4.0.*

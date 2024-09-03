@@ -52,7 +52,7 @@ jobs:
         python-version: 3.11.x
 
     - name: Download package artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.7
       with:
         name: mimasa-build
 
@@ -95,7 +95,7 @@ jobs:
         path: _coverage_report
 
     - name: Download artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.7
       with:
         name: mimasa-coverage-report
 

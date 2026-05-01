@@ -17,6 +17,10 @@ For the latest updates and news regarding Mimasa, please follow the [Announcemen
   - [Tools & Technologies](./docs/idea/concept.md/#tools--technologies)
   - [Steps With Examples](./docs/idea/concept.md/#overview)
 - [Design](./docs/design/DESIGN.md)
+- [Product Workspace](./product/README.md)
+  - [Research](./product/strategy/research.md)
+  - [Architecture](./product/strategy/architecture.md)
+  - [Implementation Plan](./product/strategy/implementation-plan.md)
   - [Mimasa Components](./docs/design/DESIGN.md/#design-of-mimasa-components)
     - [User Interaction](./docs/design/DESIGN.md#user-uploading-video--requesting-translation)
     - [Video Translation - Part 1](./docs/design/DESIGN.md/#video-translation---part-1)
@@ -143,6 +147,60 @@ celery -A mimasa worker -l info -P eventlet
 ```
 
 7. Congratulations! You have successfully completed the setup for Mimasa Django App, now you can perform translations at http:localhost:8000
+
+### Production Environment Configuration
+
+Mimasa now supports environment-driven Django settings so you can deploy safely without code changes. Before starting the API in production, set:
+
+```bash
+export MIMASA_SECRET_KEY="<a-strong-random-secret>"
+export MIMASA_DEBUG="false"
+export MIMASA_ALLOWED_HOSTS="api.example.com,example.com"
+export MIMASA_CSRF_TRUSTED_ORIGINS="https://api.example.com,https://example.com"
+export DATABASE_URL="postgres://<user>:<password>@<host>:5432/<db_name>"
+export CELERY_BROKER_URL="redis://<redis-host>:6379/0"
+export CELERY_RESULT_BACKEND="redis://<redis-host>:6379/0"
+```
+
+Optional hardening environment variables are also available (for SSL redirect, HSTS, secure cookies, and related headers):
+
+```bash
+export MIMASA_SECURE_SSL_REDIRECT="true"
+export MIMASA_SECURE_HSTS_SECONDS="31536000"
+export MIMASA_SESSION_COOKIE_SECURE="true"
+export MIMASA_CSRF_COOKIE_SECURE="true"
+```
+
+Then run the production bootstrapping steps:
+
+```bash
+python src/api/mimasa/manage.py migrate
+python src/api/mimasa/manage.py collectstatic --noinput
+```
+
+Start services (separate processes/containers):
+
+```bash
+# API (ASGI)
+daphne -b 0.0.0.0 -p 8000 mimasa.asgi:application
+
+# Celery worker
+celery -A mimasa worker -l info -P eventlet
+```
+
+> Note: when running with `MIMASA_DEBUG=false`, Mimasa requires `MIMASA_SECRET_KEY` and uses Redis-backed Channels by default.
+
+### API Features Implemented
+
+The Django API now includes:
+
+- user signup: `POST /auth/signup/`
+- user login: `POST /auth/login/`
+- translation request submission from UI upload form
+- async task status polling (`/get_task_status/<task_id>/`)
+- per-user translation notifications: `GET /notifications/`
+- notification read acknowledgement: `POST /notifications/<id>/read/`
+- tokenized download links for translated output videos
 
 ### Troubleshooting
 

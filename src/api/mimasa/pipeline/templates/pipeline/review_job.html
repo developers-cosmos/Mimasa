@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Review Job</title>
+</head>
+<body>
+  <h1>Review Job {{ job.id }}</h1>
+  <p><b>Name:</b> {{ job.name }}</p>
+  <p><b>Status:</b> {{ job.status }}</p>
+
+  <h2>Artifacts</h2>
+  <ul>
+    {% for artifact in artifacts %}
+    <li>{{ artifact.artifact_type }} — {{ artifact.uri }} — {{ artifact.created_at }}</li>
+    {% empty %}
+    <li>No artifacts found.</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Add Correction</h2>
+  <form method="post" action="{% url 'review_job_correction_form' job.id %}">
+    {% csrf_token %}
+    <label>Artifact Type:</label>
+    <select name="artifact_type">
+      <option value="TRANSCRIPT_V1">TRANSCRIPT_V1</option>
+      <option value="TRANSLATION_V1" selected>TRANSLATION_V1</option>
+    </select><br/>
+    <label>Segment Key:</label>
+    <input type="text" name="segment_key" placeholder="segment-001" required><br/>
+    <label>Source Text:</label>
+    <textarea name="source_text" placeholder="Original text"></textarea><br/>
+    <label>Corrected Text:</label>
+    <textarea name="corrected_text" placeholder="Corrected text" required></textarea><br/>
+    <label>Language:</label>
+    <input type="text" name="language" value="{{ job.target_language }}"><br/>
+    <label>Reviewer:</label>
+    <input type="text" name="reviewer" value="{{ request.user.username|default:'reviewer' }}"><br/>
+    <button type="submit">Save Correction</button>
+  </form>
+
+  <h2>Saved Corrections</h2>
+  <ul>
+    {% for correction in corrections %}
+    <li>
+      {{ correction.created_at }} — {{ correction.artifact_type }} / {{ correction.segment_key }} by {{ correction.reviewer }}<br/>
+      <b>Source:</b> {{ correction.source_text }}<br/>
+      <b>Corrected:</b> {{ correction.corrected_text }}
+    </li>
+    {% empty %}
+    <li>No corrections yet.</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Submit Review Decision</h2>
+  <form method="post" action="{% url 'review_job_decision_form' job.id %}">
+    {% csrf_token %}
+    <label>Decision:</label>
+    <select name="decision">
+      <option value="APPROVE">Approve</option>
+      <option value="REJECT">Reject</option>
+    </select><br/>
+    <label>Idempotency Key:</label>
+    <input type="text" name="idempotency_key" required><br/>
+    <label>Reviewer:</label>
+    <input type="text" name="reviewer" value="{{ request.user.username|default:'reviewer' }}"><br/>
+    <label>Comments:</label>
+    <textarea name="comments"></textarea><br/>
+    <button type="submit">Submit</button>
+  </form>
+
+  <h2>Past Decisions</h2>
+  <ul>
+    {% for decision in decisions %}
+    <li>{{ decision.created_at }} — {{ decision.decision }} by {{ decision.reviewer }} ({{ decision.comments }})</li>
+    {% empty %}
+    <li>No decisions yet.</li>
+    {% endfor %}
+  </ul>
+
+  <p><a href="{% url 'review_dashboard' %}">Back to dashboard</a></p>
+</body>
+</html>

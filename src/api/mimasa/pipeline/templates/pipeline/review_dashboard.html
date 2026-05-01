@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pipeline Review Dashboard</title>
+</head>
+<body>
+  <h1>Pipeline Review Dashboard</h1>
+  <p>Jobs requiring/with review decisions.</p>
+  <table border="1" cellpadding="6">
+    <thead>
+      <tr><th>Job ID</th><th>Name</th><th>Status</th><th>Updated</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for job in jobs %}
+      <tr>
+        <td>{{ job.id }}</td>
+        <td>{{ job.name }}</td>
+        <td>{{ job.status }}</td>
+        <td>{{ job.updated_at }}</td>
+        <td><a href="{% url 'review_job' job.id %}">Open Review</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No jobs available for review.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

@@ -20,6 +20,7 @@
               <h1 class="text-center">Translation Registered Successful</h1>
               <hr>
               <b>Status: <span id="status">{{ mimasa.task_status }}</span>, id: {{ mimasa.task_id }} </b> <hr>
+              {% if notification %}<p><small>{{ notification.message }}</small></p>{% endif %}
               {% if mimasa.task_status == "SUCCESS" %}
                 <div class="alert alert-success text-center" role="alert">
                   <p>Your video translation has completed successfully!</p>
@@ -27,9 +28,9 @@
                   {% if mimasa.output_video %}
                     <a href="{{ mimasa.output_video.url }}" class="btn btn-primary" target="_blank">Play Video</a>
                   {% else %}
-                    <a href="{% url 'download_translation' mimasa.output_video_filename %}" class="btn btn-primary" target="_blank">Play Video</a>
+                    <a href="{% url 'download_translation' mimasa.output_video_filename %}?token={{ notification.download_token }}" class="btn btn-primary" target="_blank">Play Video</a>
                   {% endif %}
-                  <a href="{% url 'download_translation' mimasa.output_video_filename %}" class="btn btn-primary" download>Download Video</a>
+                  <a href="{% url 'download_translation' mimasa.output_video_filename %}?token={{ notification.download_token }}" class="btn btn-primary" download>Download Video</a>
                 </div>
               {% elif mimasa.task_status == "FAILURE" %}
                 <h3 class="text-center text-danger">Translation Failed</h3>

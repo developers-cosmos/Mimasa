@@ -45,5 +45,6 @@ djangorestframework==3.14.*
 
 # Django Channels
 channels==4.0.*
+channels_redis==4.2.*
 
 # Install Redis server from https://github.com/microsoftarchive/redis/releases

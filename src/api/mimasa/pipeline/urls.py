@@ -1,0 +1,60 @@
+from django.urls import path
+
+from .alerting_views import AlertEventListView, TelemetryAlertsView
+from .review_views import (
+    ReviewCorrectionFormView,
+    ReviewCorrectionListCreateAPIView,
+    ReviewDashboardView,
+    ReviewDecisionAPIView,
+    ReviewDecisionFormView,
+    ReviewJobDetailView,
+)
+from .telemetry_views import TelemetrySummaryView
+from .views import (
+    ASRStageRunView,
+    CompositingStageRunView,
+    JobArtifactListView,
+    JobDeadLetterListView,
+    JobDeliveryListView,
+    JobDeliveryDownloadView,
+    JobDeliveryCreateView,
+    JobListCreateView,
+    JobRetrieveView,
+    JobReplayDeadLetterView,
+    JobRetryView,
+    JobStageListView,
+    JobTransitionEventListView,
+    JobTransitionView,
+    MTStageRunView,
+    TTSStageRunView,
+    VerticalSliceRunView,
+)
+
+urlpatterns = [
+    path("jobs/", JobListCreateView.as_view(), name="job_list_create"),
+    path("jobs/<uuid:pk>/", JobRetrieveView.as_view(), name="job_retrieve"),
+    path("jobs/<uuid:job_id>/stages/", JobStageListView.as_view(), name="job_stages"),
+    path("jobs/<uuid:job_id>/artifacts/", JobArtifactListView.as_view(), name="job_artifacts"),
+    path("jobs/<uuid:job_id>/transitions/", JobTransitionView.as_view(), name="job_transition"),
+    path("jobs/<uuid:job_id>/transition-events/", JobTransitionEventListView.as_view(), name="job_transition_events"),
+    path("jobs/<uuid:job_id>/dead-letters/", JobDeadLetterListView.as_view(), name="job_dead_letters"),
+    path("jobs/<uuid:job_id>/retry/", JobRetryView.as_view(), name="job_retry"),
+    path("jobs/<uuid:job_id>/replay/", JobReplayDeadLetterView.as_view(), name="job_replay"),
+    path("jobs/<uuid:job_id>/deliveries/", JobDeliveryListView.as_view(), name="job_delivery_list"),
+    path("jobs/<uuid:job_id>/deliver/", JobDeliveryCreateView.as_view(), name="job_delivery_create"),
+    path("jobs/<uuid:job_id>/deliveries/<uuid:delivery_id>/download/", JobDeliveryDownloadView.as_view(), name="job_delivery_download"),
+    path("jobs/<uuid:job_id>/run-asr/", ASRStageRunView.as_view(), name="job_run_asr"),
+    path("jobs/<uuid:job_id>/run-mt/", MTStageRunView.as_view(), name="job_run_mt"),
+    path("jobs/<uuid:job_id>/run-tts/", TTSStageRunView.as_view(), name="job_run_tts"),
+    path("jobs/<uuid:job_id>/run-compositing/", CompositingStageRunView.as_view(), name="job_run_compositing"),
+    path("jobs/<uuid:job_id>/run-vertical-slice/", VerticalSliceRunView.as_view(), name="job_run_vertical_slice"),
+    path("jobs/<uuid:job_id>/review-decision/", ReviewDecisionAPIView.as_view(), name="job_review_decision_api"),
+    path("jobs/<uuid:job_id>/review-corrections/", ReviewCorrectionListCreateAPIView.as_view(), name="job_review_corrections"),
+    path("telemetry/summary/", TelemetrySummaryView.as_view(), name="telemetry_summary"),
+    path("telemetry/alerts/", TelemetryAlertsView.as_view(), name="telemetry_alerts"),
+    path("telemetry/alert-events/", AlertEventListView.as_view(), name="telemetry_alert_events"),
+    path("review/", ReviewDashboardView.as_view(), name="review_dashboard"),
+    path("review/<uuid:job_id>/", ReviewJobDetailView.as_view(), name="review_job"),
+    path("review/<uuid:job_id>/decision/", ReviewDecisionFormView.as_view(), name="review_job_decision_form"),
+    path("review/<uuid:job_id>/correction/", ReviewCorrectionFormView.as_view(), name="review_job_correction_form"),
+]

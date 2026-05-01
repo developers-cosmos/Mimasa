@@ -24,7 +24,9 @@ urlpatterns = [
     path("", include("translation.urls")),
     path("api/", include("audio_separation.urls")),
     path("api/", include("face_detection.urls")),
+    path("api/v1/", include("pipeline.urls")),
 ]
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
